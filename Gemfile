@@ -60,3 +60,5 @@ group :test do
 end
 
 gem "react_on_rails", "= 16.6"
+
+gem "react_on_rails_pro", "~> 16.6"
