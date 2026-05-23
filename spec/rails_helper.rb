@@ -37,6 +37,8 @@ rescue ActiveRecord::PendingMigrationError => e
 end
 RSpec.configure do |config|
   ReactOnRails::TestHelper.configure_rspec_to_compile_assets(config)
+  config.include ActiveJob::TestHelper
+  config.include FactoryBot::Syntax::Methods
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = [
@@ -72,4 +74,10 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  config.before do
+    clear_enqueued_jobs
+    clear_performed_jobs
+    Rack::Attack.cache.store.clear if defined?(Rack::Attack)
+  end
 end

@@ -1,0 +1,24 @@
+<main class="auth-page">
+  <section class="auth-card auth-card-wide">
+    <header class="auth-card-header">
+      <h1>Verification link expired</h1>
+      <p>For security, verification links work once and expire after 24 hours.</p>
+    </header>
+
+    <div class="auth-card-body">
+      <%= tag.div(flash[:alert], class: "auth-alert", aria: { live: "polite" }) if flash[:alert] %>
+      <%= tag.div(flash[:notice], class: "auth-notice", aria: { live: "polite" }) if flash[:notice] %>
+
+      <p>Request a new link for <strong><%= @masked_email_address %></strong>. You will see the same confirmation message even if the email is not in the system.</p>
+
+      <%= form_with url: email_verifications_path, class: "auth-form" do |form| %>
+        <div class="auth-field">
+          <%= form.label :email_address, "Email", class: "auth-label" %>
+          <%= form.email_field :email_address, value: Current.user&.email_address || session[:pending_verification_email], required: true, autocomplete: "email", class: "auth-input" %>
+        </div>
+
+        <%= form.submit "Send a new link", class: "auth-button" %>
+      <% end %>
+    </div>
+  </section>
+</main>

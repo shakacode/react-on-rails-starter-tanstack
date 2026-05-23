@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "from@example.com"
+  default from: "React on Rails Starter <hello@example.com>"
   layout "mailer"
 end

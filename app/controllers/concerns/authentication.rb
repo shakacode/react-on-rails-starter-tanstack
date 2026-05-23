@@ -46,7 +46,15 @@ module Authentication
     end
 
     def terminate_session
-      Current.session.destroy
+      Current.session ||= find_session_by_cookie
+      Current.session&.destroy
+      Current.session = nil
       cookies.delete(:session_id)
+    end
+
+    def rotate_session_for(user)
+      terminate_session
+      reset_session
+      start_new_session_for(user)
     end
 end

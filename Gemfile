@@ -33,6 +33,7 @@ gem "thruster", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", "~> 2.0"
+gem "rack-attack", "~> 6.8"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -49,11 +50,16 @@ group :development, :test do
 end
 
 group :development do
+  gem "letter_opener", "~> 1.10"
+  gem "letter_opener_web", "~> 3.0"
+
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
 end
 
 group :test do
+  gem "factory_bot_rails", "~> 6.5"
+
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"

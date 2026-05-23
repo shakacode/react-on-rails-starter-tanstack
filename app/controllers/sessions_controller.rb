@@ -8,7 +8,12 @@ class SessionsController < ApplicationController
   def create
     if user = User.authenticate_by(params.permit(:email_address, :password))
       start_new_session_for user
-      redirect_to after_authentication_url
+      if user.email_verified?
+        redirect_to after_authentication_url
+      else
+        session[:pending_verification_email] = user.email_address
+        redirect_to sent_email_verifications_path, notice: "Check your email to finish verifying your account."
+      end
     else
       redirect_to new_session_path, alert: "Try another email address or password."
     end

@@ -1,0 +1,15 @@
+<h1>Verify your email</h1>
+
+<p>Hi <%= @user.name %>,</p>
+
+<p>Use this link to finish setting up your React on Rails Starter account.</p>
+
+<p>
+  <%= link_to "Verify email", @verification_url, style: "display:inline-block;padding:12px 18px;border-radius:8px;background:#0f766e;color:#ffffff;text-decoration:none;font-weight:700;" %>
+</p>
+
+<p>If the button does not work, paste this URL into your browser:</p>
+
+<p><%= @verification_url %></p>
+
+<p>This link expires in 24 hours and can be used once.</p>
