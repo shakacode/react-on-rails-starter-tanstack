@@ -1,0 +1,16 @@
+<main class="auth-page">
+  <section class="auth-card auth-card-wide">
+    <header class="auth-card-header">
+      <h1>New project</h1>
+      <p>This form is the Rails validation reference pattern for the starter.</p>
+    </header>
+
+    <div class="auth-card-body">
+      <%= render "form", project: @project %>
+    </div>
+
+    <footer class="auth-card-footer">
+      <%= link_to "Back to projects", projects_path, class: "auth-link" %>
+    </footer>
+  </section>
+</main>

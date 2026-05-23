@@ -65,6 +65,8 @@ Fix:
 bin/rails db:seed
 ```
 
+The seed user is `demo@example.com / password`. Production seeds are a no-op.
+
 ## Verification Email Does Not Arrive In Development
 
 Symptom: signup succeeds, but no external email arrives.

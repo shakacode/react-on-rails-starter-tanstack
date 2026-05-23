@@ -31,9 +31,9 @@ bin/test
 
 ## Current Status
 
-This repo is the public template seed. Phase 2 adds Rails 8 authentication, signup, email verification, resend throttles, development mail previews, and a verified-email dashboard gate.
+This repo is the public template seed. Phase 2 adds Rails 8 authentication, signup, email verification, resend throttles, development mail previews, and a verified-email dashboard gate. Phase 3 adds Projects CRUD, scoped authorization, JSON API endpoints, metrics, factories, and demo seeds.
 
-The next phases add Projects CRUD and the TanStack Router/Query/Table authenticated surface described in [shakacode/react_on_rails#3364](https://github.com/shakacode/react_on_rails/pull/3364).
+The next phase adds the TanStack Router/Query/Table authenticated surface described in [shakacode/react_on_rails#3364](https://github.com/shakacode/react_on_rails/pull/3364).
 
 See [SPIKE.md](SPIKE.md) for the current AMBER RSC/Rspack compatibility note: Rspack builds are green, but interactive RSC client-reference plugin support is blocked upstream.
 

@@ -1,0 +1,16 @@
+<main class="auth-page">
+  <section class="auth-card auth-card-wide">
+    <header class="auth-card-header">
+      <h1>Edit project</h1>
+      <p>Server-side validation stays the source of truth.</p>
+    </header>
+
+    <div class="auth-card-body">
+      <%= render "form", project: @project %>
+    </div>
+
+    <footer class="auth-card-footer">
+      <%= link_to "Back to project", @project, class: "auth-link" %>
+    </footer>
+  </section>
+</main>

@@ -170,3 +170,50 @@
 .auth-muted {
   color: var(--auth-muted);
 }
+
+.project-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-list-item {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--auth-line);
+  border-radius: 8px;
+}
+
+.project-list-item h2,
+.project-summary h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.project-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.project-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  border: 1px solid var(--auth-line);
+  border-radius: 999px;
+  padding: 0 10px;
+  color: var(--auth-muted);
+  font-size: 0.82rem;
+  font-weight: 650;
+  text-transform: capitalize;
+}
+
+.project-summary {
+  display: grid;
+  gap: 14px;
+}

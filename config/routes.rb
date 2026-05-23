@@ -15,6 +15,14 @@ Rails.application.routes.draw do
   end
 
   get "dashboard", to: "dashboard#show"
+  resources :projects
+
+  namespace :api do
+    resources :projects, only: %i[index show] do
+      get :metrics, on: :member
+    end
+  end
+
   get "hello_server", to: "hello_server#index"
   rsc_payload_route
   root to: "home#index"
