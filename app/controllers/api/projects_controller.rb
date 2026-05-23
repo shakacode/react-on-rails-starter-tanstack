@@ -27,7 +27,7 @@ module Api
       render json: {
         total: Current.user.projects.count,
         active_count: Current.user.projects.active.count,
-        completed_this_week: Current.user.projects.completed.where(updated_at: 1.week.ago..).count,
+        completed_this_week: Current.user.projects.completed.where(last_activity_at: 1.week.ago..).count,
         avg_cycle_time: average_cycle_time_days
       }
     end

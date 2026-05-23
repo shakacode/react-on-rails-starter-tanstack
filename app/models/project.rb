@@ -15,6 +15,7 @@ class Project < ApplicationRecord
   validates :last_activity_at, presence: true
 
   before_validation :default_last_activity_at
+  before_save :record_completion_activity
 
   scope :recent, -> { order(last_activity_at: :desc, created_at: :desc) }
 
@@ -26,5 +27,12 @@ class Project < ApplicationRecord
 
     def default_last_activity_at
       self.last_activity_at ||= Time.current
+    end
+
+    def record_completion_activity
+      return unless will_save_change_to_status? && completed?
+      return if will_save_change_to_last_activity_at?
+
+      self.last_activity_at = Time.current
     end
 end

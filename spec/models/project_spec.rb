@@ -31,4 +31,14 @@ RSpec.describe Project, type: :model do
     expect { project.archive! }.not_to change(described_class, :count)
     expect(project).to be_archived
   end
+
+  it "records completion as project activity" do
+    project = create(:project, last_activity_at: 2.days.ago)
+    previous_activity = project.last_activity_at
+
+    project.update!(status: :completed)
+
+    expect(project.reload.last_activity_at).to be > previous_activity
+    expect(project.last_activity_at).to be > 1.minute.ago
+  end
 end
