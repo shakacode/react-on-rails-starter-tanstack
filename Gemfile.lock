@@ -445,6 +445,7 @@ DEPENDENCIES
   react_on_rails_pro (~> 16.6)
   rubocop-rails-omakase
   selenium-webdriver
+  shakapacker (= 10.0)
   solid_cable
   solid_cache
   solid_queue
