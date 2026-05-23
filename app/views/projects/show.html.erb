@@ -1,0 +1,33 @@
+<main class="auth-page">
+  <section class="auth-card auth-card-wide">
+    <header class="auth-card-header">
+      <h1><%= @project.name %></h1>
+      <p>Owned by <%= Current.user.email_address %>.</p>
+    </header>
+
+    <div class="auth-card-body project-summary">
+      <%= tag.div(flash[:notice], class: "auth-notice", aria: { live: "polite" }) if flash[:notice] %>
+
+      <div>
+        <h2>Description</h2>
+        <p><%= @project.description.presence || "No description yet." %></p>
+      </div>
+
+      <div class="project-meta">
+        <span class="project-badge"><%= @project.status %></span>
+        <span class="project-badge">Last activity <%= @project.last_activity_at.to_fs(:long) %></span>
+      </div>
+
+      <div class="auth-actions">
+        <%= link_to "Edit", edit_project_path(@project), class: "auth-button" %>
+        <%= link_to "All projects", projects_path, class: "auth-button auth-button-secondary" %>
+      </div>
+
+      <details>
+        <summary class="auth-link">Archive this project</summary>
+        <p>Archiving keeps the record visible for audit and future TanStack filtering examples.</p>
+        <%= button_to "Confirm archive", @project, method: :delete, class: "auth-button auth-button-secondary" %>
+      </details>
+    </div>
+  </section>
+</main>

@@ -1,0 +1,36 @@
+<%# REFERENCE PATTERN: form — see AGENTS.md §4 %>
+<% if project.errors.any? %>
+  <div class="auth-alert" aria-live="polite">
+    <p>Fix the highlighted fields and try again.</p>
+    <ul class="auth-error-list">
+      <% project.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with model: project, class: "auth-form" do |form| %>
+  <div class="auth-field">
+    <%= form.label :name, class: "auth-label" %>
+    <%= form.text_field :name, required: true, maxlength: 120, class: "auth-input", aria: { describedby: ("project_name_errors" if project.errors[:name].any?) } %>
+    <% if project.errors[:name].any? %>
+      <span id="project_name_errors" class="auth-muted"><%= project.errors[:name].to_sentence %></span>
+    <% end %>
+  </div>
+
+  <div class="auth-field">
+    <%= form.label :description, class: "auth-label" %>
+    <%= form.text_area :description, rows: 5, maxlength: 2_000, class: "auth-input", aria: { describedby: ("project_description_errors" if project.errors[:description].any?) } %>
+    <% if project.errors[:description].any? %>
+      <span id="project_description_errors" class="auth-muted"><%= project.errors[:description].to_sentence %></span>
+    <% end %>
+  </div>
+
+  <div class="auth-field">
+    <%= form.label :status, class: "auth-label" %>
+    <%= form.select :status, Project.statuses.keys.map { |status| [status.titleize, status] }, {}, class: "auth-input" %>
+  </div>
+
+  <%= form.submit project.persisted? ? "Save project" : "Create project", class: "auth-button" %>
+<% end %>

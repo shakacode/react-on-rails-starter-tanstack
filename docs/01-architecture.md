@@ -13,4 +13,8 @@ Rails 8 authentication provides sessions, password reset, signup, and email veri
 
 Rack::Attack limits verification email sends per IP and per email address. Development mail is available through `/letter_opener`.
 
-The Tier 1 implementation plan adds Projects CRUD next, then TanStack Router, Query, and Table on the authenticated surface.
+## Projects
+
+Projects are scoped to the verified current user. The HTML controller is the Rails validation reference pattern: server-side validations, inline errors, scoped lookup, and archive-on-destroy. The JSON API under `/api/projects` supports status filtering, sorting, pagination, scoped show, and metrics for the future dashboard cards.
+
+The Tier 1 implementation plan adds TanStack Router, Query, and Table on the authenticated surface next.

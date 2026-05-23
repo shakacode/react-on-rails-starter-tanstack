@@ -8,6 +8,10 @@
     <div class="auth-card-body">
       <%= tag.div(flash[:notice], class: "auth-notice", aria: { live: "polite" }) if flash[:notice] %>
       <p>Signed in as <strong><%= Current.user.email_address %></strong>.</p>
+      <div class="auth-actions" style="margin-top: 18px;">
+        <%= link_to "Projects", projects_path, class: "auth-button" %>
+        <%= link_to "New project", new_project_path, class: "auth-button auth-button-secondary" %>
+      </div>
     </div>
   </section>
 </main>
