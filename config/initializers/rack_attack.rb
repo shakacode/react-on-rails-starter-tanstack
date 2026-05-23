@@ -6,7 +6,7 @@ class Rack::Attack
   end
 
   throttle("email verification sends by email", limit: 3, period: 1.hour) do |request|
-    request.params["email_address"].to_s.strip.downcase.presence if email_verification_send?(request)
+    email_verification_send_email(request) if email_verification_send?(request)
   end
 
   self.throttled_responder = lambda do |request|
@@ -26,5 +26,11 @@ class Rack::Attack
 
   def self.email_verification_send?(request)
     request.post? && request.path == "/email_verifications"
+  end
+
+  def self.email_verification_send_email(request)
+    email_address = request.params["email_address"].presence || request.session["pending_verification_email"].presence
+
+    email_address.to_s.strip.downcase.presence
   end
 end

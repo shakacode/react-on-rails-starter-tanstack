@@ -77,4 +77,18 @@ RSpec.describe "Email verifications", type: :request do
 
     expect(response).to have_http_status(:too_many_requests)
   end
+
+  it "throttles verification sends by the pending session email" do
+    user = create(:user, :unverified)
+    post session_path, params: { email_address: user.email_address, password: "password" }
+
+    3.times do
+      post email_verifications_path
+      expect(response).to have_http_status(:redirect)
+    end
+
+    post email_verifications_path
+
+    expect(response).to have_http_status(:too_many_requests)
+  end
 end

@@ -13,6 +13,10 @@ RSpec.describe User, type: :model do
     expect(user.email_address).to eq("user@example.com")
   end
 
+  it "normalizes email values for lookups" do
+    expect(described_class.normalize_email_address(" USER@Example.COM ")).to eq("user@example.com")
+  end
+
   it "generates a single-use verification token digest" do
     user = create(:user, :unverified)
 
@@ -47,5 +51,13 @@ RSpec.describe User, type: :model do
 
     expect(user).to be_email_verified
     expect(user.email_verification_token_digest).to be_nil
+  end
+
+  it "generates password reset tokens" do
+    user = create(:user)
+    token = user.password_reset_token
+
+    expect(described_class.find_by_password_reset_token!(token)).to eq(user)
+    expect(user.password_reset_token_expires_in).to eq(15.minutes)
   end
 end

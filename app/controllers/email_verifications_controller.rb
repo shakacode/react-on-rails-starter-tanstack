@@ -55,7 +55,7 @@ class EmailVerificationsController < ApplicationController
       email_address = params[:email_address].presence || Current.user&.email_address || session[:pending_verification_email]
       return if email_address.blank?
 
-      User.find_by(email_address: email_address.to_s.strip.downcase)
+      User.find_by(email_address: User.normalize_email_address(email_address))
     end
 
     def masked_pending_email

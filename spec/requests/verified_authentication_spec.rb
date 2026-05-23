@@ -25,4 +25,14 @@ RSpec.describe "Verified authentication gate", type: :request do
     expect(response).to have_http_status(:ok)
     expect(response.body).to include("Dashboard")
   end
+
+  it "allows verified users to sign in with normalized email input" do
+    user = create(:user, :verified, email_address: "user@example.com")
+
+    post session_path, params: { email_address: " USER@Example.COM ", password: "password" }
+    get dashboard_path
+
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include("Dashboard")
+  end
 end

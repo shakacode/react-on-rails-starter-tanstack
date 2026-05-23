@@ -3,16 +3,20 @@ require "digest"
 class User < ApplicationRecord
   EMAIL_VERIFICATION_TOKEN_TTL = 24.hours
 
-  has_secure_password
+  has_secure_password reset_token: { expires_in: 15.minutes }
   has_many :sessions, dependent: :destroy
 
-  normalizes :email_address, with: ->(e) { e.strip.downcase }
+  normalizes :email_address, with: ->(email_address) { normalize_email_address(email_address) }
 
   validates :name, presence: true
   validates :email_address,
             presence: true,
             uniqueness: { case_sensitive: false },
             format: { with: URI::MailTo::EMAIL_REGEXP }
+
+  def self.normalize_email_address(email_address)
+    email_address.to_s.strip.downcase
+  end
 
   def self.digest_email_verification_token(token)
     Digest::SHA256.hexdigest(token.to_s)
