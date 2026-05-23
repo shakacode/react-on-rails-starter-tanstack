@@ -57,7 +57,7 @@ This starter already approves the native build scripts currently needed by Rspac
 
 ## Missing Demo Data
 
-Symptom: the app boots but future dashboard work has no demo records.
+Symptom: the dashboard boots but the projects table or metric cards have no demo records.
 
 Fix:
 
@@ -66,6 +66,24 @@ bin/rails db:seed
 ```
 
 The seed user is `demo@example.com / password`. Production seeds are a no-op.
+
+## TanStack Devtools Do Not Appear
+
+Symptom: TanStack Router or Query devtools are not visible in development.
+
+Fix: enable them explicitly in the browser console and reload.
+
+```js
+localStorage.setItem("tanstack-devtools", "1")
+```
+
+The devtools are off by default because optional devtools chunks can trigger noisy dev-server overlay requests in the current Rspack RC stack.
+
+## Dashboard Stays In Loading State
+
+Symptom: the SSR dashboard shell renders, but metric cards and the projects table keep showing loading placeholders in development.
+
+Fix: restart `bin/dev` after changing `config/shakapacker.yml`. This starter uses Rspack live reload with HMR disabled because the current RC stack can omit the injected hot-dev-server chunk from React on Rails auto component script output.
 
 ## Verification Email Does Not Arrive In Development
 

@@ -15,10 +15,21 @@ Rails.application.routes.draw do
   end
 
   get "dashboard", to: "dashboard#show"
-  resources :projects
+  get "settings", to: "dashboard#show"
+  get "settings/profile", to: "dashboard#show"
+  patch "settings/profile", to: "settings#update_profile"
+  get "settings/security", to: "dashboard#show"
+  get "projects", to: "dashboard#show", as: :projects
+  get "projects/new", to: "dashboard#show", as: :new_project
+  get "projects/:id/edit", to: "dashboard#show", as: :edit_project
+  get "projects/:id", to: "dashboard#show", as: :project
+
+  scope path: "classic", as: "classic" do
+    resources :projects
+  end
 
   namespace :api do
-    resources :projects, only: %i[index show] do
+    resources :projects, only: %i[index show create update] do
       get :metrics, on: :member
     end
   end

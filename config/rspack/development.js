@@ -6,13 +6,18 @@ const { devServer, inliningCss, config } = require('shakapacker');
 const serverClientOrBoth = require('./ServerClientOrBoth');
 
 const developmentEnvOnly = (clientWebpackConfig, _serverWebpackConfig) => {
+  clientWebpackConfig.experiments = {
+    ...clientWebpackConfig.experiments,
+    lazyCompilation: false,
+  };
+
   // React Refresh (Fast Refresh) setup - only when dev server is running (HMR mode)
   if (process.env.WEBPACK_SERVE) {
     // eslint-disable-next-line global-require
     if (config.assets_bundler === 'rspack') {
-      // Rspack uses @rspack/plugin-react-refresh for React Fast Refresh
-      const ReactRefreshPlugin = require('@rspack/plugin-react-refresh');
-      clientWebpackConfig.plugins.push(new ReactRefreshPlugin());
+      // Rspack React Refresh currently trips webpack-dev-server's active-module
+      // endpoint in this rc stack, which raises a full-screen overlay on every page.
+      // Keep the dev server usable until shakapacker-rspack's Rspack 2 peer lands.
     } else {
       // Webpack uses @pmmmwh/react-refresh-webpack-plugin
       const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');

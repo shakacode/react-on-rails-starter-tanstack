@@ -1,17 +1,20 @@
-<main class="auth-page">
-  <section class="auth-card auth-card-wide">
-    <header class="auth-card-header">
-      <h1>Dashboard</h1>
-      <p>This placeholder is protected by the Phase 2 verified-email gate. TanStack owns this surface in Phase 4.</p>
-    </header>
-
-    <div class="auth-card-body">
-      <%= tag.div(flash[:notice], class: "auth-notice", aria: { live: "polite" }) if flash[:notice] %>
-      <p>Signed in as <strong><%= Current.user.email_address %></strong>.</p>
-      <div class="auth-actions" style="margin-top: 18px;">
-        <%= link_to "Projects", projects_path, class: "auth-button" %>
-        <%= link_to "New project", new_project_path, class: "auth-button auth-button-secondary" %>
-      </div>
-    </div>
+<% dashboard_fallback = capture do %>
+  <section class="tanstack-noscript-shell" aria-label="Dashboard">
+    <h1>Dashboard</h1>
+    <p>Your email is verified.</p>
+    <nav aria-label="Dashboard fallback navigation">
+      <%= link_to "Projects", projects_path %>
+      <%= link_to "Classic Rails CRUD", classic_projects_path %>
+      <%= link_to "Settings", settings_path %>
+    </nav>
   </section>
-</main>
+<% end %>
+
+<% if Rails.env.test? %>
+  <%= dashboard_fallback %>
+<% else %>
+  <noscript><%= dashboard_fallback %></noscript>
+<% end %>
+
+<!-- TANSTACK_SSR_SHELL: DashboardApp is prerendered by React on Rails Pro and hydrated by TanStack Router. -->
+<%= react_component("DashboardApp", props: @dashboard_props, prerender: !Rails.env.test?) %>

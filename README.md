@@ -17,7 +17,7 @@ bin/dev
 open http://localhost:3000
 ```
 
-Run `bin/doctor` first when setup fails; it checks Ruby, Node, pnpm, Bun, and Postgres with actionable fix messages.
+Run `bin/doctor` first when setup fails; it checks Ruby, Node, pnpm, Bun, and Postgres with actionable fix messages. The seed user is `demo@example.com / password`.
 
 ## Development
 
@@ -29,11 +29,25 @@ bin/test
 
 `bin/dev` starts Rails, Rspack, SolidQueue, the Pro Node renderer, and the RSC bundle watcher through `Procfile.dev`.
 
+The authenticated `/dashboard` route is the TanStack surface:
+
+- TanStack Router runs under a Rails-owned HTML shell and is prerendered by React on Rails Pro's Node renderer.
+- TanStack Query loads independent metric cards and Rails JSON API data with CSRF-aware helpers.
+- TanStack Table drives the projects list with server-backed filter, sort, pagination, and URL state.
+- Project index/create/show/edit and nested settings routes stay inside the client-side dashboard experience, including direct full-page loads to `/projects...`.
+- Classic Rails CRUD remains available at `/classic/projects` to demonstrate hybrid Rails UI coexistence.
+
+TanStack Router and Query devtools are bundled but disabled by default in development. Enable them only when needed:
+
+```js
+localStorage.setItem("tanstack-devtools", "1")
+```
+
 ## Current Status
 
 This repo is the public template seed. Phase 2 adds Rails 8 authentication, signup, email verification, resend throttles, development mail previews, and a verified-email dashboard gate. Phase 3 adds Projects CRUD, scoped authorization, JSON API endpoints, metrics, factories, and demo seeds.
 
-The next phase adds the TanStack Router/Query/Table authenticated surface described in [shakacode/react_on_rails#3364](https://github.com/shakacode/react_on_rails/pull/3364).
+Phase 4 implements the TanStack Router/Query/Table authenticated surface described in [shakacode/react_on_rails#3364](https://github.com/shakacode/react_on_rails/pull/3364).
 
 See [SPIKE.md](SPIKE.md) for the current AMBER RSC/Rspack compatibility note: Rspack builds are green, but interactive RSC client-reference plugin support is blocked upstream.
 

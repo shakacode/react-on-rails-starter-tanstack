@@ -44,5 +44,6 @@ yarn-debug.log*
 
 # React on Rails (generated and local files)
 **/generated/**
+.node-renderer-bundles/
 ssr-generated
 .env

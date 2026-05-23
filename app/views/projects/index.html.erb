@@ -2,14 +2,14 @@
   <section class="auth-card auth-card-wide">
     <header class="auth-card-header">
       <h1>Projects</h1>
-      <p>Server-rendered CRUD now; TanStack Table takes over this list in Phase 4.</p>
+      <p>Server-rendered CRUD reference path. The dashboard uses TanStack Table for the interactive list.</p>
     </header>
 
     <div class="auth-card-body">
       <%= tag.div(flash[:notice], class: "auth-notice", aria: { live: "polite" }) if flash[:notice] %>
 
       <div class="auth-actions">
-        <%= link_to "New project", new_project_path, class: "auth-button" %>
+        <%= link_to "New project", new_classic_project_path, class: "auth-button" %>
         <%= link_to "Dashboard", dashboard_path, class: "auth-button auth-button-secondary" %>
       </div>
 
@@ -17,7 +17,7 @@
         <ul class="project-list" style="margin-top: 18px;">
           <% @projects.each do |project| %>
             <li class="project-list-item">
-              <h2><%= link_to project.name, project, class: "auth-link" %></h2>
+              <h2><%= link_to project.name, classic_project_path(project), class: "auth-link" %></h2>
               <p><%= project.description.presence || "No description yet." %></p>
               <div class="project-meta">
                 <span class="project-badge"><%= project.status %></span>

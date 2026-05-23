@@ -18,7 +18,7 @@ RSpec.describe "Projects", type: :request do
       create(:project, user: user, name: "Mine")
       create(:project, name: "Not mine")
 
-      get projects_path
+      get classic_projects_path
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Mine")
@@ -26,26 +26,28 @@ RSpec.describe "Projects", type: :request do
     end
 
     it "creates a project after showing inline validation errors" do
-      get new_project_path
+      get new_classic_project_path
       expect(response).to have_http_status(:ok)
 
-      post projects_path, params: { project: { name: "", description: "Missing name", status: "active" } }
+      post classic_projects_path, params: { project: { name: "", description: "Missing name", status: "active" } }
       expect(response).to have_http_status(:unprocessable_content)
       expect(CGI.unescapeHTML(response.body)).to include("Name can't be blank")
 
       expect do
-        post projects_path, params: { project: { name: "Launch plan", description: "Phase 3", status: "active" } }
+        post classic_projects_path,
+          params: { project: { name: "Launch plan", description: "Phase 3", status: "active" } }
       end.to change(user.projects, :count).by(1)
 
-      expect(response).to redirect_to(project_path(user.projects.last))
+      expect(response).to redirect_to(classic_project_path(user.projects.last))
     end
 
     it "updates a project" do
       project = create(:project, user: user)
 
-      patch project_path(project), params: { project: { name: "Updated", description: "Changed", status: "paused" } }
+      patch classic_project_path(project),
+        params: { project: { name: "Updated", description: "Changed", status: "paused" } }
 
-      expect(response).to redirect_to(project_path(project))
+      expect(response).to redirect_to(classic_project_path(project))
       expect(project.reload.name).to eq("Updated")
       expect(project).to be_paused
     end
@@ -54,19 +56,35 @@ RSpec.describe "Projects", type: :request do
       project = create(:project, user: user)
 
       expect do
-        delete project_path(project)
+        delete classic_project_path(project)
       end.not_to change(Project, :count)
 
-      expect(response).to redirect_to(projects_path)
+      expect(response).to redirect_to(classic_projects_path)
       expect(project.reload).to be_archived
     end
 
     it "returns 404 when a user tries another user's project" do
       other_project = create(:project)
 
-      get project_path(other_project)
+      get classic_project_path(other_project)
 
       expect(response).to have_http_status(:not_found)
+    end
+
+    it "serves the TanStack shell for project deep links" do
+      project = create(:project, user: user)
+
+      [
+        projects_path,
+        new_project_path,
+        project_path(project),
+        edit_project_path(project)
+      ].each do |path|
+        get path
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("TANSTACK_SSR_SHELL")
+      end
     end
   end
 
@@ -121,6 +139,43 @@ RSpec.describe "Projects", type: :request do
 
       expect(response).to have_http_status(:not_found)
       expect(json["error"]).to eq("Project not found")
+    end
+
+    it "creates a project through the JSON API" do
+      sign_in(user)
+
+      expect do
+        post api_projects_path,
+          params: { project: { name: "Client route", description: "Created from TanStack", status: "active" } },
+          as: :json
+      end.to change(user.projects, :count).by(1)
+
+      expect(response).to have_http_status(:created)
+      expect(json.dig("project", "name")).to eq("Client route")
+      expect(json.dig("project", "status")).to eq("active")
+    end
+
+    it "returns validation errors for JSON API creates" do
+      sign_in(user)
+
+      post api_projects_path, params: { project: { name: "", status: "active" } }, as: :json
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json["error"]).to include("Name can't be blank")
+      expect(json.dig("errors", "name")).to include("Name can't be blank")
+    end
+
+    it "updates a project through the JSON API" do
+      sign_in(user)
+      project = create(:project, user: user, status: "active")
+
+      patch api_project_path(project),
+        params: { project: { name: "Updated from client", description: "Changed", status: "paused" } },
+        as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(json.dig("project", "name")).to eq("Updated from client")
+      expect(project.reload).to be_paused
     end
 
     it "returns 404 for another user's metrics endpoint" do

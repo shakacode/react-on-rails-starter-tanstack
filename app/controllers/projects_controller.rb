@@ -16,7 +16,7 @@ class ProjectsController < AuthenticatedController
     @project = Current.user.projects.new(project_params)
 
     if @project.save
-      redirect_to @project, notice: "Project created."
+      redirect_to classic_project_path(@project), notice: "Project created."
     else
       render :new, status: :unprocessable_content
     end
@@ -26,7 +26,7 @@ class ProjectsController < AuthenticatedController
 
   def update
     if @project.update(project_params)
-      redirect_to @project, notice: "Project updated."
+      redirect_to classic_project_path(@project), notice: "Project updated."
     else
       render :edit, status: :unprocessable_content
     end
@@ -34,7 +34,7 @@ class ProjectsController < AuthenticatedController
 
   def destroy
     @project.archive!
-    redirect_to projects_path, notice: "Project archived.", status: :see_other
+    redirect_to classic_projects_path, notice: "Project archived.", status: :see_other
   end
 
   private

@@ -19,14 +19,14 @@
       </div>
 
       <div class="auth-actions">
-        <%= link_to "Edit", edit_project_path(@project), class: "auth-button" %>
-        <%= link_to "All projects", projects_path, class: "auth-button auth-button-secondary" %>
+        <%= link_to "Edit", edit_classic_project_path(@project), class: "auth-button" %>
+        <%= link_to "All projects", classic_projects_path, class: "auth-button auth-button-secondary" %>
       </div>
 
       <details>
         <summary class="auth-link">Archive this project</summary>
-        <p>Archiving keeps the record visible for audit and future TanStack filtering examples.</p>
-        <%= button_to "Confirm archive", @project, method: :delete, class: "auth-button auth-button-secondary" %>
+        <p>Archiving keeps the record visible for audit and TanStack filtering examples.</p>
+        <%= button_to "Confirm archive", classic_project_path(@project), method: :delete, class: "auth-button auth-button-secondary" %>
       </details>
     </div>
   </section>

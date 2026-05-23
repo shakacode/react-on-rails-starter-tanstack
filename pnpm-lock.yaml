@@ -11,6 +11,21 @@ importers:
       '@rspack/core':
         specifier: 1.7.11
         version: 1.7.11
+      '@tanstack/react-query':
+        specifier: ^5.100.13
+        version: 5.100.13(react@19.0.6)
+      '@tanstack/react-query-devtools':
+        specifier: ^5.100.13
+        version: 5.100.13(@tanstack/react-query@5.100.13(react@19.0.6))(react@19.0.6)
+      '@tanstack/react-router':
+        specifier: ^1.170.7
+        version: 1.170.7(react-dom@19.0.6(react@19.0.6))(react@19.0.6)
+      '@tanstack/react-router-devtools':
+        specifier: ^1.167.0
+        version: 1.167.0(@tanstack/react-router@1.170.7(react-dom@19.0.6(react@19.0.6))(react@19.0.6))(@tanstack/router-core@1.171.5)(csstype@3.2.3)(react-dom@19.0.6(react@19.0.6))(react@19.0.6)
+      '@tanstack/react-table':
+        specifier: ^8.21.3
+        version: 8.21.3(react-dom@19.0.6(react@19.0.6))(react@19.0.6)
       compression-webpack-plugin:
         specifier: ^12.0.0
         version: 12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
@@ -34,7 +49,7 @@ importers:
         version: 19.0.6(react@19.0.6)
       react-on-rails-pro:
         specifier: 16.7.0-rc.0
-        version: 16.7.0-rc.0(react-dom@19.0.6(react@19.0.6))(react-on-rails-rsc@19.0.5-rc.1(react-dom@19.0.6(react@19.0.6))(react@19.0.6)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(react@19.0.6)
+        version: 16.7.0-rc.0(@tanstack/react-router@1.170.7(react-dom@19.0.6(react@19.0.6))(react@19.0.6))(react-dom@19.0.6(react@19.0.6))(react-on-rails-rsc@19.0.5-rc.1(react-dom@19.0.6(react@19.0.6))(react@19.0.6)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(react@19.0.6)
       react-on-rails-pro-node-renderer:
         specifier: 16.7.0-rc.0
         version: 16.7.0-rc.0
@@ -52,10 +67,10 @@ importers:
         version: 16.0.7(@rspack/core@1.7.11)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
       shakapacker:
         specifier: 10.1.0-rc.1
-        version: 10.1.0-rc.1(954a19ec219e5fbc7a373707d0bda365)
+        version: 10.1.0-rc.1(@rspack/cli@1.7.11(@rspack/core@1.7.11)(@types/express@4.17.25)(tslib@2.8.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(@rspack/core@1.7.11)(@swc/core@1.15.33)(compression-webpack-plugin@12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(css-loader@7.1.4(@rspack/core@1.7.11)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(mini-css-extract-plugin@2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(rspack-manifest-plugin@5.2.1(@rspack/core@1.7.11))(sass-loader@16.0.7(@rspack/core@1.7.11)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass@1.99.0)(swc-loader@0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack-dev-server@5.2.2(tslib@2.8.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
       shakapacker-rspack:
         specifier: 10.1.0-rc.1
-        version: 10.1.0-rc.1(@rspack/plugin-react-refresh@1.6.2(react-refresh@0.18.0))(@swc/core@1.15.33)(compression-webpack-plugin@12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(css-loader@7.1.4(@rspack/core@1.7.11)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(mini-css-extract-plugin@2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass-loader@16.0.7(@rspack/core@1.7.11)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass@1.99.0)(swc-loader@0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack-dev-server@5.2.2(tslib@2.8.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
+        version: 10.1.0-rc.1(@swc/core@1.15.33)(compression-webpack-plugin@12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(css-loader@7.1.4(@rspack/core@1.7.11)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(mini-css-extract-plugin@2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass-loader@16.0.7(@rspack/core@1.7.11)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass@1.99.0)(swc-loader@0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack-dev-server@5.2.2(tslib@2.8.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
       style-loader:
         specifier: 4.0.0
         version: 4.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
@@ -66,9 +81,6 @@ importers:
       '@rspack/cli':
         specifier: 1.7.11
         version: 1.7.11(@rspack/core@1.7.11)(@types/express@4.17.25)(tslib@2.8.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
-      '@rspack/plugin-react-refresh':
-        specifier: 1.6.2
-        version: 1.6.2(react-refresh@0.18.0)
       '@swc/core':
         specifier: 1.15.33
         version: 1.15.33
@@ -571,15 +583,6 @@ packages:
   '@rspack/lite-tapable@1.1.0':
     resolution: {integrity: sha512-E2B0JhYFmVAwdDiG14+DW0Di4Ze4Jg10Pc4/lILUrd5DRCaklduz2OvJ5HYQ6G+hd+WTzqQb3QnDNfK4yvAFYw==}
 
-  '@rspack/plugin-react-refresh@1.6.2':
-    resolution: {integrity: sha512-k+/VrfTNgo+KirjI6V+8CWRj6y+DH9jOUWv8JorYY4vKf/9xfnZ8xHzuB4iqCwTtoZl9YnxOaOuoyjJipc2tiQ==}
-    peerDependencies:
-      react-refresh: '>=0.10.0 <1.0.0'
-      webpack-hot-middleware: 2.x
-    peerDependenciesMeta:
-      webpack-hot-middleware:
-        optional: true
-
   '@sinclair/typebox@0.34.49':
     resolution: {integrity: sha512-brySQQs7Jtn0joV8Xh9ZV/hZb9Ozb0pmazDIASBkYKCjXrXU3mpcFahmK/z4YDhGkQvP9mWJbVyahdtU5wQA+A==}
 
@@ -675,6 +678,80 @@ packages:
 
   '@swc/types@0.1.26':
     resolution: {integrity: sha512-lyMwd7WGgG79RS7EERZV3T8wMdmPq3xwyg+1nmAM64kIhx5yl+juO2PYIHb7vTiPgPCj8LYjsNV2T5wiQHUEaw==}
+
+  '@tanstack/history@1.162.0':
+    resolution: {integrity: sha512-79pf/RkhteYZTRgcR4F9kbk84P2N8rugQJswxfIqovlbRiT3yI7eBE+5QorIrZaOKktsgzRlXh1l/du/xpl4iA==}
+    engines: {node: '>=20.19'}
+
+  '@tanstack/query-core@5.100.13':
+    resolution: {integrity: sha512-mlKVKMTzZWGTKAC1CKOgt7axAjJ921emkEvYIp27I/PdP1yEYL/BteLY8iK35gn8hoYeKB4mgJ/ve3lrDI6/Fw==}
+
+  '@tanstack/query-devtools@5.100.13':
+    resolution: {integrity: sha512-mxAw1auaysPQK6EoMHs9hMuyJ1IMAE/ZmGGs9i5YveGg2RUnOGdJfefQJwWYSf2KcIu/XiPXIjuFu9Yr/tSAwA==}
+
+  '@tanstack/react-query-devtools@5.100.13':
+    resolution: {integrity: sha512-+haoLtUQvQ40pWtY5NbQ+iVvoptGXb6F7j9NFPaSo1jqhpzZQIKuBuwkbFd6xWLCocyvVIvWkt3mkNvCGcd/og==}
+    peerDependencies:
+      '@tanstack/react-query': ^5.100.13
+      react: ^18 || ^19
+
+  '@tanstack/react-query@5.100.13':
+    resolution: {integrity: sha512-HSBr8CycQEAoXsJR7KNDawBnINJEJ96Eme8oE0hCXjyodE2I97vg3IDzDJBDu18LsbzpVVJcKo80eqLfVCykxw==}
+    peerDependencies:
+      react: ^18 || ^19
+
+  '@tanstack/react-router-devtools@1.167.0':
+    resolution: {integrity: sha512-nGw095EG7IHx0h5NtlEmzf6vcCTaFNPWdTSuDKazajhN0ct/v/TkekJ9J6KYUCeV1a8/2ZmToc58M+0rrOyn7w==}
+    engines: {node: '>=20.19'}
+    peerDependencies:
+      '@tanstack/react-router': ^1.170.0
+      '@tanstack/router-core': ^1.170.0
+      react: '>=18.0.0 || >=19.0.0'
+      react-dom: '>=18.0.0 || >=19.0.0'
+    peerDependenciesMeta:
+      '@tanstack/router-core':
+        optional: true
+
+  '@tanstack/react-router@1.170.7':
+    resolution: {integrity: sha512-4Q8M8Q9sGobhyt72yW+vxzUOSPfrCAHwjPOCb7+ocReQnFQ37t9Qh4RNG4+7zsFQ4tW9C8LpllRe49aK2RYy2Q==}
+    engines: {node: '>=20.19'}
+    peerDependencies:
+      react: '>=18.0.0 || >=19.0.0'
+      react-dom: '>=18.0.0 || >=19.0.0'
+
+  '@tanstack/react-store@0.9.3':
+    resolution: {integrity: sha512-y2iHd/N9OkoQbFJLUX1T9vbc2O9tjH0pQRgTcx1/Nz4IlwLvkgpuglXUx+mXt0g5ZDFrEeDnONPqkbfxXJKwRg==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
+  '@tanstack/react-table@8.21.3':
+    resolution: {integrity: sha512-5nNMTSETP4ykGegmVkhjcS8tTLW6Vl4axfEGQN3v0zdHYbK4UfoqfPChclTrJ4EoK9QynqAu9oUf8VEmrpZ5Ww==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      react: '>=16.8'
+      react-dom: '>=16.8'
+
+  '@tanstack/router-core@1.171.5':
+    resolution: {integrity: sha512-BfilbQqqWiQwJn68cD8wmk1ajEWIO3IlEA1zVuWslWbiVc23CDn+6ACO5tfPAcc96ED37hxela5ij3VBvAtusw==}
+    engines: {node: '>=20.19'}
+
+  '@tanstack/router-devtools-core@1.168.0':
+    resolution: {integrity: sha512-wQoQhlBK7nlZgqzaqdYXKWNTpdHdsaREdaPhFZVH0/Ador+F+eM3/NF2i3f2LPeS0GgKraZUQXe1Q/1+KHyEYg==}
+    engines: {node: '>=20.19'}
+    peerDependencies:
+      '@tanstack/router-core': ^1.170.0
+      csstype: ^3.0.10
+    peerDependenciesMeta:
+      csstype:
+        optional: true
+
+  '@tanstack/store@0.9.3':
+    resolution: {integrity: sha512-8reSzl/qGWGGVKhBoxXPMWzATSbZLZFWhwBAFO9NAyp0TxzfBP0mIrGb8CP8KrQTmvzXlR/vFPPUrHTLBGyFyw==}
+
+  '@tanstack/table-core@8.21.3':
+    resolution: {integrity: sha512-ldZXEhOBb8Is7xLs01fR3YEc3DERiz5silj8tnGkFZytt1abEvl/GhUmCE0PMLaMPTa3Jk4HbKmRlHmu+gCftg==}
+    engines: {node: '>=12'}
 
   '@tybys/wasm-util@0.10.2':
     resolution: {integrity: sha512-RoBvJ2X0wuKlWFIjrwffGw1IqZHKQqzIchKaadZZfnNpsAYp2mM0h36JtPCjNDAHGgYez/15uMBpfGwchhiMgg==}
@@ -989,6 +1066,10 @@ packages:
     resolution: {integrity: sha512-neHB9xuzh/wk0dIHweyAXv2aPGZIVk3pLMe+/RNzINf17fe0OG96QroktYAUm7SM1PBnzTabaLboqqxDyMU+SQ==}
     engines: {node: '>=6'}
 
+  clsx@2.1.1:
+    resolution: {integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==}
+    engines: {node: '>=6'}
+
   color-convert@2.0.1:
     resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
     engines: {node: '>=7.0.0'}
@@ -1035,6 +1116,9 @@ packages:
   content-type@1.0.5:
     resolution: {integrity: sha512-nTjqfcBFEipKdXCv4YDQWCfmcLZKm81ldF0pAopTvyrFGVbcR6P/VAAd5G7N+0tTr8QqiU0tFadD6FK4NtJwOA==}
     engines: {node: '>= 0.6'}
+
+  cookie-es@3.1.1:
+    resolution: {integrity: sha512-UaXxwISYJPTr9hwQxMFYZ7kNhSXboMXP+Z3TRX6f1/NyaGPfuNUZOWP1pUEb75B2HjfklIYLVRfWiFZJyC6Npg==}
 
   cookie-signature@1.0.7:
     resolution: {integrity: sha512-NXdYc3dLr47pBkpUCHtKSwIOQXLVn8dZEuywboCOJY/osA0wFSLlSawr3KN8qXJEyX66FcONTH8EIlVuK0yyFA==}
@@ -1241,9 +1325,6 @@ packages:
     resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
     engines: {node: '>=0.12'}
 
-  error-stack-parser@2.1.4:
-    resolution: {integrity: sha512-Sk5V6wVazPhq5MhpO+AUxJn5x7XSXGl1R93Vn7i+zS15KDVxQijejNCrz8340/2bgLBjR9GtEG8ZVKONDjcqGQ==}
-
   es-define-property@1.0.1:
     resolution: {integrity: sha512-e3nRfgfUZ4rNGL232gUgX06QNyyez04KdjFrF+LTRoOXmrOgFKDg4BCdsjW8EnT69eqdYGmRpJwiPVYNrCaW3g==}
     engines: {node: '>= 0.4'}
@@ -1403,6 +1484,11 @@ packages:
   glob-to-regexp@0.4.1:
     resolution: {integrity: sha512-lkX1HJXwyMcprw/5YUZc2s7DrpAiHB21/V+E1rHUrVNokkvB6bqMzT0VfV6/86ZNabt1k14YOIaT7nDvOX3Iiw==}
 
+  goober@2.1.19:
+    resolution: {integrity: sha512-U7veizMqxyKlM58+Z5j2ngJBH/r9siDmxpvNxSw0PylF6WQvrASJEZrxh1hidRBJc2jqoBVSyOban5u8m+6Rxg==}
+    peerDependencies:
+      csstype: ^3.0.10
+
   gopd@1.2.0:
     resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
     engines: {node: '>= 0.4'}
@@ -1538,6 +1624,10 @@ packages:
 
   isarray@1.0.0:
     resolution: {integrity: sha512-VLghIWNM6ELQzo7zwmcg0NmTVyWKYjvIeM83yjp0wRDTmUnrM678fQbcKBo6n2CJEF0szoG//ytg+TKla89ALQ==}
+
+  isbot@5.1.40:
+    resolution: {integrity: sha512-yNeeynhhtIVRBk12tBV4eHNxwB42HzR4Q3Ea7vCOiJhImGaAIdIMrbJtacQlBizGLjUPw+akkFI5Dn9T70XoVQ==}
+    engines: {node: '>=18'}
 
   isobject@3.0.1:
     resolution: {integrity: sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==}
@@ -2252,6 +2342,16 @@ packages:
     resolution: {integrity: sha512-F4LcB0UqUl1zErq+1nYEEzSHJnIwb3AF2XWB94b+afhrekOUijwooAYqFyRbjYkm2PAKBabx6oYv/xDxNi8IBw==}
     engines: {node: '>=20.0.0'}
 
+  seroval-plugins@1.5.4:
+    resolution: {integrity: sha512-S0xQPhUTefAhNvNWFg0c1J8qJArHt5KdtJ/cFAofo06KD1MVSeFWyl4iiu+ApDIuw0WhjpOfCdgConOfAnLgkw==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      seroval: ^1.0
+
+  seroval@1.5.4:
+    resolution: {integrity: sha512-46uFvgrXTVxZcUorgSSRZ4y+ieqLLQRMlG4bnCZKW3qI6BZm7Rg4ntMW4p1mILEEBZWrFlcpp0AyIIlM6jD9iw==}
+    engines: {node: '>=10'}
+
   serve-index@1.9.2:
     resolution: {integrity: sha512-KDj11HScOaLmrPxl70KYNW1PksP4Nb/CLL2yvC+Qd2kHMPEEpfc4Re2e4FOay+bC/+XQl/7zAcWON3JVo5v3KQ==}
     engines: {node: '>= 0.8.0'}
@@ -2428,9 +2528,6 @@ packages:
     resolution: {integrity: sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg==}
     engines: {node: '>= 10.x'}
 
-  stackframe@1.3.4:
-    resolution: {integrity: sha512-oeVtt7eWQS+Na6F//S4kJ2K2VbRlS9D43mAlMyVpVWovy9o+jfgH8O9agzANzaiLjclA0oYzUXEM4PurhSUChw==}
-
   statuses@1.5.0:
     resolution: {integrity: sha512-OpZ3zP+jT1PI7I8nemJX4AKmAX070ZkYPVWV/AaKTJl+tXCTGyVdC1a4SL8RUQYEwk/f34ZX8UTykN68FwrqAA==}
     engines: {node: '>= 0.6'}
@@ -2598,6 +2695,11 @@ packages:
     hasBin: true
     peerDependencies:
       browserslist: '>= 4.21.0'
+
+  use-sync-external-store@1.6.0:
+    resolution: {integrity: sha512-Pp6GSwGP/NrPIrxVFAIkOQeyw8lFenOHijQWkUTrDvrF4ALqylP2C/KCkeS9dpUM3KvYRQhna5vt7IL95+ZQ9w==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
@@ -3202,11 +3304,6 @@ snapshots:
 
   '@rspack/lite-tapable@1.1.0': {}
 
-  '@rspack/plugin-react-refresh@1.6.2(react-refresh@0.18.0)':
-    dependencies:
-      error-stack-parser: 2.1.4
-      react-refresh: 0.18.0
-
   '@sinclair/typebox@0.34.49': {}
 
   '@swc/core-darwin-arm64@1.15.33':
@@ -3268,6 +3365,75 @@ snapshots:
   '@swc/types@0.1.26':
     dependencies:
       '@swc/counter': 0.1.3
+
+  '@tanstack/history@1.162.0': {}
+
+  '@tanstack/query-core@5.100.13': {}
+
+  '@tanstack/query-devtools@5.100.13': {}
+
+  '@tanstack/react-query-devtools@5.100.13(@tanstack/react-query@5.100.13(react@19.0.6))(react@19.0.6)':
+    dependencies:
+      '@tanstack/query-devtools': 5.100.13
+      '@tanstack/react-query': 5.100.13(react@19.0.6)
+      react: 19.0.6
+
+  '@tanstack/react-query@5.100.13(react@19.0.6)':
+    dependencies:
+      '@tanstack/query-core': 5.100.13
+      react: 19.0.6
+
+  '@tanstack/react-router-devtools@1.167.0(@tanstack/react-router@1.170.7(react-dom@19.0.6(react@19.0.6))(react@19.0.6))(@tanstack/router-core@1.171.5)(csstype@3.2.3)(react-dom@19.0.6(react@19.0.6))(react@19.0.6)':
+    dependencies:
+      '@tanstack/react-router': 1.170.7(react-dom@19.0.6(react@19.0.6))(react@19.0.6)
+      '@tanstack/router-devtools-core': 1.168.0(@tanstack/router-core@1.171.5)(csstype@3.2.3)
+      react: 19.0.6
+      react-dom: 19.0.6(react@19.0.6)
+    optionalDependencies:
+      '@tanstack/router-core': 1.171.5
+    transitivePeerDependencies:
+      - csstype
+
+  '@tanstack/react-router@1.170.7(react-dom@19.0.6(react@19.0.6))(react@19.0.6)':
+    dependencies:
+      '@tanstack/history': 1.162.0
+      '@tanstack/react-store': 0.9.3(react-dom@19.0.6(react@19.0.6))(react@19.0.6)
+      '@tanstack/router-core': 1.171.5
+      isbot: 5.1.40
+      react: 19.0.6
+      react-dom: 19.0.6(react@19.0.6)
+
+  '@tanstack/react-store@0.9.3(react-dom@19.0.6(react@19.0.6))(react@19.0.6)':
+    dependencies:
+      '@tanstack/store': 0.9.3
+      react: 19.0.6
+      react-dom: 19.0.6(react@19.0.6)
+      use-sync-external-store: 1.6.0(react@19.0.6)
+
+  '@tanstack/react-table@8.21.3(react-dom@19.0.6(react@19.0.6))(react@19.0.6)':
+    dependencies:
+      '@tanstack/table-core': 8.21.3
+      react: 19.0.6
+      react-dom: 19.0.6(react@19.0.6)
+
+  '@tanstack/router-core@1.171.5':
+    dependencies:
+      '@tanstack/history': 1.162.0
+      cookie-es: 3.1.1
+      seroval: 1.5.4
+      seroval-plugins: 1.5.4(seroval@1.5.4)
+
+  '@tanstack/router-devtools-core@1.168.0(@tanstack/router-core@1.171.5)(csstype@3.2.3)':
+    dependencies:
+      '@tanstack/router-core': 1.171.5
+      clsx: 2.1.1
+      goober: 2.1.19(csstype@3.2.3)
+    optionalDependencies:
+      csstype: 3.2.3
+
+  '@tanstack/store@0.9.3': {}
+
+  '@tanstack/table-core@8.21.3': {}
 
   '@tybys/wasm-util@0.10.2':
     dependencies:
@@ -3638,6 +3804,8 @@ snapshots:
       kind-of: 6.0.3
       shallow-clone: 3.0.1
 
+  clsx@2.1.1: {}
+
   color-convert@2.0.1:
     dependencies:
       color-name: 1.1.4
@@ -3681,6 +3849,8 @@ snapshots:
       safe-buffer: 5.2.1
 
   content-type@1.0.5: {}
+
+  cookie-es@3.1.1: {}
 
   cookie-signature@1.0.7: {}
 
@@ -3870,10 +4040,6 @@ snapshots:
       tapable: 2.3.3
 
   entities@4.5.0: {}
-
-  error-stack-parser@2.1.4:
-    dependencies:
-      stackframe: 1.3.4
 
   es-define-property@1.0.1: {}
 
@@ -4066,6 +4232,10 @@ snapshots:
 
   glob-to-regexp@0.4.1: {}
 
+  goober@2.1.19(csstype@3.2.3):
+    dependencies:
+      csstype: 3.2.3
+
   gopd@1.2.0: {}
 
   graceful-fs@4.2.11: {}
@@ -4184,6 +4354,8 @@ snapshots:
       is-inside-container: 1.0.0
 
   isarray@1.0.0: {}
+
+  isbot@5.1.40: {}
 
   isobject@3.0.1: {}
 
@@ -4694,12 +4866,13 @@ snapshots:
       lockfile: 1.0.4
       pino: 9.14.0
 
-  react-on-rails-pro@16.7.0-rc.0(react-dom@19.0.6(react@19.0.6))(react-on-rails-rsc@19.0.5-rc.1(react-dom@19.0.6(react@19.0.6))(react@19.0.6)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(react@19.0.6):
+  react-on-rails-pro@16.7.0-rc.0(@tanstack/react-router@1.170.7(react-dom@19.0.6(react@19.0.6))(react@19.0.6))(react-dom@19.0.6(react@19.0.6))(react-on-rails-rsc@19.0.5-rc.1(react-dom@19.0.6(react@19.0.6))(react@19.0.6)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(react@19.0.6):
     dependencies:
       react: 19.0.6
       react-dom: 19.0.6(react@19.0.6)
       react-on-rails: 16.7.0-rc.0(react-dom@19.0.6(react@19.0.6))(react@19.0.6)
     optionalDependencies:
+      '@tanstack/react-router': 1.170.7(react-dom@19.0.6(react@19.0.6))(react@19.0.6)
       react-on-rails-rsc: 19.0.5-rc.1(react-dom@19.0.6(react@19.0.6))(react@19.0.6)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
 
   react-on-rails-rsc@19.0.5-rc.1(react-dom@19.0.6(react@19.0.6))(react@19.0.6)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)):
@@ -4842,6 +5015,12 @@ snapshots:
 
   serialize-javascript@7.0.5: {}
 
+  seroval-plugins@1.5.4(seroval@1.5.4):
+    dependencies:
+      seroval: 1.5.4
+
+  seroval@1.5.4: {}
+
   serve-index@1.9.2:
     dependencies:
       accepts: 1.3.8
@@ -4867,14 +5046,13 @@ snapshots:
 
   setprototypeof@1.2.0: {}
 
-  shakapacker-rspack@10.1.0-rc.1(@rspack/plugin-react-refresh@1.6.2(react-refresh@0.18.0))(@swc/core@1.15.33)(compression-webpack-plugin@12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(css-loader@7.1.4(@rspack/core@1.7.11)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(mini-css-extract-plugin@2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass-loader@16.0.7(@rspack/core@1.7.11)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass@1.99.0)(swc-loader@0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack-dev-server@5.2.2(tslib@2.8.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)):
+  shakapacker-rspack@10.1.0-rc.1(@swc/core@1.15.33)(compression-webpack-plugin@12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(css-loader@7.1.4(@rspack/core@1.7.11)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(mini-css-extract-plugin@2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass-loader@16.0.7(@rspack/core@1.7.11)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass@1.99.0)(swc-loader@0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack-dev-server@5.2.2(tslib@2.8.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)):
     dependencies:
       '@rspack/cli': 2.0.1(@rspack/core@2.0.1)
       '@rspack/core': 2.0.1
       rspack-manifest-plugin: 5.2.1(@rspack/core@2.0.1)
-      shakapacker: 10.1.0-rc.1(@rspack/cli@2.0.1(@rspack/core@2.0.1))(@rspack/core@2.0.1)(@rspack/plugin-react-refresh@1.6.2(react-refresh@0.18.0))(@swc/core@1.15.33)(compression-webpack-plugin@12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(css-loader@7.1.4(@rspack/core@1.7.11)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(mini-css-extract-plugin@2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(rspack-manifest-plugin@5.2.1(@rspack/core@1.7.11))(sass-loader@16.0.7(@rspack/core@1.7.11)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass@1.99.0)(swc-loader@0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack-dev-server@5.2.2(tslib@2.8.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
+      shakapacker: 10.1.0-rc.1(@rspack/cli@2.0.1(@rspack/core@2.0.1))(@rspack/core@2.0.1)(@swc/core@1.15.33)(compression-webpack-plugin@12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(css-loader@7.1.4(@rspack/core@1.7.11)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(mini-css-extract-plugin@2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(rspack-manifest-plugin@5.2.1(@rspack/core@1.7.11))(sass-loader@16.0.7(@rspack/core@1.7.11)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass@1.99.0)(swc-loader@0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack-dev-server@5.2.2(tslib@2.8.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
     optionalDependencies:
-      '@rspack/plugin-react-refresh': 1.6.2(react-refresh@0.18.0)
       css-loader: 7.1.4(@rspack/core@1.7.11)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
       sass: 1.99.0
       sass-loader: 16.0.7(@rspack/core@1.7.11)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
@@ -4903,7 +5081,7 @@ snapshots:
       - webpack-dev-server
       - webpack-subresource-integrity
 
-  shakapacker@10.1.0-rc.1(954a19ec219e5fbc7a373707d0bda365):
+  shakapacker@10.1.0-rc.1(@rspack/cli@1.7.11(@rspack/core@1.7.11)(@types/express@4.17.25)(tslib@2.8.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(@rspack/core@1.7.11)(@swc/core@1.15.33)(compression-webpack-plugin@12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(css-loader@7.1.4(@rspack/core@1.7.11)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(mini-css-extract-plugin@2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(rspack-manifest-plugin@5.2.1(@rspack/core@1.7.11))(sass-loader@16.0.7(@rspack/core@1.7.11)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass@1.99.0)(swc-loader@0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack-dev-server@5.2.2(tslib@2.8.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)):
     dependencies:
       js-yaml: 4.1.1
       pack-config-diff: 0.1.0
@@ -4913,7 +5091,6 @@ snapshots:
     optionalDependencies:
       '@rspack/cli': 1.7.11(@rspack/core@1.7.11)(@types/express@4.17.25)(tslib@2.8.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
       '@rspack/core': 1.7.11
-      '@rspack/plugin-react-refresh': 1.6.2(react-refresh@0.18.0)
       '@swc/core': 1.15.33
       compression-webpack-plugin: 12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
       css-loader: 7.1.4(@rspack/core@1.7.11)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
@@ -4928,7 +5105,7 @@ snapshots:
     transitivePeerDependencies:
       - ts-node
 
-  shakapacker@10.1.0-rc.1(@rspack/cli@2.0.1(@rspack/core@2.0.1))(@rspack/core@2.0.1)(@rspack/plugin-react-refresh@1.6.2(react-refresh@0.18.0))(@swc/core@1.15.33)(compression-webpack-plugin@12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(css-loader@7.1.4(@rspack/core@1.7.11)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(mini-css-extract-plugin@2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(rspack-manifest-plugin@5.2.1(@rspack/core@1.7.11))(sass-loader@16.0.7(@rspack/core@1.7.11)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass@1.99.0)(swc-loader@0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack-dev-server@5.2.2(tslib@2.8.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)):
+  shakapacker@10.1.0-rc.1(@rspack/cli@2.0.1(@rspack/core@2.0.1))(@rspack/core@2.0.1)(@swc/core@1.15.33)(compression-webpack-plugin@12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(css-loader@7.1.4(@rspack/core@1.7.11)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(mini-css-extract-plugin@2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(rspack-manifest-plugin@5.2.1(@rspack/core@1.7.11))(sass-loader@16.0.7(@rspack/core@1.7.11)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass@1.99.0)(swc-loader@0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack-dev-server@5.2.2(tslib@2.8.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)):
     dependencies:
       js-yaml: 4.1.1
       pack-config-diff: 0.1.0
@@ -4938,7 +5115,6 @@ snapshots:
     optionalDependencies:
       '@rspack/cli': 2.0.1(@rspack/core@2.0.1)
       '@rspack/core': 2.0.1
-      '@rspack/plugin-react-refresh': 1.6.2(react-refresh@0.18.0)
       '@swc/core': 1.15.33
       compression-webpack-plugin: 12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
       css-loader: 7.1.4(@rspack/core@1.7.11)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
@@ -5036,8 +5212,6 @@ snapshots:
       - supports-color
 
   split2@4.2.0: {}
-
-  stackframe@1.3.4: {}
 
   statuses@1.5.0: {}
 
@@ -5159,6 +5333,10 @@ snapshots:
       browserslist: 4.28.2
       escalade: 3.2.0
       picocolors: 1.1.1
+
+  use-sync-external-store@1.6.0(react@19.0.6):
+    dependencies:
+      react: 19.0.6
 
   util-deprecate@1.0.2: {}
 
