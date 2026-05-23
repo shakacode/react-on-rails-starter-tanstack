@@ -69,7 +69,7 @@ const configureServer = (rscBundle = false) => {
   };
   // Add RSC plugin for server bundle (handles client component references)
   // Skip for RSC bundle - it doesn't need RSCWebpackPlugin
-  if (!rscBundle) {
+  if (!rscBundle && config.assets_bundler !== 'rspack') {
     serverWebpackConfig.plugins.push(new RSCWebpackPlugin({ isServer: true }));
   }
   serverWebpackConfig.plugins.unshift(new bundler.optimize.LimitChunkCountPlugin({ maxChunks: 1 }));

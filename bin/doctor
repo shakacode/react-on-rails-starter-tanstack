@@ -1,0 +1,88 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "open3"
+require "socket"
+
+APP_ROOT = File.expand_path("..", __dir__)
+
+Check = Struct.new(:name, :ok, :message, keyword_init: true)
+
+def capture(*command)
+  stdout, stderr, status = Open3.capture3(*command)
+  [stdout.strip, stderr.strip, status.success?]
+rescue Errno::ENOENT
+  ["", "#{command.first} is not installed", false]
+end
+
+def check_ruby
+  expected = File.read(File.join(APP_ROOT, ".ruby-version")).strip.delete_prefix("ruby-")
+  actual = RUBY_VERSION
+
+  return Check.new(name: "Ruby", ok: true, message: "Ruby #{actual}") if actual == expected
+
+  Check.new(
+    name: "Ruby",
+    ok: false,
+    message: "Ruby #{actual} is active, but this app expects #{expected}. Cause: your Ruby version manager selected a different version. Fix: run `mise install` or `rbenv install #{expected}`, then restart your shell."
+  )
+end
+
+def check_node
+  stdout, stderr, ok = capture("node", "-v")
+  return Check.new(name: "Node", ok: false, message: "Node.js is missing. Cause: node is not on PATH. Fix: install Node 20+ with `mise use node@24` or your preferred version manager.") unless ok
+
+  version = stdout.delete_prefix("v")
+  major = version.split(".").first.to_i
+  return Check.new(name: "Node", ok: true, message: "Node #{version}") if major >= 20
+
+  Check.new(
+    name: "Node",
+    ok: false,
+    message: "Node #{version} is too old. Cause: React 19 and Rspack need a modern Node runtime. Fix: install Node 20+ and retry. Raw error: #{stderr}"
+  )
+end
+
+def check_command(name, fix)
+  stdout, stderr, ok = capture(name, "-v")
+  return Check.new(name: name, ok: true, message: "#{name} #{stdout.lines.first&.strip}") if ok
+
+  Check.new(
+    name: name,
+    ok: false,
+    message: "#{name} is missing. Cause: #{stderr.empty? ? "#{name} is not on PATH" : stderr}. Fix: #{fix}"
+  )
+end
+
+def check_postgres
+  stdout, stderr, ok = capture("pg_isready")
+  return Check.new(name: "Postgres", ok: true, message: stdout) if ok
+
+  Check.new(
+    name: "Postgres",
+    ok: false,
+    message: "Postgres is not reachable. Cause: #{stderr.empty? ? stdout : stderr}. Fix: start Postgres, for example `brew services start postgresql@17` or your installed PostgreSQL formula, then rerun `bin/doctor`."
+  )
+end
+
+checks = [
+  check_ruby,
+  check_node,
+  check_command("pnpm", "run `corepack enable && corepack prepare pnpm@11.2.2 --activate`."),
+  check_command("bun", "install Bun from https://bun.sh or run `brew install oven-sh/bun/bun`."),
+  check_postgres
+]
+
+failed = checks.reject(&:ok)
+
+checks.each do |check|
+  status = check.ok ? "ok" : "fail"
+  puts "[#{status}] #{check.name}: #{check.message}"
+end
+
+if failed.empty?
+  puts "All checks passed."
+else
+  warn "\n#{failed.length} prerequisite check(s) failed."
+  exit 1
+end

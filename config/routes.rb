@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  get 'hello_server', to: 'hello_server#index'
+  get "hello_server", to: "hello_server#index"
   rsc_payload_route
   root to: "home#index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

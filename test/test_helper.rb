@@ -19,4 +19,3 @@ end
 ActiveSupport::TestCase.setup do
   ReactOnRails::TestHelper.ensure_assets_compiled
 end
-

@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+case "${1:-all}" in
+  --smoke|smoke)
+    pnpm test:playwright
+    ;;
+  --a11y|a11y)
+    pnpm exec playwright test --grep @a11y
+    ;;
+  rspec)
+    bundle exec rspec
+    ;;
+  all)
+    bundle exec rspec
+    pnpm test:playwright
+    ;;
+  *)
+    echo "Usage: bin/test [all|rspec|smoke|--smoke|a11y|--a11y]" >&2
+    exit 1
+    ;;
+esac
