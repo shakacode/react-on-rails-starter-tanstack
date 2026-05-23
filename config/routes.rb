@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resource :session
+  resources :passwords, param: :token
   get "hello_server", to: "hello_server#index"
   rsc_payload_route
   root to: "home#index"
