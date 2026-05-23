@@ -1,0 +1,56 @@
+<main class="auth-page">
+  <section class="auth-card">
+    <header class="auth-card-header">
+      <h1>Create your account</h1>
+      <p>Start with a verified email so protected dashboard routes can stay server-gated.</p>
+    </header>
+
+    <div class="auth-card-body">
+      <% if @user.errors.any? %>
+        <div class="auth-alert" aria-live="polite">
+          <p>Fix the highlighted fields and try again.</p>
+          <ul class="auth-error-list">
+            <% @user.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <%= form_with model: @user, url: registration_path, class: "auth-form" do |form| %>
+        <div class="auth-field">
+          <%= form.label :name, class: "auth-label" %>
+          <%= form.text_field :name, required: true, autocomplete: "name", class: "auth-input", aria: { describedby: ("name_errors" if @user.errors[:name].any?) } %>
+          <% if @user.errors[:name].any? %>
+            <span id="name_errors" class="auth-muted"><%= @user.errors[:name].to_sentence %></span>
+          <% end %>
+        </div>
+
+        <div class="auth-field">
+          <%= form.label :email_address, "Email", class: "auth-label" %>
+          <%= form.email_field :email_address, required: true, autocomplete: "email", class: "auth-input", aria: { describedby: ("email_errors" if @user.errors[:email_address].any?) } %>
+          <% if @user.errors[:email_address].any? %>
+            <span id="email_errors" class="auth-muted"><%= @user.errors[:email_address].to_sentence %></span>
+          <% end %>
+        </div>
+
+        <div class="auth-field">
+          <%= form.label :password, class: "auth-label" %>
+          <%= form.password_field :password, required: true, autocomplete: "new-password", maxlength: 72, class: "auth-input" %>
+        </div>
+
+        <div class="auth-field">
+          <%= form.label :password_confirmation, "Confirm password", class: "auth-label" %>
+          <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", maxlength: 72, class: "auth-input" %>
+        </div>
+
+        <%= form.submit "Create account", class: "auth-button" %>
+      <% end %>
+    </div>
+
+    <footer class="auth-card-footer">
+      <span class="auth-muted">Already have an account?</span>
+      <%= link_to "Sign in", new_session_path, class: "auth-link" %>
+    </footer>
+  </section>
+</main>

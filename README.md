@@ -1,6 +1,6 @@
 # React on Rails Starter TanStack
 
-Phase 1 scaffold for the flagship React on Rails + TanStack starter. It uses the RC releases of React on Rails Pro and Shakapacker with Rspack:
+Flagship React on Rails + TanStack starter. It uses the RC releases of React on Rails Pro and Shakapacker with Rspack:
 
 - `react_on_rails` / `react_on_rails_pro` `16.7.0.rc.0`
 - `react-on-rails-pro` / `react-on-rails-pro-node-renderer` `16.7.0-rc.0`
@@ -31,7 +31,9 @@ bin/test
 
 ## Current Status
 
-This repo is the public template seed. The next phases add Rails auth, email verification, Projects CRUD, and the TanStack Router/Query/Table authenticated surface described in [shakacode/react_on_rails#3364](https://github.com/shakacode/react_on_rails/pull/3364).
+This repo is the public template seed. Phase 2 adds Rails 8 authentication, signup, email verification, resend throttles, development mail previews, and a verified-email dashboard gate.
+
+The next phases add Projects CRUD and the TanStack Router/Query/Table authenticated surface described in [shakacode/react_on_rails#3364](https://github.com/shakacode/react_on_rails/pull/3364).
 
 See [SPIKE.md](SPIKE.md) for the current AMBER RSC/Rspack compatibility note: Rspack builds are green, but interactive RSC client-reference plugin support is blocked upstream.
 

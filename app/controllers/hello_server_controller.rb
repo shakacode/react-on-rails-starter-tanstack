@@ -13,6 +13,8 @@
 # https://reactonrails.com/docs/pro/react-server-components/
 
 class HelloServerController < ApplicationController
+  allow_unauthenticated_access
+
   layout "react_on_rails_default"
 
   include ReactOnRailsPro::Stream

@@ -1,0 +1,13 @@
+<main class="auth-page">
+  <section class="auth-card auth-card-wide">
+    <header class="auth-card-header">
+      <h1>Dashboard</h1>
+      <p>This placeholder is protected by the Phase 2 verified-email gate. TanStack owns this surface in Phase 4.</p>
+    </header>
+
+    <div class="auth-card-body">
+      <%= tag.div(flash[:notice], class: "auth-notice", aria: { live: "polite" }) if flash[:notice] %>
+      <p>Signed in as <strong><%= Current.user.email_address %></strong>.</p>
+    </div>
+  </section>
+</main>

@@ -1,0 +1,26 @@
+<main class="auth-page">
+  <section class="auth-card">
+    <header class="auth-card-header">
+      <h1>Choose a new password</h1>
+      <p>Use a password you do not use anywhere else.</p>
+    </header>
+
+    <div class="auth-card-body">
+      <%= tag.div(flash[:alert], class: "auth-alert", aria: { live: "polite" }) if flash[:alert] %>
+
+      <%= form_with url: password_path(params[:token]), method: :put, class: "auth-form" do |form| %>
+        <div class="auth-field">
+          <%= form.label :password, "New password", class: "auth-label" %>
+          <%= form.password_field :password, required: true, autocomplete: "new-password", maxlength: 72, class: "auth-input" %>
+        </div>
+
+        <div class="auth-field">
+          <%= form.label :password_confirmation, "Confirm new password", class: "auth-label" %>
+          <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", maxlength: 72, class: "auth-input" %>
+        </div>
+
+        <%= form.submit "Save password", class: "auth-button" %>
+      <% end %>
+    </div>
+  </section>
+</main>

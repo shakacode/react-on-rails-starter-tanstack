@@ -1,4 +1,20 @@
 Rails.application.routes.draw do
+  if Rails.env.development?
+    mount LetterOpenerWeb::Engine, at: "/letter_opener"
+  end
+
+  get "signup", to: "registrations#new", as: :new_registration
+  post "signup", to: "registrations#create", as: :registration
+  resource :session, only: %i[new create destroy]
+  resources :passwords, param: :token, only: %i[new create edit update]
+  resources :email_verifications, only: %i[create show], param: :token do
+    collection do
+      get :sent
+      get :expired
+    end
+  end
+
+  get "dashboard", to: "dashboard#show"
   get "hello_server", to: "hello_server#index"
   rsc_payload_route
   root to: "home#index"
