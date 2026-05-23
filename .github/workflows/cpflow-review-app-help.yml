@@ -1,0 +1,26 @@
+name: Show Review App Commands on PR Open
+
+on:
+  # pull_request_target is intentional: it has write permission to comment on PRs from
+  # forks, where `pull_request` would be read-only. This is safe because no PR code is
+  # checked out — the job only calls the upstream reusable workflow with a hardcoded
+  # message.
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  show-help:
+    # control_plane_flow_ref is accepted by the upstream workflow for wrapper
+    # consistency; this helper does not check out shared actions.
+    uses: shakacode/control-plane-flow/.github/workflows/cpflow-review-app-help.yml@db013e139af4ee8741f791c14ff825f13c0a1021
+    with:
+      control_plane_flow_ref: db013e139af4ee8741f791c14ff825f13c0a1021
+    # `secrets: inherit` passes all caller repository secrets to the trusted
+    # upstream workflow. This helper does not read them, but GitHub does not
+    # enforce that boundary. Strict consumers can set CPFLOW_GITHUB_ACTIONS_REF
+    # to an immutable commit SHA.
+    secrets: inherit

@@ -1,0 +1,29 @@
+name: Deploy Staging to Control Plane
+
+run-name: Deploy Control Plane staging app
+
+on:
+  push:
+    # GitHub does not allow repository vars in branch filters. Default to the common
+    # deploy branches unless `cpflow generate-github-actions --staging-branch BRANCH`
+    # was used. If STAGING_APP_BRANCH is later changed in repository variables, keep
+    # this list in sync so pushes to that branch actually trigger the workflow.
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-staging:
+    # Keep the @ref in `uses:` and `control_plane_flow_ref` below in sync: the
+    # first selects the reusable workflow, the second selects its shared actions.
+    uses: shakacode/control-plane-flow/.github/workflows/cpflow-deploy-staging.yml@db013e139af4ee8741f791c14ff825f13c0a1021
+    with:
+      control_plane_flow_ref: db013e139af4ee8741f791c14ff825f13c0a1021
+      staging_app_branch_default: "main"
+    # `secrets: inherit` passes all caller repository secrets to the trusted
+    # upstream workflow. The upstream workflow only reads the named secrets it
+    # references, but GitHub does not enforce that boundary. Strict consumers can
+    # set CPFLOW_GITHUB_ACTIONS_REF to an immutable commit SHA.
+    secrets: inherit

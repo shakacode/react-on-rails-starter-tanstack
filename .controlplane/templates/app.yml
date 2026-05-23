@@ -1,0 +1,36 @@
+# Template setup of the GVC, roughly corresponding to a Heroku app
+kind: gvc
+name: {{APP_NAME}}
+spec:
+  env:
+    - name: DATABASE_HOST
+      value: 'postgres.{{APP_NAME}}.cpln.local'
+    - name: DATABASE_PORT
+      value: "5432"
+    - name: REACT_ON_RAILS_STARTER_TANSTACK_DATABASE_PASSWORD
+      value: cpln://secret/postgres-poc-credentials.password
+    - name: RAILS_ENV
+      value: production
+    - name: NODE_ENV
+      value: production
+    - name: RAILS_LOG_TO_STDOUT
+      value: "true"
+    - name: RAILS_SERVE_STATIC_FILES
+      value: "true"
+    - name: SECRET_KEY_BASE
+      value: cpln://secret/{{APP_SECRETS}}.SECRET_KEY_BASE
+    - name: REACT_RENDERER_URL
+      value: 'http://renderer.{{APP_NAME}}.cpln.local:3800'
+    - name: RENDERER_PORT
+      value: "3800"
+    - name: RENDERER_LOG_LEVEL
+      value: info
+    - name: RENDERER_WORKERS_COUNT
+      value: "2"
+    - name: RENDERER_PASSWORD
+      value: cpln://secret/{{APP_SECRETS}}.RENDERER_PASSWORD
+    - name: REACT_ON_RAILS_PRO_LICENSE
+      value: cpln://secret/{{APP_SECRETS}}.REACT_ON_RAILS_PRO_LICENSE
+  staticPlacement:
+    locationLinks:
+      - {{APP_LOCATION_LINK}}

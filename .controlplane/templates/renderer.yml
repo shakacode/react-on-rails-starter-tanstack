@@ -1,0 +1,28 @@
+kind: workload
+name: renderer
+spec:
+  type: standard
+  containers:
+    - name: renderer
+      cpu: 300m
+      inheritEnv: true
+      image: {{APP_IMAGE_LINK}}
+      memory: 512Mi
+      args:
+        - node
+        - client/node-renderer.js
+      ports:
+        - number: 3800
+          protocol: http
+  defaultOptions:
+    autoscaling:
+      minScale: 1
+      maxScale: 1
+    capacityAI: false
+    timeoutSeconds: 60
+  firewallConfig:
+    external:
+      outboundAllowCIDR:
+        - 0.0.0.0/0
+    internal:
+      inboundAllowType: same-gvc
