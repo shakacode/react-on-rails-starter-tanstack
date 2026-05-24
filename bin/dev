@@ -8,7 +8,7 @@
 # classes for better maintainability and testing.
 #
 # Each command uses a specific Procfile for process management:
-# - bin/dev (default/hmr): Uses Procfile.dev
+# - bin/dev (default): Uses Procfile.dev
 # - bin/dev static: Uses Procfile.dev-static-assets
 # - bin/dev prod: Uses Procfile.dev-prod-assets
 #

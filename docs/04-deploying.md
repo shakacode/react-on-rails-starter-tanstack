@@ -22,4 +22,12 @@ Before deploying, run:
 RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1 bin/rails assets:precompile
 ```
 
+For a local production-like smoke test, run:
+
+```sh
+bin/dev prod --no-open-browser --route=dashboard
+```
+
+This precompiles optimized bundles and starts Rails plus the Node renderer on local development data.
+
 Do not run development seeds in production. This template keeps `config/master.key` out of git; generate and store production secrets in your deployment environment.
