@@ -6,7 +6,9 @@ class SessionsController < ApplicationController
   end
 
   def create
-    if user = User.authenticate_by(params.permit(:email_address, :password))
+    credentials = params.slice(:email_address, :password).permit(:email_address, :password)
+
+    if user = User.authenticate_by(credentials)
       start_new_session_for user
       if user.email_verified?
         redirect_to after_authentication_url

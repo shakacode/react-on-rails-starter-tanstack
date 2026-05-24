@@ -30,4 +30,6 @@ bin/dev prod --no-open-browser --route=dashboard
 
 This precompiles optimized bundles and starts Rails plus the Node renderer on local development data.
 
+For the full build/run matrix, including static assets, HMR, and the current Rspack/RSC repro fixture, see [Tested Modes](06-tested-modes.md).
+
 Do not run development seeds in production. This template keeps `config/master.key` out of git; generate and store production secrets in your deployment environment.

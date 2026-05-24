@@ -47,6 +47,8 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
+      - run: pnpm exec tsc --noEmit
+      - run: pnpm run test:router-shim
       - run: bin/rails db:test:prepare
       - run: bundle exec rspec
 
@@ -95,3 +97,50 @@ jobs:
       - run: pnpm exec playwright install --with-deps chromium
       - run: bin/rails db:test:prepare
       - run: pnpm test:playwright
+
+  dev-modes:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPASSWORD: postgres
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install system packages
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libpq-dev libvips
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - run: gem install foreman --no-document
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 11.2.2
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm run test:dev-modes

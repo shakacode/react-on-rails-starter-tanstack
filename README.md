@@ -23,7 +23,9 @@ Run `bin/doctor` first when setup fails; it checks Ruby, Node, pnpm, Bun, and Po
 
 ```sh
 bundle exec rspec
+pnpm run test:router-shim
 pnpm test:playwright
+pnpm run test:dev-modes
 bin/test
 ```
 
@@ -67,6 +69,7 @@ See [SPIKE.md](SPIKE.md) for the current AMBER RSC/Rspack compatibility note: Rs
 - [Customizing](docs/03-customizing.md)
 - [Deploying](docs/04-deploying.md)
 - [Troubleshooting](docs/05-troubleshooting.md)
+- [Tested Modes](docs/06-tested-modes.md)
 - [Upgrading](UPGRADING.md)
 
 ## License

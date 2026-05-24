@@ -17,4 +17,4 @@
 <% end %>
 
 <!-- TANSTACK_SSR_SHELL: DashboardApp is prerendered by React on Rails Pro and hydrated by TanStack Router. -->
-<%= react_component("DashboardApp", props: @dashboard_props, prerender: !Rails.env.test?) %>
+<%= react_component("DashboardApp", id: "DashboardApp", props: @dashboard_props, prerender: !Rails.env.test?) %>

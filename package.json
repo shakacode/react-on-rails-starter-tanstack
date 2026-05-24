@@ -5,7 +5,10 @@
   "version": "0.1.0",
   "scripts": {
     "test:playwright": "playwright test",
-    "test": "pnpm test:playwright"
+    "test:router-shim": "node script/test-tanstack-router-store-shim.mjs",
+    "test:dev-modes": "node script/dev-mode-smoke.mjs static && node script/dev-mode-smoke.mjs prod",
+    "repro:rspack-rsc": "node script/rspack-rsc-client-boundary-repro.mjs",
+    "test": "pnpm test:router-shim && pnpm test:playwright"
   },
   "browserslist": [
     "defaults"

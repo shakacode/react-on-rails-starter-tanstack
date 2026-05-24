@@ -91,6 +91,12 @@ Symptom: `/dashboard` raises a React on Rails server rendering error with `Conne
 
 Fix: ensure the mode's Procfile starts `client/node-renderer.js` on the same `RENDERER_PORT` used by `config/initializers/react_on_rails_pro.rb`. The checked-in static and production-assets Procfiles include this renderer process.
 
+The CI smoke for this is:
+
+```sh
+pnpm run test:dev-modes
+```
+
 ## Verification Email Does Not Arrive In Development
 
 Symptom: signup succeeds, but no external email arrives.
