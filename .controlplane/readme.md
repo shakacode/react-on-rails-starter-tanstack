@@ -57,9 +57,11 @@ For production promotion later, configure a protected GitHub Environment named
 | `PRODUCTION_APP_NAME` | Environment variable on `production`: `react-on-rails-starter-tanstack-production` |
 
 Protect the `production` environment with required reviewers, enable prevent
-self-review, and consider disabling administrator bypass. The promotion workflow
-uses that environment before it can access `CPLN_TOKEN_PRODUCTION`, so the
-production token is not exposed to ordinary review-app or staging runs.
+self-review, and consider disabling administrator bypass. Only release managers
+or similarly trusted maintainers should be able to approve the promotion job.
+The promotion workflow uses that environment before it can access
+`CPLN_TOKEN_PRODUCTION`, so the production token is not exposed to ordinary
+review-app or staging runs.
 
 Optional build variables:
 
@@ -77,7 +79,41 @@ Advanced optional variables:
 | `CPLN_CLI_VERSION` | Pin only when Control Plane CLI compatibility requires it. |
 | `CPFLOW_VERSION` | Runtime gem override. Leave unset when workflow wrappers are pinned to a GitHub commit SHA for upstream PR testing. |
 
-## Control Plane Secrets
+## Control Plane Setup
+
+The GitHub secret is only the automation credential. The Control Plane org also
+needs the app resources and runtime secrets that the workloads read at boot.
+
+For review-app testing, the standard setup is:
+
+| Control Plane item | Where | Notes |
+| --- | --- | --- |
+| Staging/review org | `shakacode-open-source-examples-staging` | The `CPLN_TOKEN_STAGING` service account must be able to create and update GVCs, workloads, images, identities, policies, and secrets in this org. |
+| Review app prefix | `react-on-rails-starter-tanstack-pr` | Review apps are named `react-on-rails-starter-tanstack-pr-<PR number>`. This is inferred from `.controlplane/controlplane.yml`. |
+| Review app secret dictionary | `react-on-rails-starter-tanstack-pr-secrets` | Shared by generated review apps because the PR app entry uses `match_if_app_name_starts_with: true`. |
+
+For staging deploys later, also use:
+
+| Control Plane item | Where | Notes |
+| --- | --- | --- |
+| Staging app | `react-on-rails-starter-tanstack-staging` | The `CPLN_TOKEN_STAGING` token deploys this app from `main`. |
+| Staging app secret dictionary | `react-on-rails-starter-tanstack-staging-secrets` | Same required keys as the review app secret dictionary. |
+
+For production promotion later, use a separate production org and token:
+
+| Control Plane item | Where | Notes |
+| --- | --- | --- |
+| Production org | `shakacode-open-source-examples-production` | Do not give the staging token access to this org. |
+| Production app | `react-on-rails-starter-tanstack-production` | Promotion copies the staging image into this app. |
+| Production app secret dictionary | `react-on-rails-starter-tanstack-production-secrets` | Create before the first promotion. Use production-only values. |
+| Production service-account token | GitHub Environment secret `CPLN_TOKEN_PRODUCTION` | Keep this token in the protected `production` GitHub Environment only. |
+
+The demo PostgreSQL workload template creates `postgres-poc-credentials` for
+review/staging demos. Replace the placeholder password before serious staging
+testing. For real production, prefer a managed database and update the
+`DATABASE_*` environment values accordingly.
+
+## Control Plane App Secrets
 
 These are Control Plane app runtime secrets, not GitHub repository variables.
 
