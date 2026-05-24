@@ -25,9 +25,9 @@ jobs:
       github.event_name == 'workflow_dispatch'
     # control_plane_flow_ref is accepted by the upstream workflow for wrapper
     # consistency; this helper checks out caller content only.
-    uses: shakacode/control-plane-flow/.github/workflows/cpflow-help-command.yml@db013e139af4ee8741f791c14ff825f13c0a1021
+    uses: shakacode/control-plane-flow/.github/workflows/cpflow-help-command.yml@cfe494bf32925d49508380e03856d97bd71f6689
     with:
-      control_plane_flow_ref: db013e139af4ee8741f791c14ff825f13c0a1021
+      control_plane_flow_ref: cfe494bf32925d49508380e03856d97bd71f6689
     # `secrets: inherit` passes all caller repository secrets to the trusted
     # upstream workflow. This helper does not read them, but GitHub does not
     # enforce that boundary. Strict consumers can set CPFLOW_GITHUB_ACTIONS_REF

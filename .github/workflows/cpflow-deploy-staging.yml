@@ -18,9 +18,9 @@ jobs:
   deploy-staging:
     # Keep the @ref in `uses:` and `control_plane_flow_ref` below in sync: the
     # first selects the reusable workflow, the second selects its shared actions.
-    uses: shakacode/control-plane-flow/.github/workflows/cpflow-deploy-staging.yml@db013e139af4ee8741f791c14ff825f13c0a1021
+    uses: shakacode/control-plane-flow/.github/workflows/cpflow-deploy-staging.yml@cfe494bf32925d49508380e03856d97bd71f6689
     with:
-      control_plane_flow_ref: db013e139af4ee8741f791c14ff825f13c0a1021
+      control_plane_flow_ref: cfe494bf32925d49508380e03856d97bd71f6689
       staging_app_branch_default: "main"
     # `secrets: inherit` passes all caller repository secrets to the trusted
     # upstream workflow. The upstream workflow only reads the named secrets it
