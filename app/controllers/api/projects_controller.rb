@@ -21,6 +21,24 @@ module Api
       render json: { project: project_json(project) }
     end
 
+    def create
+      project = Current.user.projects.new(project_params)
+
+      if project.save
+        render json: { project: project_json(project) }, status: :created
+      else
+        validation_error(project)
+      end
+    end
+
+    def update
+      if project.update(project_params)
+        render json: { project: project_json(project) }
+      else
+        validation_error(project)
+      end
+    end
+
     def metrics
       project
 
@@ -72,12 +90,23 @@ module Api
         (params[:per_page].presence || 20).to_i.clamp(1, 50)
       end
 
+      def project_params
+        params.expect(project: %i[name description status last_activity_at])
+      end
+
       def average_cycle_time_days
         completed = Current.user.projects.completed.where.not(last_activity_at: nil)
         return 0.0 if completed.empty?
 
         seconds = completed.average("EXTRACT(EPOCH FROM (last_activity_at - created_at))").to_f
         (seconds / 1.day).round(1)
+      end
+
+      def validation_error(project)
+        render json: {
+          error: project.errors.full_messages.to_sentence,
+          errors: project.errors.to_hash(true)
+        }, status: :unprocessable_content
       end
 
       def not_found

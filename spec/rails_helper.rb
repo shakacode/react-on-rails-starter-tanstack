@@ -36,7 +36,14 @@ rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
 RSpec.configure do |config|
-  ReactOnRails::TestHelper.configure_rspec_to_compile_assets(config)
+  ReactOnRails::TestHelper.configure_rspec_to_compile_assets(
+    config,
+    :js,
+    :server_rendering,
+    :controller,
+    { type: :request },
+    { type: :system }
+  )
   config.include ActiveJob::TestHelper
   config.include FactoryBot::Syntax::Methods
 

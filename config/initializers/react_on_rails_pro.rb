@@ -11,7 +11,8 @@ ReactOnRailsPro.configure do |config|
 
   config.ssr_timeout = 5
   config.renderer_request_retry_limit = 1
-  config.renderer_use_fallback_exec_js = Rails.env.development?
+  config.renderer_use_fallback_exec_js = false
+  config.rendering_returns_promises = true
 
   # If you want Honeybadger or Sentry on the Node renderer side to report rendering errors
   config.throw_js_errors = false

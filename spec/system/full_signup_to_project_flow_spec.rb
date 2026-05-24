@@ -21,7 +21,7 @@ RSpec.describe "Full signup to project flow", type: :system do
     verification_url = URI.extract(mail.body.encoded).find { |url| url.include?("/email_verifications/") }
 
     visit verification_url
-    click_link "Projects"
+    click_link "Classic Rails CRUD"
     click_link "New project"
 
     click_button "Create project"

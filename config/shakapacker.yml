@@ -99,9 +99,10 @@ development:
 
     host: localhost
     port: 3035
-    # Hot Module Replacement updates modules while the application is running without a full reload
-    # Used instead of the `hot` key in https://webpack.js.org/configuration/dev-server/#devserverhot
-    hmr: true
+    # HMR currently injects an Rspack hot-dev-server chunk that React on Rails'
+    # auto component script output does not emit for every entry in this RC stack.
+    # Keep Rspack development reliable with full-page reloads.
+    hmr: false
     # If HMR is on, CSS will be inlined by delivering it as part of the script payload via style-loader. Be sure
     # that you add style-loader to your project dependencies.
     #
@@ -111,7 +112,7 @@ development:
     # mini-css-extract-plugin is a required dependency in both cases.
     inline_css: true
     # Defaults to the inverse of hmr. Uncomment to manually set this.
-    # live_reload: true
+    live_reload: true
     client:
       # Should we show a full-screen overlay in the browser when there are compiler errors or warnings?
       overlay: true

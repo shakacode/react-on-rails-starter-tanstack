@@ -19,6 +19,7 @@ The app bootstraps with `create-react-on-rails-app@16.7.0-rc.0 --rsc --rspack --
 - React on Rails and React on Rails Pro pinned to `16.7.0.rc.0`.
 - Shakapacker pinned to `10.1.0.rc.1`.
 - Rspack builds complete successfully after the fallback below.
+- The `/dashboard` TanStack Router, Query, and Table surface prerenders through React on Rails Pro's Node renderer and hydrates under the Rails shell.
 - `bundle exec rails react_on_rails:doctor` reports 50 checks passed, 0 warnings, 0 errors.
 - `bin/doctor`, `bin/setup`, RSpec, and Playwright smoke tests pass locally.
 
@@ -39,6 +40,6 @@ Impact:
 - Server-only RSC bundle compilation is green.
 - Interactive client-component references inside RSC remain blocked until `react-on-rails-rsc` supports Rspack's plugin API.
 
-## Not Yet Validated
+## Phase 4 Validation
 
-The full TanStack Router + Query + Table surface is Phase 4 work. The current repo is Phase 1 bootstrap plus the RSC/Rspack compatibility spike outcome.
+The full TanStack Router + Query + Table surface is implemented on `/dashboard` with classic React on Rails Pro SSR. The Phase 0 AMBER status now applies only to interactive RSC client-reference support on Rspack, not to the authenticated TanStack dashboard.

@@ -26,7 +26,8 @@ const config = {
   supportModules: true,
 
   // Additional Node.js globals to add to the VM context.
-  additionalContext: { URL, AbortController },
+  // TanStack Router's server load path checks Fetch API primitives.
+  additionalContext: { URL, AbortController, Headers, Request, Response, fetch },
 
   // Required to use setTimeout, setInterval, & clearTimeout during server rendering
   stubTimers: false,

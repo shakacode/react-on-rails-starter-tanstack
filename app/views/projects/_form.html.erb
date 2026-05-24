@@ -10,7 +10,12 @@
   </div>
 <% end %>
 
-<%= form_with model: project, class: "auth-form" do |form| %>
+<%= form_with(
+  model: project,
+  url: project.persisted? ? classic_project_path(project) : classic_projects_path,
+  method: project.persisted? ? :patch : :post,
+  class: "auth-form"
+) do |form| %>
   <div class="auth-field">
     <%= form.label :name, class: "auth-label" %>
     <%= form.text_field :name, required: true, maxlength: 120, class: "auth-input", aria: { describedby: ("project_name_errors" if project.errors[:name].any?) } %>
