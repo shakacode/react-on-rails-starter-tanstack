@@ -83,7 +83,13 @@ The devtools are off by default because optional devtools chunks can trigger noi
 
 Symptom: the SSR dashboard shell renders, but metric cards and the projects table keep showing loading placeholders in development.
 
-Fix: restart `bin/dev` after changing `config/shakapacker.yml`. This starter uses Rspack live reload with HMR disabled because the current RC stack can omit the injected hot-dev-server chunk from React on Rails auto component script output.
+Fix: restart `bin/dev` after changing `config/shakapacker.yml`. This starter defaults to Rspack live reload for deterministic SSR smoke tests. To exercise HMR, set `dev_server.hmr` to `true`, set `dev_server.live_reload` to `false`, then restart `bin/dev`. If the dashboard still hangs, check the browser network panel for missing hot-update or hot-dev-server chunks.
+
+## Dashboard 500s In Static Or Production-Assets Mode
+
+Symptom: `/dashboard` raises a React on Rails server rendering error with `Connection refused - connect(2) for 127.0.0.1:3800`.
+
+Fix: ensure the mode's Procfile starts `client/node-renderer.js` on the same `RENDERER_PORT` used by `config/initializers/react_on_rails_pro.rb`. The checked-in static and production-assets Procfiles include this renderer process.
 
 ## Verification Email Does Not Arrive In Development
 

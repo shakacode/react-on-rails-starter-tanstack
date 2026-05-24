@@ -27,7 +27,16 @@ pnpm test:playwright
 bin/test
 ```
 
-`bin/dev` starts Rails, Rspack, SolidQueue, the Pro Node renderer, and the RSC bundle watcher through `Procfile.dev`.
+`bin/dev` starts Rails, Rspack, SolidQueue, the Pro Node renderer, and the RSC bundle watcher through `Procfile.dev`. This starter keeps Rspack development on live reload by default; enable `dev_server.hmr` in `config/shakapacker.yml` only when you want to test HMR-specific behavior.
+
+Use these alternate modes to smoke-test non-HMR paths:
+
+```sh
+bin/dev static --no-open-browser --route=dashboard
+bin/dev prod --no-open-browser --route=dashboard
+```
+
+Both modes start the Node renderer because the authenticated TanStack dashboard is server-rendered by React on Rails Pro.
 
 The authenticated `/dashboard` route is the TanStack surface:
 

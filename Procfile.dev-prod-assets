@@ -1,8 +1,6 @@
-# Procfile for development with production assets 
-# Uses production-optimized, precompiled assets with development environment
-# Uncomment additional processes as needed for your app
+# Procfile for development with production assets.
+# Uses production-optimized, precompiled assets with the development Rails environment.
 
 rails: bundle exec rails s -p ${PORT:-3001}
-# sidekiq: bundle exec sidekiq -C config/sidekiq.yml
-# redis: redis-server
-# mailcatcher: mailcatcher --foreground
+worker: bin/jobs
+renderer: RAILS_ENV=${RAILS_ENV:-development} RENDERER_LOG_LEVEL=${RENDERER_LOG_LEVEL:-info} RENDERER_PORT=${RENDERER_PORT:-3800} node client/node-renderer.js
