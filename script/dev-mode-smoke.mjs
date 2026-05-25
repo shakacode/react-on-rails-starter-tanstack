@@ -25,6 +25,7 @@ const env = {
   RAILS_ENV: 'development',
   PORT: String(basePort),
   REACT_ON_RAILS_BASE_PORT: String(basePort),
+  REACT_RENDERER_URL: `http://localhost:${rendererPort}`,
   RENDERER_PORT: String(rendererPort),
   RENDERER_LOG_LEVEL: process.env.RENDERER_LOG_LEVEL || 'info',
   SKIP_DATABASE_CHECK: 'true',
