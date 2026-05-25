@@ -7,6 +7,8 @@ minimumReleaseAgeExclude:
   - react-on-rails-pro-node-renderer@16.7.0-rc.1
   - react-on-rails-pro@16.7.0-rc.1
   - react-on-rails@16.7.0-rc.1
+  - shakapacker-rspack@10.1.0-rc.2
+  - shakapacker@10.1.0-rc.2
 
 # Temporary workaround for react-on-rails-pro@16.7.0-rc.1 publishing
 # react-on-rails as workspace:*. Remove after:

@@ -5,14 +5,21 @@ const { devServer, inliningCss, config } = require('shakapacker');
 
 const serverClientOrBoth = require('./ServerClientOrBoth');
 
-const developmentEnvOnly = (clientWebpackConfig, _serverWebpackConfig) => {
+const developmentEnvOnly = (clientWebpackConfig, serverWebpackConfig, rscWebpackConfig) => {
   clientWebpackConfig.experiments = {
     ...clientWebpackConfig.experiments,
     lazyCompilation: false,
   };
 
+  // Static watch builds should not embed the Rspack dev-server client.
+  if (config.assets_bundler === 'rspack' && process.env.WEBPACK_SERVE !== 'true') {
+    [clientWebpackConfig, serverWebpackConfig, rscWebpackConfig].forEach((webpackConfig) => {
+      delete webpackConfig.devServer;
+    });
+  }
+
   // React Refresh (Fast Refresh) setup - only when dev server is running (HMR mode)
-  if (process.env.WEBPACK_SERVE) {
+  if (process.env.WEBPACK_SERVE === 'true') {
     // eslint-disable-next-line global-require
     if (config.assets_bundler === 'rspack') {
       // Rspack React Refresh currently trips webpack-dev-server's active-module

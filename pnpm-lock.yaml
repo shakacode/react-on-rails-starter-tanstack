@@ -12,8 +12,8 @@ importers:
   .:
     dependencies:
       '@rspack/core':
-        specifier: 2.0.1
-        version: 2.0.1
+        specifier: 2.0.4
+        version: 2.0.4
       '@tanstack/react-query':
         specifier: ^5.100.13
         version: 5.100.13(react@19.0.6)
@@ -34,7 +34,7 @@ importers:
         version: 12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
       css-loader:
         specifier: 7.1.4
-        version: 7.1.4(@rspack/core@2.0.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
+        version: 7.1.4(@rspack/core@2.0.4)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
       css-minimizer-webpack-plugin:
         specifier: 8.0.0
         version: 8.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
@@ -61,19 +61,19 @@ importers:
         version: 19.0.5-rc.1(react-dom@19.0.6(react@19.0.6))(react@19.0.6)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
       rspack-manifest-plugin:
         specifier: 5.2.1
-        version: 5.2.1(@rspack/core@2.0.1)
+        version: 5.2.1(@rspack/core@2.0.4)
       sass:
         specifier: 1.99.0
         version: 1.99.0
       sass-loader:
         specifier: 16.0.7
-        version: 16.0.7(@rspack/core@2.0.1)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
+        version: 16.0.7(@rspack/core@2.0.4)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
       shakapacker:
-        specifier: 10.1.0-rc.1
-        version: 10.1.0-rc.1(@rspack/cli@2.0.1(@rspack/core@2.0.1)(@rspack/dev-server@2.0.1(@rspack/core@2.0.1)))(@rspack/core@2.0.1)(@swc/core@1.15.33)(compression-webpack-plugin@12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(css-loader@7.1.4(@rspack/core@2.0.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(mini-css-extract-plugin@2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(rspack-manifest-plugin@5.2.1(@rspack/core@2.0.1))(sass-loader@16.0.7(@rspack/core@2.0.1)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass@1.99.0)(swc-loader@0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
+        specifier: 10.1.0-rc.2
+        version: 10.1.0-rc.2(@rspack/cli@2.0.4(@rspack/core@2.0.4)(@rspack/dev-server@2.0.1(@rspack/core@2.0.4)))(@rspack/core@2.0.4)(@swc/core@1.15.33)(compression-webpack-plugin@12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(css-loader@7.1.4(@rspack/core@2.0.4)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(mini-css-extract-plugin@2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(rspack-manifest-plugin@5.2.1(@rspack/core@2.0.4))(sass-loader@16.0.7(@rspack/core@2.0.4)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass@1.99.0)(swc-loader@0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
       shakapacker-rspack:
-        specifier: 10.1.0-rc.1
-        version: 10.1.0-rc.1(@rspack/dev-server@2.0.1(@rspack/core@2.0.1))(@swc/core@1.15.33)(compression-webpack-plugin@12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(css-loader@7.1.4(@rspack/core@2.0.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(mini-css-extract-plugin@2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass-loader@16.0.7(@rspack/core@2.0.1)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass@1.99.0)(swc-loader@0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
+        specifier: 10.1.0-rc.2
+        version: 10.1.0-rc.2(@rspack/cli@2.0.4(@rspack/core@2.0.4)(@rspack/dev-server@2.0.1(@rspack/core@2.0.4)))(@rspack/core@2.0.4)(@swc/core@1.15.33)(compression-webpack-plugin@12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(css-loader@7.1.4(@rspack/core@2.0.4)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(mini-css-extract-plugin@2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(rspack-manifest-plugin@5.2.1(@rspack/core@2.0.4))(sass-loader@16.0.7(@rspack/core@2.0.4)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass@1.99.0)(swc-loader@0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
       style-loader:
         specifier: 4.0.0
         version: 4.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
@@ -82,11 +82,11 @@ importers:
         specifier: ^1.60.0
         version: 1.60.0
       '@rspack/cli':
-        specifier: 2.0.1
-        version: 2.0.1(@rspack/core@2.0.1)(@rspack/dev-server@2.0.1(@rspack/core@2.0.1))
+        specifier: 2.0.4
+        version: 2.0.4(@rspack/core@2.0.4)(@rspack/dev-server@2.0.1(@rspack/core@2.0.4))
       '@rspack/dev-server':
         specifier: 2.0.1
-        version: 2.0.1(@rspack/core@2.0.1)
+        version: 2.0.1(@rspack/core@2.0.4)
       '@swc/core':
         specifier: 1.15.33
         version: 1.15.33
@@ -280,19 +280,9 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  '@rspack/binding-darwin-arm64@2.0.1':
-    resolution: {integrity: sha512-CGFO5zmajD1Itch1lxAI7+gvKiagzyqXopHv/jHG9Su2WWQ2/Nhn2/rkSpdp6ptE9ri6+6tCOOahf099/v/Xog==}
-    cpu: [arm64]
-    os: [darwin]
-
   '@rspack/binding-darwin-arm64@2.0.4':
     resolution: {integrity: sha512-0Q1QXFEsZfDc4opiDnb8q50KlBbC2VovViDaYlMJZBzvjAo325mh3itXPfz7YZ31M+TxRE7TUiJXH3ltiV1Hdg==}
     cpu: [arm64]
-    os: [darwin]
-
-  '@rspack/binding-darwin-x64@2.0.1':
-    resolution: {integrity: sha512-2vvBNBoS09/PurupBwSrlTZd8283o00B8v20ncsNUdEff41uCR/hzIrYoTIVWnVST+Gt5O1+cfcfORp397lajg==}
-    cpu: [x64]
     os: [darwin]
 
   '@rspack/binding-darwin-x64@2.0.4':
@@ -300,23 +290,11 @@ packages:
     cpu: [x64]
     os: [darwin]
 
-  '@rspack/binding-linux-arm64-gnu@2.0.1':
-    resolution: {integrity: sha512-uvNXk6ahE3AH3h2avnd1Mgno68YQpS4cfX1OkOGWIC/roL+NrOP2XVXV4yfVAoydPALDO7AfbIfN0QdmBK3rsA==}
-    cpu: [arm64]
-    os: [linux]
-    libc: [glibc]
-
   '@rspack/binding-linux-arm64-gnu@2.0.4':
     resolution: {integrity: sha512-BEk6mIYBK4BihW9qXXITJORrVXecTlkRjrqhgefili4xjXtLdcUnxAm9sN/2oJ8m378n2h33qDh4gr2orPBFWQ==}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
-
-  '@rspack/binding-linux-arm64-musl@2.0.1':
-    resolution: {integrity: sha512-S/a6uN9PiZ5O/PjSqyIXhuRC1lVzeJkJV69NeLk5sIEUiDQ/aQGZG97uN+tluwpbo1tPbLJkdHYETfjspOX4Pg==}
-    cpu: [arm64]
-    os: [linux]
-    libc: [musl]
 
   '@rspack/binding-linux-arm64-musl@2.0.4':
     resolution: {integrity: sha512-Hyt3z1RwNcSMIoaoWLN4Hb/696/O5JPukf8rXQASvf2UkC+X3ij7tr+8lMSYi3Zysi1QL375CnT4fNoABEW0JA==}
@@ -324,23 +302,11 @@ packages:
     os: [linux]
     libc: [musl]
 
-  '@rspack/binding-linux-x64-gnu@2.0.1':
-    resolution: {integrity: sha512-C13Kk0OkZiocZVj187Sf753UH6pDXnuEu6vzUvi3qv9ltibG1ki0H2Y8isXBYL2cHQOV+hk0g1S6/4z3TTB97A==}
-    cpu: [x64]
-    os: [linux]
-    libc: [glibc]
-
   '@rspack/binding-linux-x64-gnu@2.0.4':
     resolution: {integrity: sha512-xHorBPBZAg0Pn9Q0k9dWZ9euowieDxcSOzQ9JhTCmhDY6wZH5M/kCBFlCs/OQeW5/NUArW3x3MwEdO/0QJHMxg==}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
-
-  '@rspack/binding-linux-x64-musl@2.0.1':
-    resolution: {integrity: sha512-TQsiBFpEDGkuvK9tNdGj/Uc+AIytzqhxXH/1jKU6M24cWB1DTw/Cx7DdrkCBDyq3129K3POLdujvbWCGqBzQUw==}
-    cpu: [x64]
-    os: [linux]
-    libc: [musl]
 
   '@rspack/binding-linux-x64-musl@2.0.4':
     resolution: {integrity: sha512-QLxEGUXofF0kVNU12Y2NT3Qi9lGs+WbnYpapVeb+2IXtrAXJfU7Rhy7lAp5GLMzYMQNrKKL9SVnTWKbODbNW9Q==}
@@ -348,27 +314,13 @@ packages:
     os: [linux]
     libc: [musl]
 
-  '@rspack/binding-wasm32-wasi@2.0.1':
-    resolution: {integrity: sha512-wk3gyUgBW/ayP49bI54bkY8+EQnfBHxdoe9dz3oobSTZQc8AOWwmUUDEPltW8rUvPOM6dfHECTOUMnfaf2f5yA==}
-    cpu: [wasm32]
-
   '@rspack/binding-wasm32-wasi@2.0.4':
     resolution: {integrity: sha512-YhN8HkiH46ONU9tm5dyoXDImDWGpU7E4SPqGI4OyAVF0445uIChurIUmTIOYcD6cg81GGeIjozWJOcb635Dcqw==}
     cpu: [wasm32]
 
-  '@rspack/binding-win32-arm64-msvc@2.0.1':
-    resolution: {integrity: sha512-rHjLcy3VcAC3+x+PxH+gwhwv6tPe0JdXTNT5eAOs9wgZIM6T9p4wre49+K4Qy98+Fb7TTbLX0ObUitlOkGwTSA==}
-    cpu: [arm64]
-    os: [win32]
-
   '@rspack/binding-win32-arm64-msvc@2.0.4':
     resolution: {integrity: sha512-MUlYIz82xQRN0aoiXXyEBrNVUwiOSSFRi7nuCgUKduaSdlbPWzCY31IdtOygZ06LVp5JIGUEtyqSrjQq4FrMRw==}
     cpu: [arm64]
-    os: [win32]
-
-  '@rspack/binding-win32-ia32-msvc@2.0.1':
-    resolution: {integrity: sha512-Ad1vVqMBBnd4T8rsORngu9sl2kyRTlS4kMlvFudjzl1X2UFArEDBe0YVGNN7ZvahM12CErUx2WiN8Sd8pb+qXQ==}
-    cpu: [ia32]
     os: [win32]
 
   '@rspack/binding-win32-ia32-msvc@2.0.4':
@@ -376,31 +328,13 @@ packages:
     cpu: [ia32]
     os: [win32]
 
-  '@rspack/binding-win32-x64-msvc@2.0.1':
-    resolution: {integrity: sha512-oPM2Jtm7HOlmxl/aBfleAVlL6t9VeHx6WvEets7BBJMInemFXAQd4CErRqybf7rXutACzLeUWBOue4Jpd1/ykw==}
-    cpu: [x64]
-    os: [win32]
-
   '@rspack/binding-win32-x64-msvc@2.0.4':
     resolution: {integrity: sha512-MnYKPfdrAEbtpKg/1SZ6cNtzreIRyQJK4APbxLLPXENdTH5QXQkaTjLMKEeJcJ51FRhI/+yNpOUm2oTHdCQ1Og==}
     cpu: [x64]
     os: [win32]
 
-  '@rspack/binding@2.0.1':
-    resolution: {integrity: sha512-ynV1gw4KqFtQ0P+ZZh76SUj49wBb2FuHW3zSmHverHWuxBhzvrZS6/dZ+fCFQG8bTTPtrPz0RQUTN3uEDbPVBQ==}
-
   '@rspack/binding@2.0.4':
     resolution: {integrity: sha512-/QeJDPUw/lWkBJESG264KA9u6/rAjvoJhKncU4rkTi5Ap45kue5HTgOzr0ufxKdd2Xl72fjFBuqlKmtFDD5LiQ==}
-
-  '@rspack/cli@2.0.1':
-    resolution: {integrity: sha512-UwqLnShg6ui3LOsJfJvyGNfHtgkGd/Cjjm2T7jR6lTkoX9Jj7YKl55gkPqNw34et8+gp/5Ehso6tsga8bqZi5Q==}
-    hasBin: true
-    peerDependencies:
-      '@rspack/core': ^2.0.0-0
-      '@rspack/dev-server': ^2.0.0-0
-    peerDependenciesMeta:
-      '@rspack/dev-server':
-        optional: true
 
   '@rspack/cli@2.0.4':
     resolution: {integrity: sha512-BF6L24LAi01oWKLoQWb5dzbeDb1WG/0MLLz7g3pxzO/8aGwgmjh9HcBjmDa54lrpGhwUIsTPlY5MN/CcFWnxPA==}
@@ -410,18 +344,6 @@ packages:
       '@rspack/dev-server': ^2.0.0-0
     peerDependenciesMeta:
       '@rspack/dev-server':
-        optional: true
-
-  '@rspack/core@2.0.1':
-    resolution: {integrity: sha512-lgfZiExh8kDR/3obgi3RQKwKG5av1Xf5qDN1aVde777W9pbmx0Pqvrww1qtNvJ+gobEjbrrn5HEZWYGe0VLmcA==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    peerDependencies:
-      '@module-federation/runtime-tools': ^0.24.1 || ^2.0.0
-      '@swc/helpers': '>=0.5.1'
-    peerDependenciesMeta:
-      '@module-federation/runtime-tools':
-        optional: true
-      '@swc/helpers':
         optional: true
 
   '@rspack/core@2.0.4':
@@ -1659,14 +1581,17 @@ packages:
   set-cookie-parser@2.7.2:
     resolution: {integrity: sha512-oeM1lpU/UvhTxw+g3cIfxXHyJRc/uidd3yK1P242gzHds0udQBYzs3y8j4gCCW+ZJ7ad0yctld8RYO+bdurlvw==}
 
-  shakapacker-rspack@10.1.0-rc.1:
-    resolution: {integrity: sha512-TU0tv87BcOEYq89Z7e3cVkgmQwAqYT04x9emN4fF3RWhNcM6Iva4+89gJ+NRiT3DaJ3vNDRw58naN9/uwnEs8g==}
+  shakapacker-rspack@10.1.0-rc.2:
+    resolution: {integrity: sha512-kiVXC6FfWjt6/T9DrbHSxO/zB1f3g3LPetwFOpJmjHNuJEEiFoKMcbgCnITCVxsNwiSfuOXDtQGTzhC/ijYlYQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
-      '@rspack/plugin-react-refresh': ~2.0.1
-      css-loader: ~7.1.4
-      sass: ~1.99.0
-      sass-loader: ~16.0.7
+      '@rspack/cli': ^2.0.0
+      '@rspack/core': ^2.0.0
+      '@rspack/plugin-react-refresh': ^1.0.0 || ^2.0.0
+      css-loader: ^6.8.1 || ^7.0.0
+      rspack-manifest-plugin: ^5.0.0
+      sass: ^1.50.0
+      sass-loader: ^13.0.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
     peerDependenciesMeta:
       '@rspack/plugin-react-refresh':
         optional: true
@@ -1677,8 +1602,8 @@ packages:
       sass-loader:
         optional: true
 
-  shakapacker@10.1.0-rc.1:
-    resolution: {integrity: sha512-iDf2E9zgQrNgooYNETNXge39TDf5BRROa8mvQVah5qhMSD5KeHJWxxisksUCi5dAw52JG1xXW/1fPxvu1DT6lw==}
+  shakapacker@10.1.0-rc.2:
+    resolution: {integrity: sha512-nEMUX68fp/yKdfc00lGL4mh2CCzVoY3Vv1f31Z/rCb6ssGj6QdBsQOv7GOG9vQNjtfURsZhdIFwqujZU3bh9Pg==}
     engines: {node: ^20.19.0 || >=22.12.0, yarn: '>=1 <5'}
     hasBin: true
     peerDependencies:
@@ -1688,14 +1613,14 @@ packages:
       '@babel/runtime': ^7.17.9
       '@rspack/cli': ^1.0.0 || ^2.0.0-0
       '@rspack/core': ^1.0.0 || ^2.0.0-0
-      '@rspack/plugin-react-refresh': ^1.0.0 || ^2.0.0-0
+      '@rspack/plugin-react-refresh': ^1.0.0 || ^2.0.0
       '@swc/core': ^1.3.0
       '@types/babel__core': ^7.0.0
       '@types/webpack': ^5.0.0
       babel-loader: ^8.2.4 || ^9.0.0 || ^10.0.0
       compression-webpack-plugin: ^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0
       css-loader: ^6.8.1 || ^7.0.0
-      esbuild: ^0.14.0 || ^0.15.0 || ^0.16.0 || ^0.17.0 || ^0.18.0 || ^0.19.0 || ^0.20.0 || ^0.21.0 || ^0.22.0 || ^0.23.0 || ^0.24.0 || ^0.25.0 || ^0.26.0 || ^0.27.0
+      esbuild: '>=0.14.0 <1.0.0'
       esbuild-loader: ^2.0.0 || ^3.0.0 || ^4.0.0
       mini-css-extract-plugin: ^2.0.0
       rspack-manifest-plugin: ^5.0.0
@@ -2127,47 +2052,22 @@ snapshots:
     dependencies:
       playwright: 1.60.0
 
-  '@rspack/binding-darwin-arm64@2.0.1':
-    optional: true
-
   '@rspack/binding-darwin-arm64@2.0.4':
-    optional: true
-
-  '@rspack/binding-darwin-x64@2.0.1':
     optional: true
 
   '@rspack/binding-darwin-x64@2.0.4':
     optional: true
 
-  '@rspack/binding-linux-arm64-gnu@2.0.1':
-    optional: true
-
   '@rspack/binding-linux-arm64-gnu@2.0.4':
-    optional: true
-
-  '@rspack/binding-linux-arm64-musl@2.0.1':
     optional: true
 
   '@rspack/binding-linux-arm64-musl@2.0.4':
     optional: true
 
-  '@rspack/binding-linux-x64-gnu@2.0.1':
-    optional: true
-
   '@rspack/binding-linux-x64-gnu@2.0.4':
     optional: true
 
-  '@rspack/binding-linux-x64-musl@2.0.1':
-    optional: true
-
   '@rspack/binding-linux-x64-musl@2.0.4':
-    optional: true
-
-  '@rspack/binding-wasm32-wasi@2.0.1':
-    dependencies:
-      '@emnapi/core': 1.10.0
-      '@emnapi/runtime': 1.10.0
-      '@napi-rs/wasm-runtime': 1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
     optional: true
 
   '@rspack/binding-wasm32-wasi@2.0.4':
@@ -2177,36 +2077,14 @@ snapshots:
       '@napi-rs/wasm-runtime': 1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
     optional: true
 
-  '@rspack/binding-win32-arm64-msvc@2.0.1':
-    optional: true
-
   '@rspack/binding-win32-arm64-msvc@2.0.4':
-    optional: true
-
-  '@rspack/binding-win32-ia32-msvc@2.0.1':
     optional: true
 
   '@rspack/binding-win32-ia32-msvc@2.0.4':
     optional: true
 
-  '@rspack/binding-win32-x64-msvc@2.0.1':
-    optional: true
-
   '@rspack/binding-win32-x64-msvc@2.0.4':
     optional: true
-
-  '@rspack/binding@2.0.1':
-    optionalDependencies:
-      '@rspack/binding-darwin-arm64': 2.0.1
-      '@rspack/binding-darwin-x64': 2.0.1
-      '@rspack/binding-linux-arm64-gnu': 2.0.1
-      '@rspack/binding-linux-arm64-musl': 2.0.1
-      '@rspack/binding-linux-x64-gnu': 2.0.1
-      '@rspack/binding-linux-x64-musl': 2.0.1
-      '@rspack/binding-wasm32-wasi': 2.0.1
-      '@rspack/binding-win32-arm64-msvc': 2.0.1
-      '@rspack/binding-win32-ia32-msvc': 2.0.1
-      '@rspack/binding-win32-x64-msvc': 2.0.1
 
   '@rspack/binding@2.0.4':
     optionalDependencies:
@@ -2221,34 +2099,24 @@ snapshots:
       '@rspack/binding-win32-ia32-msvc': 2.0.4
       '@rspack/binding-win32-x64-msvc': 2.0.4
 
-  '@rspack/cli@2.0.1(@rspack/core@2.0.1)(@rspack/dev-server@2.0.1(@rspack/core@2.0.1))':
-    dependencies:
-      '@rspack/core': 2.0.1
-    optionalDependencies:
-      '@rspack/dev-server': 2.0.1(@rspack/core@2.0.1)
-
-  '@rspack/cli@2.0.4(@rspack/core@2.0.4)(@rspack/dev-server@2.0.1(@rspack/core@2.0.1))':
+  '@rspack/cli@2.0.4(@rspack/core@2.0.4)(@rspack/dev-server@2.0.1(@rspack/core@2.0.4))':
     dependencies:
       '@rspack/core': 2.0.4
     optionalDependencies:
-      '@rspack/dev-server': 2.0.1(@rspack/core@2.0.1)
-
-  '@rspack/core@2.0.1':
-    dependencies:
-      '@rspack/binding': 2.0.1
+      '@rspack/dev-server': 2.0.1(@rspack/core@2.0.4)
 
   '@rspack/core@2.0.4':
     dependencies:
       '@rspack/binding': 2.0.4
 
-  '@rspack/dev-middleware@2.0.1(@rspack/core@2.0.1)':
+  '@rspack/dev-middleware@2.0.1(@rspack/core@2.0.4)':
     optionalDependencies:
-      '@rspack/core': 2.0.1
+      '@rspack/core': 2.0.4
 
-  '@rspack/dev-server@2.0.1(@rspack/core@2.0.1)':
+  '@rspack/dev-server@2.0.1(@rspack/core@2.0.4)':
     dependencies:
-      '@rspack/core': 2.0.1
-      '@rspack/dev-middleware': 2.0.1(@rspack/core@2.0.1)
+      '@rspack/core': 2.0.4
+      '@rspack/dev-middleware': 2.0.1(@rspack/core@2.0.4)
 
   '@rspack/lite-tapable@1.1.0': {}
 
@@ -2625,7 +2493,7 @@ snapshots:
     dependencies:
       postcss: 8.5.15
 
-  css-loader@7.1.4(@rspack/core@2.0.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)):
+  css-loader@7.1.4(@rspack/core@2.0.4)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)):
     dependencies:
       icss-utils: 5.1.0(postcss@8.5.15)
       postcss: 8.5.15
@@ -2636,7 +2504,7 @@ snapshots:
       postcss-value-parser: 4.2.0
       semver: 7.8.1
     optionalDependencies:
-      '@rspack/core': 2.0.1
+      '@rspack/core': 2.0.4
       webpack: 5.107.1(@swc/core@1.15.33)(postcss@8.5.15)
 
   css-minimizer-webpack-plugin@8.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)):
@@ -3307,12 +3175,6 @@ snapshots:
 
   rfdc@1.4.1: {}
 
-  rspack-manifest-plugin@5.2.1(@rspack/core@2.0.1):
-    dependencies:
-      '@rspack/lite-tapable': 1.1.0
-    optionalDependencies:
-      '@rspack/core': 2.0.1
-
   rspack-manifest-plugin@5.2.1(@rspack/core@2.0.4):
     dependencies:
       '@rspack/lite-tapable': 1.1.0
@@ -3327,11 +3189,11 @@ snapshots:
 
   safe-stable-stringify@2.5.0: {}
 
-  sass-loader@16.0.7(@rspack/core@2.0.1)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)):
+  sass-loader@16.0.7(@rspack/core@2.0.4)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)):
     dependencies:
       neo-async: 2.6.2
     optionalDependencies:
-      '@rspack/core': 2.0.1
+      '@rspack/core': 2.0.4
       sass: 1.99.0
       webpack: 5.107.1(@swc/core@1.15.33)(postcss@8.5.15)
 
@@ -3368,25 +3230,22 @@ snapshots:
 
   set-cookie-parser@2.7.2: {}
 
-  shakapacker-rspack@10.1.0-rc.1(@rspack/dev-server@2.0.1(@rspack/core@2.0.1))(@swc/core@1.15.33)(compression-webpack-plugin@12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(css-loader@7.1.4(@rspack/core@2.0.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(mini-css-extract-plugin@2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass-loader@16.0.7(@rspack/core@2.0.1)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass@1.99.0)(swc-loader@0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)):
+  shakapacker-rspack@10.1.0-rc.2(@rspack/cli@2.0.4(@rspack/core@2.0.4)(@rspack/dev-server@2.0.1(@rspack/core@2.0.4)))(@rspack/core@2.0.4)(@swc/core@1.15.33)(compression-webpack-plugin@12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(css-loader@7.1.4(@rspack/core@2.0.4)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(mini-css-extract-plugin@2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(rspack-manifest-plugin@5.2.1(@rspack/core@2.0.4))(sass-loader@16.0.7(@rspack/core@2.0.4)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass@1.99.0)(swc-loader@0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)):
     dependencies:
-      '@rspack/cli': 2.0.4(@rspack/core@2.0.4)(@rspack/dev-server@2.0.1(@rspack/core@2.0.1))
+      '@rspack/cli': 2.0.4(@rspack/core@2.0.4)(@rspack/dev-server@2.0.1(@rspack/core@2.0.4))
       '@rspack/core': 2.0.4
       rspack-manifest-plugin: 5.2.1(@rspack/core@2.0.4)
-      shakapacker: 10.1.0-rc.1(@rspack/cli@2.0.4(@rspack/core@2.0.4)(@rspack/dev-server@2.0.1(@rspack/core@2.0.1)))(@rspack/core@2.0.4)(@swc/core@1.15.33)(compression-webpack-plugin@12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(css-loader@7.1.4(@rspack/core@2.0.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(mini-css-extract-plugin@2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(rspack-manifest-plugin@5.2.1(@rspack/core@2.0.1))(sass-loader@16.0.7(@rspack/core@2.0.1)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass@1.99.0)(swc-loader@0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
+      shakapacker: 10.1.0-rc.2(@rspack/cli@2.0.4(@rspack/core@2.0.4)(@rspack/dev-server@2.0.1(@rspack/core@2.0.4)))(@rspack/core@2.0.4)(@swc/core@1.15.33)(compression-webpack-plugin@12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(css-loader@7.1.4(@rspack/core@2.0.4)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(mini-css-extract-plugin@2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(rspack-manifest-plugin@5.2.1(@rspack/core@2.0.4))(sass-loader@16.0.7(@rspack/core@2.0.4)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass@1.99.0)(swc-loader@0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
     optionalDependencies:
-      css-loader: 7.1.4(@rspack/core@2.0.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
+      css-loader: 7.1.4(@rspack/core@2.0.4)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
       sass: 1.99.0
-      sass-loader: 16.0.7(@rspack/core@2.0.1)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
+      sass-loader: 16.0.7(@rspack/core@2.0.4)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/plugin-transform-runtime'
       - '@babel/preset-env'
       - '@babel/runtime'
-      - '@module-federation/runtime-tools'
-      - '@rspack/dev-server'
       - '@swc/core'
-      - '@swc/helpers'
       - '@types/babel__core'
       - '@types/webpack'
       - babel-loader
@@ -3403,7 +3262,7 @@ snapshots:
       - webpack-dev-server
       - webpack-subresource-integrity
 
-  shakapacker@10.1.0-rc.1(@rspack/cli@2.0.1(@rspack/core@2.0.1)(@rspack/dev-server@2.0.1(@rspack/core@2.0.1)))(@rspack/core@2.0.1)(@swc/core@1.15.33)(compression-webpack-plugin@12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(css-loader@7.1.4(@rspack/core@2.0.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(mini-css-extract-plugin@2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(rspack-manifest-plugin@5.2.1(@rspack/core@2.0.1))(sass-loader@16.0.7(@rspack/core@2.0.1)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass@1.99.0)(swc-loader@0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)):
+  shakapacker@10.1.0-rc.2(@rspack/cli@2.0.4(@rspack/core@2.0.4)(@rspack/dev-server@2.0.1(@rspack/core@2.0.4)))(@rspack/core@2.0.4)(@swc/core@1.15.33)(compression-webpack-plugin@12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(css-loader@7.1.4(@rspack/core@2.0.4)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(mini-css-extract-plugin@2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(rspack-manifest-plugin@5.2.1(@rspack/core@2.0.4))(sass-loader@16.0.7(@rspack/core@2.0.4)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass@1.99.0)(swc-loader@0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)):
     dependencies:
       js-yaml: 4.1.1
       pack-config-diff: 0.1.0
@@ -3411,38 +3270,15 @@ snapshots:
       webpack-merge: 5.10.0
       yargs: 17.7.2
     optionalDependencies:
-      '@rspack/cli': 2.0.1(@rspack/core@2.0.1)(@rspack/dev-server@2.0.1(@rspack/core@2.0.1))
-      '@rspack/core': 2.0.1
-      '@swc/core': 1.15.33
-      compression-webpack-plugin: 12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
-      css-loader: 7.1.4(@rspack/core@2.0.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
-      mini-css-extract-plugin: 2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
-      rspack-manifest-plugin: 5.2.1(@rspack/core@2.0.1)
-      sass: 1.99.0
-      sass-loader: 16.0.7(@rspack/core@2.0.1)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
-      swc-loader: 0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
-      terser-webpack-plugin: 5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
-      webpack: 5.107.1(@swc/core@1.15.33)(postcss@8.5.15)
-    transitivePeerDependencies:
-      - ts-node
-
-  shakapacker@10.1.0-rc.1(@rspack/cli@2.0.4(@rspack/core@2.0.4)(@rspack/dev-server@2.0.1(@rspack/core@2.0.1)))(@rspack/core@2.0.4)(@swc/core@1.15.33)(compression-webpack-plugin@12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(css-loader@7.1.4(@rspack/core@2.0.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(mini-css-extract-plugin@2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(rspack-manifest-plugin@5.2.1(@rspack/core@2.0.1))(sass-loader@16.0.7(@rspack/core@2.0.1)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(sass@1.99.0)(swc-loader@0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(terser-webpack-plugin@5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)))(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15)):
-    dependencies:
-      js-yaml: 4.1.1
-      pack-config-diff: 0.1.0
-      path-complete-extname: 1.0.0
-      webpack-merge: 5.10.0
-      yargs: 17.7.2
-    optionalDependencies:
-      '@rspack/cli': 2.0.4(@rspack/core@2.0.4)(@rspack/dev-server@2.0.1(@rspack/core@2.0.1))
+      '@rspack/cli': 2.0.4(@rspack/core@2.0.4)(@rspack/dev-server@2.0.1(@rspack/core@2.0.4))
       '@rspack/core': 2.0.4
       '@swc/core': 1.15.33
       compression-webpack-plugin: 12.0.0(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
-      css-loader: 7.1.4(@rspack/core@2.0.1)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
+      css-loader: 7.1.4(@rspack/core@2.0.4)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
       mini-css-extract-plugin: 2.10.2(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
-      rspack-manifest-plugin: 5.2.1(@rspack/core@2.0.1)
+      rspack-manifest-plugin: 5.2.1(@rspack/core@2.0.4)
       sass: 1.99.0
-      sass-loader: 16.0.7(@rspack/core@2.0.1)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
+      sass-loader: 16.0.7(@rspack/core@2.0.4)(sass@1.99.0)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
       swc-loader: 0.2.7(@swc/core@1.15.33)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
       terser-webpack-plugin: 5.6.0(@swc/core@1.15.33)(postcss@8.5.15)(webpack@5.107.1(@swc/core@1.15.33)(postcss@8.5.15))
       webpack: 5.107.1(@swc/core@1.15.33)(postcss@8.5.15)
