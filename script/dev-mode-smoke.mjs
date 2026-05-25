@@ -19,10 +19,13 @@ if (!modeConfig) {
 
 const basePort = Number(process.env.REACT_ON_RAILS_BASE_PORT || modeConfig.basePort);
 const baseURL = `http://127.0.0.1:${basePort}`;
+const rendererPort = basePort + 2;
 const env = {
   ...process.env,
   RAILS_ENV: 'development',
+  PORT: String(basePort),
   REACT_ON_RAILS_BASE_PORT: String(basePort),
+  RENDERER_PORT: String(rendererPort),
   RENDERER_LOG_LEVEL: process.env.RENDERER_LOG_LEVEL || 'info',
   SKIP_DATABASE_CHECK: 'true',
 };
@@ -45,6 +48,8 @@ async function waitForUrl(url, timeoutMs = 180_000) {
   let lastError = null;
 
   while (Date.now() - startedAt < timeoutMs) {
+    assertServerRunning();
+
     try {
       const response = await fetch(url, { redirect: 'manual' });
       if (response.status >= 200 && response.status < 500) return response;
@@ -56,6 +61,7 @@ async function waitForUrl(url, timeoutMs = 180_000) {
     await delay(1_000);
   }
 
+  assertServerRunning();
   throw new Error(`Timed out waiting for ${url}: ${lastError?.message || 'no response'}`);
 }
 
@@ -104,6 +110,12 @@ async function smokeBrowser() {
 }
 
 let serverProcess = null;
+let serverExitError = null;
+let shuttingDown = false;
+
+function assertServerRunning() {
+  if (serverExitError) throw serverExitError;
+}
 
 try {
   run('bin/rails', ['db:prepare']);
@@ -119,18 +131,25 @@ try {
   serverProcess.stdout.on('data', (chunk) => process.stdout.write(chunk));
   serverProcess.stderr.on('data', (chunk) => process.stderr.write(chunk));
   serverProcess.on('exit', (code, signal) => {
-    if (code !== null && code !== 0) {
-      console.error(`bin/dev ${modeConfig.command} exited early with ${code}`);
-    } else if (signal) {
-      console.error(`bin/dev ${modeConfig.command} exited from ${signal}`);
+    const reason = code !== null ? `code ${code}` : `signal ${signal}`;
+    const message = `bin/dev ${modeConfig.command} exited with ${reason}`;
+
+    if (shuttingDown) {
+      console.error(message);
+    } else {
+      serverExitError = new Error(`${message} before smoke completed`);
+      console.error(serverExitError.message);
     }
   });
 
   await waitForUrl(`${baseURL}/session/new`);
   if (mode === 'static') await waitForUrl(`${baseURL}/packs/manifest.json`);
+  assertServerRunning();
   await smokeBrowser();
   console.log(`bin/dev ${modeConfig.command} smoke passed at ${baseURL}`);
 } finally {
+  shuttingDown = true;
+
   if (fs.existsSync('.overmind.sock')) {
     spawnSync('overmind', ['quit', '--socket', './.overmind.sock'], {
       cwd: process.cwd(),
