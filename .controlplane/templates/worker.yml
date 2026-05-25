@@ -1,0 +1,23 @@
+kind: workload
+name: worker
+spec:
+  type: standard
+  containers:
+    - name: worker
+      cpu: 200m
+      inheritEnv: true
+      image: "{{APP_IMAGE_LINK}}"
+      memory: 512Mi
+      args:
+        - ./bin/jobs
+  defaultOptions:
+    autoscaling:
+      minScale: 1
+      maxScale: 1
+    capacityAI: false
+    timeoutSeconds: 60
+  firewallConfig:
+    external:
+      outboundAllowCIDR:
+        - 0.0.0.0/0
+  identityLink: "{{APP_IDENTITY_LINK}}"

@@ -1,0 +1,30 @@
+name: Promote Staging to Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_promotion:
+        description: Type "promote" to confirm promotion of staging to production
+        required: true
+        type: string
+
+permissions:
+  # The upstream reusable workflow's create-github-release job needs
+  # contents: write, and callers must grant the union of callee permissions.
+  contents: write
+
+jobs:
+  promote-to-production:
+    if: github.event.inputs.confirm_promotion == 'promote'
+    uses: shakacode/control-plane-flow/.github/workflows/cpflow-promote-staging-to-production.yml@v5.0.1
+    with:
+      # Keep CPLN_TOKEN_PRODUCTION as a secret on this protected GitHub
+      # Environment. The caller passes the environment name, the upstream
+      # reusable workflow runs its production job in that environment, and
+      # GitHub exposes environment secrets only after required reviewers approve.
+      production_environment: production
+    # Only pass the staging token explicitly. CPLN_TOKEN_PRODUCTION must live on
+    # the protected production Environment, where GitHub exposes it only after
+    # the required reviewers approve this job.
+    secrets:
+      CPLN_TOKEN_STAGING: ${{ secrets.CPLN_TOKEN_STAGING }}

@@ -1,0 +1,31 @@
+# Template setup of Rails server workload, roughly corresponding to Heroku dyno
+# type within Procfile.
+kind: workload
+name: rails
+spec:
+  type: standard
+  containers:
+    - name: rails
+      cpu: 300m
+      env:
+        - name: PORT
+          value: "3000"
+      inheritEnv: true
+      image: "{{APP_IMAGE_LINK}}"
+      memory: 1Gi
+      ports:
+        - number: 3000
+          protocol: http
+  defaultOptions:
+    autoscaling:
+      minScale: 1
+      maxScale: 1
+    capacityAI: false
+    timeoutSeconds: 60
+  firewallConfig:
+    external:
+      inboundAllowCIDR:
+        - 0.0.0.0/0
+      outboundAllowCIDR:
+        - 0.0.0.0/0
+  identityLink: "{{APP_IDENTITY_LINK}}"
