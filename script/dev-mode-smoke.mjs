@@ -52,7 +52,7 @@ async function waitForUrl(url, timeoutMs = 180_000) {
 
     try {
       const response = await fetch(url, { redirect: 'manual' });
-      if (response.status >= 200 && response.status < 500) return response;
+      if (response.ok) return response;
       lastError = new Error(`${url} returned ${response.status}`);
     } catch (error) {
       lastError = error;
@@ -77,8 +77,9 @@ async function smokeBrowser() {
 
   page.on('requestfailed', (request) => {
     const failure = request.failure();
-    if (!failure?.errorText.includes('net::ERR_ABORTED')) {
-      failedRequests.push(`${request.url()} ${failure?.errorText || ''}`.trim());
+    const errorText = failure?.errorText || '';
+    if (!errorText.includes('net::ERR_ABORTED')) {
+      failedRequests.push(`${request.url()} ${errorText}`.trim());
     }
   });
 
