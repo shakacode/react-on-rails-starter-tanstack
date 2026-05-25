@@ -67,9 +67,11 @@ For production promotion later, configure a protected GitHub Environment named
 Protect the `production` environment with required reviewers, enable prevent
 self-review, and consider disabling administrator bypass. Only release managers
 or similarly trusted maintainers should be able to approve the promotion job.
-The promotion workflow uses that environment before it can access
-`CPLN_TOKEN_PRODUCTION`, so the production token is not exposed to ordinary
-review-app or staging runs.
+The generated caller passes `production_environment: production`; the upstream
+reusable workflow runs its production job in that environment, so GitHub injects
+`CPLN_TOKEN_PRODUCTION` only after the environment approval gate passes. The
+production token is not exposed to ordinary review-app or staging runs.
+
 Generated caller workflows pass only the named secrets each upstream workflow
 needs. They do not use `secrets: inherit`; `CPLN_TOKEN_PRODUCTION` is supplied
 only by the protected `production` Environment after approval.
