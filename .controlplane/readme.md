@@ -158,7 +158,7 @@ bin/test-cpflow-github-flow ruby /path/to/control-plane-flow/bin/cpflow
 This repo is locked at runtime by the generated workflow wrapper GitHub ref, not
 by the gem alone. The wrappers currently point both `uses: ...@<ref>` and
 `control_plane_flow_ref: <ref>` to the upstream `control-plane-flow` commit
-`19501451b7e08a48a917fb04a439171881558f82` from upstream PR #318 so this PR can
+`19ca93eadcba81e7438f26ab55a0f2ca7ace82b0` from upstream PR #318 so this PR can
 test unreleased workflow changes before the next `cpflow` release. GitHub loads
 the reusable workflow and shared actions from that GitHub ref. The gem is used
 to generate/update these wrappers and is only installed at workflow runtime when

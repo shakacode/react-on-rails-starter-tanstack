@@ -25,6 +25,6 @@ jobs:
       github.event_name == 'workflow_dispatch'
     # control_plane_flow_ref is accepted by the upstream workflow for wrapper
     # consistency; this helper checks out caller content only.
-    uses: shakacode/control-plane-flow/.github/workflows/cpflow-help-command.yml@19501451b7e08a48a917fb04a439171881558f82
+    uses: shakacode/control-plane-flow/.github/workflows/cpflow-help-command.yml@19ca93eadcba81e7438f26ab55a0f2ca7ace82b0
     with:
-      control_plane_flow_ref: 19501451b7e08a48a917fb04a439171881558f82
+      control_plane_flow_ref: 19ca93eadcba81e7438f26ab55a0f2ca7ace82b0
