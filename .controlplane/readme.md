@@ -70,6 +70,9 @@ or similarly trusted maintainers should be able to approve the promotion job.
 The promotion workflow uses that environment before it can access
 `CPLN_TOKEN_PRODUCTION`, so the production token is not exposed to ordinary
 review-app or staging runs.
+Generated caller workflows pass only the named secrets each upstream workflow
+needs. They do not use `secrets: inherit`; `CPLN_TOKEN_PRODUCTION` is supplied
+only by the protected `production` Environment after approval.
 
 Optional build variables:
 
@@ -191,3 +194,4 @@ review app by commenting exactly:
 
 The workflow should build the image, create or update
 `react-on-rails-starter-tanstack-pr-<PR number>`, and comment with the review URL.
+That name follows the generated `<review-app-prefix>-<PR number>` convention; this repo's prefix intentionally ends in `-pr`.

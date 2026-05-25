@@ -32,11 +32,9 @@ jobs:
        contains(fromJson('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association))
     # Keep the @ref in `uses:` and `control_plane_flow_ref` below in sync: the
     # first selects the reusable workflow, the second selects its shared actions.
-    uses: shakacode/control-plane-flow/.github/workflows/cpflow-deploy-review-app.yml@cfe494bf32925d49508380e03856d97bd71f6689
+    uses: shakacode/control-plane-flow/.github/workflows/cpflow-deploy-review-app.yml@7d9b80dcb55b243d0cc78b0a85bcb3d568ce8e02
     with:
-      control_plane_flow_ref: cfe494bf32925d49508380e03856d97bd71f6689
-    # `secrets: inherit` passes all caller repository secrets to the trusted
-    # upstream workflow. The upstream workflow only reads the named secrets it
-    # references, but GitHub does not enforce that boundary. Strict consumers can
-    # set CPFLOW_GITHUB_ACTIONS_REF to an immutable commit SHA.
-    secrets: inherit
+      control_plane_flow_ref: 7d9b80dcb55b243d0cc78b0a85bcb3d568ce8e02
+    secrets:
+      CPLN_TOKEN_STAGING: ${{ secrets.CPLN_TOKEN_STAGING }}
+      DOCKER_BUILD_SSH_KEY: ${{ secrets.DOCKER_BUILD_SSH_KEY }}
