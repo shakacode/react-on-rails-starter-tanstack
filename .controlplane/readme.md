@@ -122,6 +122,21 @@ For staging deploys later, also use:
 | Staging app | `react-on-rails-starter-tanstack-staging` | The `CPLN_TOKEN_STAGING` token deploys this app from `main`. |
 | Staging app secret dictionary | `react-on-rails-starter-tanstack-staging-secrets` | Same required keys as the review app secret dictionary. |
 
+Bootstrap the persistent staging app once before the first merge-to-main
+deploy:
+
+```sh
+cpflow setup-app -a react-on-rails-starter-tanstack-staging --org shakacode-open-source-examples-staging --skip-post-creation-hook
+```
+
+`setup-app` reads `setup_app_templates` from `.controlplane/controlplane.yml`
+and creates the app identity, app secret dictionary, app secret policy, policy
+binding, and template resources. Use `--skip-post-creation-hook` so first-time
+bootstrap does not try to run database setup before a Docker image exists. For
+later template updates on an existing persistent app, use
+`cpflow apply-template` and make sure the app identity still has `reveal`
+permission on the app secret policy.
+
 For production promotion later, use a separate production org and token:
 
 | Control Plane item | Where | Notes |
@@ -130,6 +145,9 @@ For production promotion later, use a separate production org and token:
 | Production app | `react-on-rails-starter-tanstack-production` | Promotion copies the staging image into this app. |
 | Production app secret dictionary | `react-on-rails-starter-tanstack-production-secrets` | Create before the first promotion. Use production-only values. |
 | Production service-account token | GitHub Environment secret `CPLN_TOKEN_PRODUCTION` | Keep this token in the protected `production` GitHub Environment only. |
+
+Bootstrap production the same way before the first promotion, using the
+production org and production-only secret values.
 
 The demo PostgreSQL workload template creates app-scoped resources for
 review/staging demos: `<app-name>-pg`, `<app-name>-pg-script`,
