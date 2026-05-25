@@ -96,6 +96,16 @@ Advanced optional variables:
 
 The GitHub secret is only the automation credential. The Control Plane org also
 needs the app resources and runtime secrets that the workloads read at boot.
+Staging and review app GVCs should appear in:
+
+```text
+https://console.cpln.io/console/org/shakacode-open-source-examples-staging/gvc
+```
+
+Expected names:
+
+- `react-on-rails-starter-tanstack-staging`
+- `react-on-rails-starter-tanstack-pr-<PR number>`
 
 For review-app testing, the standard setup is:
 
