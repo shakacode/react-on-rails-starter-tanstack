@@ -113,10 +113,28 @@ async function smokeBrowser() {
 
 let serverProcess = null;
 let serverExitError = null;
+let serverExitRejectors = [];
 let shuttingDown = false;
 
 function assertServerRunning() {
   if (serverExitError) throw serverExitError;
+}
+
+async function whileServerRuns(task) {
+  assertServerRunning();
+
+  let rejectOnExit = null;
+  const serverExitPromise = new Promise((_, reject) => {
+    rejectOnExit = reject;
+    serverExitRejectors.push(reject);
+  });
+
+  try {
+    return await Promise.race([task(), serverExitPromise]);
+  } finally {
+    serverExitRejectors = serverExitRejectors.filter((reject) => reject !== rejectOnExit);
+    assertServerRunning();
+  }
 }
 
 try {
@@ -140,6 +158,7 @@ try {
       console.error(message);
     } else {
       serverExitError = new Error(`${message} before smoke completed`);
+      for (const reject of serverExitRejectors.splice(0)) reject(serverExitError);
       console.error(serverExitError.message);
     }
   });
@@ -147,7 +166,7 @@ try {
   await waitForUrl(`${baseURL}/session/new`);
   if (mode === 'static') await waitForUrl(`${baseURL}/packs/manifest.json`);
   assertServerRunning();
-  await smokeBrowser();
+  await whileServerRuns(smokeBrowser);
   console.log(`bin/dev ${modeConfig.command} smoke passed at ${baseURL}`);
 } finally {
   shuttingDown = true;
