@@ -33,8 +33,8 @@ jobs:
     # when the event does not match. Keep both conditions in sync.
     # Keep the @ref in `uses:` and `control_plane_flow_ref` below in sync: the
     # first selects the reusable workflow, the second selects its shared actions.
-    uses: shakacode/control-plane-flow/.github/workflows/cpflow-delete-review-app.yml@19ca93eadcba81e7438f26ab55a0f2ca7ace82b0
+    uses: shakacode/control-plane-flow/.github/workflows/cpflow-delete-review-app.yml@abaf01969be2867f36fb267c2bc4efe4c199685e
     with:
-      control_plane_flow_ref: 19ca93eadcba81e7438f26ab55a0f2ca7ace82b0
+      control_plane_flow_ref: abaf01969be2867f36fb267c2bc4efe4c199685e
     secrets:
       CPLN_TOKEN_STAGING: ${{ secrets.CPLN_TOKEN_STAGING }}
