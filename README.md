@@ -26,10 +26,11 @@ bundle exec rspec
 pnpm run test:router-shim
 pnpm test:playwright
 pnpm run test:dev-modes
+pnpm run test:hmr
 bin/test
 ```
 
-`bin/dev` starts Rails, Rspack, SolidQueue, the Pro Node renderer, and the RSC bundle watcher through `Procfile.dev`. This starter keeps Rspack development on live reload by default; enable `dev_server.hmr` in `config/shakapacker.yml` only when you want to test HMR-specific behavior.
+`bin/dev` starts Rails, Rspack, SolidQueue, the Pro Node renderer, and the RSC bundle watcher through `Procfile.dev`. This starter keeps Rspack development on live reload by default; run `SHAKAPACKER_DEV_SERVER_HMR=true bin/dev --no-open-browser --route=dashboard` or `pnpm run test:hmr` when you want to test HMR-specific behavior.
 
 Use these alternate modes to smoke-test non-HMR paths:
 

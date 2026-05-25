@@ -8,20 +8,23 @@ import { chromium } from '@playwright/test';
 
 const mode = process.argv[2];
 const modeConfig = {
-  static: { basePort: 3300, command: 'static' },
-  prod: { basePort: 3310, command: 'prod' },
+  dev: { basePort: 3320, args: [], label: 'dev', browserSettleMs: 2_000 },
+  hmr: { basePort: 3330, args: [], env: { SHAKAPACKER_DEV_SERVER_HMR: 'true' }, label: 'hmr', browserSettleMs: 2_000 },
+  static: { basePort: 3300, args: ['static'], label: 'static' },
+  prod: { basePort: 3310, args: ['prod'], label: 'prod' },
 }[mode];
 
 if (!modeConfig) {
-  console.error('Usage: node script/dev-mode-smoke.mjs <static|prod>');
+  console.error('Usage: node script/dev-mode-smoke.mjs <dev|hmr|static|prod>');
   process.exit(1);
 }
 
 const basePort = Number(process.env.REACT_ON_RAILS_BASE_PORT || modeConfig.basePort);
-const baseURL = `http://127.0.0.1:${basePort}`;
+const baseURL = `http://localhost:${basePort}`;
 const rendererPort = basePort + 2;
 const env = {
   ...process.env,
+  ...modeConfig.env,
   RAILS_ENV: 'development',
   PORT: String(basePort),
   REACT_ON_RAILS_BASE_PORT: String(basePort),
@@ -86,6 +89,7 @@ async function smokeBrowser() {
 
   try {
     await page.goto('/session/new', { waitUntil: 'domcontentloaded' });
+    if (modeConfig.browserSettleMs) await delay(modeConfig.browserSettleMs);
     await page.getByLabel('Email').fill('demo@example.com');
     await page.getByLabel('Password').fill('password');
     await Promise.all([
@@ -141,7 +145,7 @@ try {
   run('bin/rails', ['db:prepare']);
   run('bin/rails', ['db:seed']);
 
-  serverProcess = spawn('bin/dev', [modeConfig.command, '--no-open-browser', '--route=dashboard'], {
+  serverProcess = spawn('bin/dev', [...modeConfig.args, '--no-open-browser', '--route=dashboard'], {
     cwd: process.cwd(),
     env,
     detached: true,
@@ -152,7 +156,7 @@ try {
   serverProcess.stderr.on('data', (chunk) => process.stderr.write(chunk));
   serverProcess.on('exit', (code, signal) => {
     const reason = code !== null ? `code ${code}` : `signal ${signal}`;
-    const message = `bin/dev ${modeConfig.command} exited with ${reason}`;
+    const message = `bin/dev ${modeConfig.label} exited with ${reason}`;
 
     if (shuttingDown) {
       console.error(message);
@@ -167,7 +171,7 @@ try {
   if (mode === 'static') await waitForUrl(`${baseURL}/packs/manifest.json`);
   assertServerRunning();
   await whileServerRuns(smokeBrowser);
-  console.log(`bin/dev ${modeConfig.command} smoke passed at ${baseURL}`);
+  console.log(`bin/dev ${modeConfig.label} smoke passed at ${baseURL}`);
 } finally {
   shuttingDown = true;
 

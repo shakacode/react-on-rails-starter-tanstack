@@ -100,8 +100,9 @@ development:
     host: localhost
     port: 3035
     # This starter defaults to live reload for deterministic React on Rails SSR
-    # smoke tests. To exercise HMR, set this to true and live_reload to false.
-    hmr: false
+    # smoke tests. Set SHAKAPACKER_DEV_SERVER_HMR=true to exercise HMR without
+    # editing this file.
+    hmr: <%= ENV["SHAKAPACKER_DEV_SERVER_HMR"] == "true" %>
     # If HMR is on, CSS will be inlined by delivering it as part of the script payload via style-loader. Be sure
     # that you add style-loader to your project dependencies.
     #
@@ -112,7 +113,7 @@ development:
     inline_css: true
     # Defaults to the inverse of hmr. Kept explicit so the starter's default is
     # clear even though upstream bin/dev help currently describes default HMR.
-    live_reload: true
+    live_reload: <%= ENV["SHAKAPACKER_DEV_SERVER_HMR"] != "true" %>
     client:
       # Should we show a full-screen overlay in the browser when there are compiler errors or warnings?
       overlay: true
