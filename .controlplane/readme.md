@@ -131,10 +131,12 @@ For production promotion later, use a separate production org and token:
 | Production app secret dictionary | `react-on-rails-starter-tanstack-production-secrets` | Create before the first promotion. Use production-only values. |
 | Production service-account token | GitHub Environment secret `CPLN_TOKEN_PRODUCTION` | Keep this token in the protected `production` GitHub Environment only. |
 
-The demo PostgreSQL workload template creates `postgres-poc-credentials` for
-review/staging demos. Replace the placeholder password before serious staging
-testing. For real production, prefer a managed database and update the
-`DATABASE_*` environment values accordingly.
+The demo PostgreSQL workload template creates app-scoped resources for
+review/staging demos: `<app-name>-pg`, `<app-name>-pg-script`,
+`<app-name>-pg-access`, `<app-name>-pg-vs`, and `<app-name>-pg-identity`.
+Replace the placeholder password before serious staging testing. For real
+production, prefer a managed database and update the `DATABASE_*` environment
+values accordingly.
 
 Review app setup intentionally does not run a `post_creation` database hook in
 `.controlplane/controlplane.yml`. On a first deploy there is no app image yet,

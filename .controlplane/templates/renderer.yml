@@ -6,7 +6,7 @@ spec:
     - name: renderer
       cpu: 300m
       inheritEnv: true
-      image: {{APP_IMAGE_LINK}}
+      image: "{{APP_IMAGE_LINK}}"
       memory: 512Mi
       args:
         - node
@@ -26,3 +26,4 @@ spec:
         - 0.0.0.0/0
     internal:
       inboundAllowType: same-gvc
+  identityLink: "{{APP_IDENTITY_LINK}}"

@@ -26,7 +26,10 @@ COPY --from=node /usr/local/include/node /usr/local/include/node
 
 RUN ln -sf ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && \
     ln -sf ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx && \
-    ln -sf ../lib/node_modules/corepack/dist/corepack.js /usr/local/bin/corepack
+    ln -sf ../lib/node_modules/corepack/dist/corepack.js /usr/local/bin/corepack && \
+    chmod +x /usr/local/lib/node_modules/npm/bin/npm-cli.js \
+             /usr/local/lib/node_modules/npm/bin/npx-cli.js \
+             /usr/local/lib/node_modules/corepack/dist/corepack.js
 
 # Expose Corepack-managed shims so later build steps can call yarn/pnpm
 # directly during asset precompilation hooks.
