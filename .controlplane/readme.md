@@ -199,6 +199,13 @@ workflow from that tag, and the upstream workflow checks out its matching shared
 actions from the same workflow context. Downstream wrappers should not pass a
 duplicate `control_plane_flow_ref` input.
 
+Using a release tag is deliberate for this demo path: it makes stable upgrades
+easy to audit and keeps the docs, workflow wrapper, and published gem version
+understandable. If your organization requires immutable GitHub Action refs, pin
+the wrappers to the full 40-character commit SHA behind the release tag with
+`bin/pin-cpflow-github-ref`, update the examples in this doc, and keep
+`CPFLOW_VERSION` unset unless it exactly matches the same released gem.
+
 To move to a newer stable `cpflow` release when generated templates changed:
 
 1. Install or bundle the released `cpflow` gem.

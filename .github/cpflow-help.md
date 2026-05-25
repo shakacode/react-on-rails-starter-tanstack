@@ -83,6 +83,12 @@ wrappers should not pass a duplicate Control Plane Flow ref input. If your
 generated wrappers still include a `with:` block whose only purpose is to repeat
 the same ref, regenerate them with a newer `cpflow`.
 
+Release tags are the standard path for this demo because they keep stable
+upgrades readable. If your security policy requires immutable GitHub Action
+refs, pin the wrappers to the full 40-character commit SHA behind the release
+tag with `bin/pin-cpflow-github-ref` and keep `CPFLOW_VERSION` unset unless it
+exactly matches the same released gem.
+
 Leave `CPFLOW_VERSION` unset so the workflow builds cpflow from the same
 checked-out upstream source. If you set `CPFLOW_VERSION`, it must match the
 release tag, for example `CPFLOW_VERSION=5.0.2` with a wrapper pinned to

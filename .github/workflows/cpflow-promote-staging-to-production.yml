@@ -16,6 +16,10 @@ permissions:
 jobs:
   promote-to-production:
     if: github.event.inputs.confirm_promotion == 'promote'
+    # Standard downstream apps pin cpflow reusable workflows to release tags so
+    # upgrades are auditable and easy to roll forward. If your security policy
+    # requires immutable refs, run bin/pin-cpflow-github-ref with the full
+    # 40-character commit SHA behind the release tag and update the docs too.
     uses: shakacode/control-plane-flow/.github/workflows/cpflow-promote-staging-to-production.yml@v5.0.2
     with:
       # Keep CPLN_TOKEN_PRODUCTION as a secret on this protected GitHub
