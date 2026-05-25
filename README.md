@@ -2,9 +2,9 @@
 
 Flagship React on Rails + TanStack starter. It uses the RC releases of React on Rails Pro and Shakapacker with Rspack:
 
-- `react_on_rails` / `react_on_rails_pro` `16.7.0.rc.0`
-- `react-on-rails-pro` / `react-on-rails-pro-node-renderer` `16.7.0-rc.0`
-- `shakapacker` / `shakapacker-rspack` `10.1.0-rc.1`
+- `react_on_rails` / `react_on_rails_pro` `16.7.0.rc.1`
+- `react-on-rails-pro` / `react-on-rails-pro-node-renderer` `16.7.0-rc.1`
+- `shakapacker` / `shakapacker-rspack` `10.1.0-rc.2`
 - Rails 8.1, React 19, TypeScript, pnpm, Rspack, React Server Components
 
 ## Quick Start
@@ -23,11 +23,14 @@ Run `bin/doctor` first when setup fails; it checks Ruby, Node, pnpm, Bun, and Po
 
 ```sh
 bundle exec rspec
+pnpm run test:router-shim
 pnpm test:playwright
+pnpm run test:dev-modes
+pnpm run test:hmr
 bin/test
 ```
 
-`bin/dev` starts Rails, Rspack, SolidQueue, the Pro Node renderer, and the RSC bundle watcher through `Procfile.dev`. This starter keeps Rspack development on live reload by default; enable `dev_server.hmr` in `config/shakapacker.yml` only when you want to test HMR-specific behavior.
+`bin/dev` starts Rails, Rspack, SolidQueue, the Pro Node renderer, and the RSC bundle watcher through `Procfile.dev`. This starter keeps Rspack development on live reload by default; run `SHAKAPACKER_DEV_SERVER_HMR=true bin/dev --no-open-browser --route=dashboard` or `pnpm run test:hmr` when you want to test HMR-specific behavior.
 
 Use these alternate modes to smoke-test non-HMR paths:
 
@@ -67,6 +70,7 @@ See [SPIKE.md](SPIKE.md) for the current AMBER RSC/Rspack compatibility note: Rs
 - [Customizing](docs/03-customizing.md)
 - [Deploying](docs/04-deploying.md)
 - [Troubleshooting](docs/05-troubleshooting.md)
+- [Tested Modes](docs/06-tested-modes.md)
 - [Upgrading](UPGRADING.md)
 
 ## License
