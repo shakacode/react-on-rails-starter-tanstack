@@ -10,12 +10,8 @@ permissions:
 
 jobs:
   cleanup:
-    # Keep the @ref in `uses:` and `control_plane_flow_ref` below in sync: the
-    # first selects the reusable workflow, the second selects its shared actions.
-    # Cleanup targets the current inferred review-app prefix. If you change
+    # Cleanup targets the current inferred review-app prefix. If you changed
     # naming conventions, manually delete review apps under the old prefix.
-    uses: shakacode/control-plane-flow/.github/workflows/cpflow-cleanup-stale-review-apps.yml@abaf01969be2867f36fb267c2bc4efe4c199685e
-    with:
-      control_plane_flow_ref: abaf01969be2867f36fb267c2bc4efe4c199685e
+    uses: shakacode/control-plane-flow/.github/workflows/cpflow-cleanup-stale-review-apps.yml@v5.0.1
     secrets:
       CPLN_TOKEN_STAGING: ${{ secrets.CPLN_TOKEN_STAGING }}

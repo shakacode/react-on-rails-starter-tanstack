@@ -90,7 +90,7 @@ Advanced optional variables:
 | --- | --- |
 | `REVIEW_APP_DEPLOYING_ICON_URL` | Cosmetic custom animated icon for review-app comments. Ignore this for the standard setup. |
 | `CPLN_CLI_VERSION` | Pin only when Control Plane CLI compatibility requires it. |
-| `CPFLOW_VERSION` | Runtime gem override. Leave unset when workflow wrappers are pinned to a GitHub commit SHA for upstream PR testing. |
+| `CPFLOW_VERSION` | Runtime gem override. Normally leave unset. If set, it must match the workflow tag without the leading `v`, such as `5.0.1`. |
 
 ## Control Plane Setup
 
@@ -175,15 +175,13 @@ bin/test-cpflow-github-flow ruby /path/to/control-plane-flow/bin/cpflow
 ```
 
 This repo is locked at runtime by the generated workflow wrapper GitHub ref, not
-by the gem alone. The wrappers currently point both `uses: ...@<ref>` and
-`control_plane_flow_ref: <ref>` to the merged upstream `control-plane-flow`
-commit `abaf01969be2867f36fb267c2bc4efe4c199685e` from PR #318 so this PR can
-test unreleased post-5.0.0 workflow changes before the next `cpflow` release.
-GitHub loads the reusable workflow and shared actions from that GitHub ref. The
-gem is used to generate/update these wrappers and is only installed at workflow
-runtime when `CPFLOW_VERSION` is set.
+by the gem alone. The wrappers currently point their `uses:` refs at the
+upstream `control-plane-flow` release tag `v5.0.1`. GitHub loads the reusable
+workflow from that tag, and the upstream workflow checks out its matching shared
+actions from the same workflow context. Downstream wrappers should not pass a
+duplicate `control_plane_flow_ref` input.
 
-To move to a newer stable `cpflow` release:
+To move to a newer stable `cpflow` release when generated templates changed:
 
 1. Install or bundle the released `cpflow` gem.
 2. Run `cpflow generate-github-actions`.
