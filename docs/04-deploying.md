@@ -16,6 +16,11 @@ Set these environment variables in your host:
 - mail provider credentials
 - `SENTRY_DSN` if Sentry is enabled
 
+The Node renderer binds to `0.0.0.0` automatically when `RAILS_ENV=production`
+so Control Plane and other container platforms can route to it. Local
+development keeps the safer `localhost` binding. Override `RENDERER_HOST` only
+if your hosting platform requires a different bind address.
+
 Before deploying, run:
 
 ```sh
