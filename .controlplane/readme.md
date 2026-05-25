@@ -136,6 +136,13 @@ review/staging demos. Replace the placeholder password before serious staging
 testing. For real production, prefer a managed database and update the
 `DATABASE_*` environment values accordingly.
 
+Review app setup intentionally does not run a `post_creation` database hook in
+`.controlplane/controlplane.yml`. On a first deploy there is no app image yet,
+so a hook such as `bundle exec rails db:prepare` would start a one-off runner
+with `NO_IMAGE_AVAILABLE` and block the workflow. Database preparation belongs
+in `.controlplane/release_script.sh`, which runs after the Docker image is
+built and before `cpflow deploy-image` updates the workloads.
+
 ## Control Plane App Secrets
 
 These are Control Plane app runtime secrets, not GitHub repository variables.
