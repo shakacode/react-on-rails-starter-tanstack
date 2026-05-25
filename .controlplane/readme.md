@@ -26,7 +26,7 @@ For review apps in this repo, GitHub needs only one repository secret:
 
 No GitHub repository variables are required for the normal review-app workflow.
 The generated workflow infers the review app prefix
-`react-on-rails-starter-tanstack-pr` and staging org
+`react-on-rails-starter-tanstack-review-pr` and staging org
 `shakacode-open-source-examples-staging` from `.controlplane/controlplane.yml`
 because that file defines exactly one app with
 `match_if_app_name_starts_with: true`.
@@ -105,15 +105,15 @@ https://console.cpln.io/console/org/shakacode-open-source-examples-staging/gvc
 Expected names:
 
 - `react-on-rails-starter-tanstack-staging`
-- `react-on-rails-starter-tanstack-pr-<PR number>`
+- `react-on-rails-starter-tanstack-review-pr-<PR number>`
 
 For review-app testing, the standard setup is:
 
 | Control Plane item | Where | Notes |
 | --- | --- | --- |
 | Staging/review org | `shakacode-open-source-examples-staging` | The `CPLN_TOKEN_STAGING` service account must be able to create and update GVCs, workloads, images, identities, policies, and secrets in this org. |
-| Review app prefix | `react-on-rails-starter-tanstack-pr` | Review apps are named `react-on-rails-starter-tanstack-pr-<PR number>`. This is inferred from `.controlplane/controlplane.yml`. |
-| Review app secret dictionary | `react-on-rails-starter-tanstack-pr-secrets` | Shared by generated review apps because the PR app entry uses `match_if_app_name_starts_with: true`. |
+| Review app prefix | `react-on-rails-starter-tanstack-review-pr` | Review apps are named `react-on-rails-starter-tanstack-review-pr-<PR number>`. This is inferred from `.controlplane/controlplane.yml`. |
+| Review app secret dictionary | `react-on-rails-starter-tanstack-review-pr-secrets` | Shared by generated review apps because the PR app entry uses `match_if_app_name_starts_with: true`. |
 
 For staging deploys later, also use:
 
@@ -205,5 +205,5 @@ review app by commenting exactly:
 ```
 
 The workflow should build the image, create or update
-`react-on-rails-starter-tanstack-pr-<PR number>`, and comment with the review URL.
+`react-on-rails-starter-tanstack-review-pr-<PR number>`, and comment with the review URL.
 That name follows the generated `<review-app-prefix>-<PR number>` convention; this repo's prefix intentionally ends in `-pr`.

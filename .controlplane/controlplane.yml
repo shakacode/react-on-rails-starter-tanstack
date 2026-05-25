@@ -42,7 +42,7 @@ apps:
   react-on-rails-starter-tanstack-staging:
     <<: *common
 
-  react-on-rails-starter-tanstack-pr:
+  react-on-rails-starter-tanstack-review-pr:
     <<: *common
     match_if_app_name_starts_with: true
     hooks:
