@@ -84,6 +84,7 @@ RUN rails assets:precompile
 
 # add entrypoint
 COPY .controlplane/entrypoint.sh ./
+RUN chmod +x /app/entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]
 
 CMD ["./bin/thrust", "./bin/rails", "server"]
