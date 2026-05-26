@@ -71,6 +71,7 @@ See [SPIKE.md](SPIKE.md) for the current AMBER RSC/Rspack compatibility note: Rs
 - [Deploying](docs/04-deploying.md)
 - [Troubleshooting](docs/05-troubleshooting.md)
 - [Tested Modes](docs/06-tested-modes.md)
+- [Control Plane Handoff](docs/07-control-plane-handoff.md)
 - [Upgrading](UPGRADING.md)
 
 ## License
