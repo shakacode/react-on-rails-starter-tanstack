@@ -11,7 +11,7 @@ The app runs three image-backed workloads:
 
 - `rails`: public web workload
 - `worker`: Solid Queue worker via `./bin/jobs`
-- `renderer`: React on Rails Pro Node renderer on port `3800`
+- `renderer`: React on Rails Pro Node renderer on HTTP/2 port `3800`
 
 PostgreSQL runs as a stateful workload for review/staging demos. Production
 should be reviewed before launch; a managed database is usually preferable.
@@ -90,7 +90,7 @@ Advanced optional variables:
 | --- | --- |
 | `REVIEW_APP_DEPLOYING_ICON_URL` | Cosmetic custom animated icon for review-app comments. Ignore this for the standard setup. |
 | `CPLN_CLI_VERSION` | Pin only when Control Plane CLI compatibility requires it. |
-| `CPFLOW_VERSION` | Runtime gem override. Normally leave unset. If set, it must match the workflow tag without the leading `v`, such as `5.0.1`. |
+| `CPFLOW_VERSION` | Runtime gem override. Normally leave unset. If set, it must match the workflow tag without the leading `v`, such as `5.0.2`. |
 
 ## Control Plane Setup
 
@@ -183,6 +183,11 @@ openssl rand -hex 32 # RENDERER_PASSWORD
 The `RENDERER_PASSWORD` value must match on both Rails and the Node renderer;
 both workloads inherit the same GVC environment, so one secret value covers both.
 
+The renderer workload exposes port `3800` as `http2` because React on Rails Pro's
+Node renderer speaks cleartext HTTP/2. The renderer entrypoint binds to
+`0.0.0.0` automatically in production so Control Plane can route to the
+workload; no GitHub variable is required for this.
+
 ## Local Validation
 
 Run:
@@ -194,16 +199,23 @@ bin/test-cpflow-github-flow ruby /path/to/control-plane-flow/bin/cpflow
 
 This repo is locked at runtime by the generated workflow wrapper GitHub ref, not
 by the gem alone. The wrappers currently point their `uses:` refs at the
-upstream `control-plane-flow` release tag `v5.0.1`. GitHub loads the reusable
+upstream `control-plane-flow` release tag `v5.0.2`. GitHub loads the reusable
 workflow from that tag, and the upstream workflow checks out its matching shared
 actions from the same workflow context. Downstream wrappers should not pass a
 duplicate `control_plane_flow_ref` input.
+
+Using a release tag is deliberate for this demo path: it makes stable upgrades
+easy to audit and keeps the docs, workflow wrapper, and published gem version
+understandable. If your organization requires immutable GitHub Action refs, pin
+the wrappers to the full 40-character commit SHA behind the release tag with
+`bin/pin-cpflow-github-ref`, update the examples in this doc, and keep
+`CPFLOW_VERSION` unset unless it exactly matches the same released gem.
 
 To move to a newer stable `cpflow` release when generated templates changed:
 
 1. Install or bundle the released `cpflow` gem.
 2. Run `cpflow generate-github-actions`.
-3. Verify the generated wrappers point to the matching tag, such as `v5.0.1`.
+3. Verify the generated wrappers point to the matching tag, such as `v5.0.2`.
 4. Leave `CPFLOW_VERSION` unset, or set it to the same RubyGems version without
    the leading `v`. For prereleases, use dot syntax such as `5.0.0.rc.1`.
 5. Run `bin/test-cpflow-github-flow`.
@@ -212,7 +224,7 @@ If the generated files are already current and only the upstream tag needs to
 move, run:
 
 ```sh
-bin/pin-cpflow-github-ref v5.0.1
+bin/pin-cpflow-github-ref v5.0.2
 ```
 
 When testing unreleased `control-plane-flow` changes before a release, pin the

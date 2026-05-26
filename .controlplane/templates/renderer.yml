@@ -13,7 +13,7 @@ spec:
         - client/node-renderer.js
       ports:
         - number: 3800
-          protocol: http
+          protocol: http2
   defaultOptions:
     autoscaling:
       minScale: 1

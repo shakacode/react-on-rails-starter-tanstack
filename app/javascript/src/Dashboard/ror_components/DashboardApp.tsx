@@ -956,7 +956,7 @@ function RenderingModeDrawer() {
           <p>The public landing is where RSC streaming pays off for cold visitors and SEO. Behind auth, URL state, cached data, and table interactivity matter more.</p>
           <div className="auth-actions">
             <a className="auth-link" href="https://github.com/shakacode/react-on-rails-demo-hacker-news-rsc">Hacker News RSC demo</a>
-            <a className="auth-link" href="https://github.com/shakacode/react_on_rails_demo_ssr_hmr">SSR/HMR demo</a>
+            <a className="auth-link" href="https://github.com/shakacode/react-on-rails-demo-ssr-hmr">SSR/HMR demo</a>
             <button className="auth-button auth-button-secondary" type="button" onClick={() => setOpen(false)}>
               Close
             </button>
