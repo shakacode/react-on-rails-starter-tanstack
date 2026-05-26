@@ -11,7 +11,7 @@ The app runs three image-backed workloads:
 
 - `rails`: public web workload
 - `worker`: Solid Queue worker via `./bin/jobs`
-- `renderer`: React on Rails Pro Node renderer on port `3800`
+- `renderer`: React on Rails Pro Node renderer on HTTP/2 port `3800`
 
 PostgreSQL runs as a stateful workload for review/staging demos. Production
 should be reviewed before launch; a managed database is usually preferable.
@@ -182,6 +182,11 @@ openssl rand -hex 32 # RENDERER_PASSWORD
 
 The `RENDERER_PASSWORD` value must match on both Rails and the Node renderer;
 both workloads inherit the same GVC environment, so one secret value covers both.
+
+The renderer workload exposes port `3800` as `http2` because React on Rails Pro's
+Node renderer speaks cleartext HTTP/2. The renderer entrypoint binds to
+`0.0.0.0` automatically in production so Control Plane can route to the
+workload; no GitHub variable is required for this.
 
 ## Local Validation
 
