@@ -35,6 +35,9 @@ expected before changing build, rendering, or routing behavior.
 
 - Use `demo@example.com / password` for authenticated browser checks.
 - `bin/dev`, `bin/dev static`, and `bin/dev prod` must start `client/node-renderer.js`; otherwise prerendered TanStack routes fail with a Node renderer connection error.
+- Tailwind v4 is loaded with explicit CSS `@source` paths. Keep
+  `@import "tailwindcss" source(none);` unless you have re-tested live reload,
+  static assets, production-like assets, and HMR for rebuild loops.
 - The CI `core` job calls `bin/ci`, which runs quality, security, and smoke checks.
   Its displayed check name is `rspec` to match the repository's current branch
   protection context.

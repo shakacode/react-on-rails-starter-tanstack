@@ -27,6 +27,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { Button } from '@/components/ui/button';
 import { apiFetch } from '../../../lib/apiFetch';
 import { createQueryClient } from '../../../lib/queryClient';
 import { installRouterStoreShim } from '../../../lib/tanstackRouterStoreShim';
@@ -237,6 +238,9 @@ function RootLayout() {
           <Link to="/projects">Projects</Link>
           <Link to="/settings">Settings</Link>
           <a href={links.classicProjects}>Classic Rails CRUD</a>
+          <Button asChild size="sm" className="shrink-0">
+            <Link to="/projects/new">Create project</Link>
+          </Button>
         </nav>
       </header>
 
