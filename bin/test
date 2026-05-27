@@ -3,7 +3,11 @@ set -euo pipefail
 
 usage() {
   cat >&2 <<'USAGE'
-Usage: bin/test [all|ci|smoke|quality|security|rspec|doctor|typecheck|router-shim|playwright-smoke|playwright|dev-modes|hmr|rsc-repro|release|a11y]
+Usage:
+  bin/test [all|ci|smoke|quality|security|doctor|typecheck|router-shim|dev-modes|hmr|rsc-repro|release|a11y]
+  bin/test rspec [rspec-args...]
+  bin/test playwright [playwright-args...]
+  bin/test playwright-smoke [playwright-args...]
 
 Tiers:
   smoke            Doctor, TypeScript, router shim, RSpec, and Playwright health smoke.
@@ -41,17 +45,17 @@ run_security_checks() {
 
 run_rspec() {
   prepare_test_database
-  run bundle exec rspec
+  run bundle exec rspec "$@"
 }
 
 run_playwright_smoke() {
   prepare_test_database
-  run pnpm exec playwright test test/playwright/root.spec.ts
+  run pnpm exec playwright test test/playwright/root.spec.ts "$@"
 }
 
 run_playwright_full() {
   prepare_test_database
-  run pnpm test:playwright
+  run pnpm exec playwright test "$@"
 }
 
 run_smoke() {
@@ -81,7 +85,12 @@ run_production_precompile() {
     bin/rails assets:precompile
 }
 
-case "${1:-all}" in
+command="${1:-all}"
+if (($# > 0)); then
+  shift
+fi
+
+case "$command" in
   --smoke|smoke)
     run_smoke
     ;;
@@ -108,13 +117,13 @@ case "${1:-all}" in
     run pnpm run test:router-shim
     ;;
   rspec)
-    run_rspec
+    run_rspec "$@"
     ;;
   playwright-smoke)
-    run_playwright_smoke
+    run_playwright_smoke "$@"
     ;;
   playwright|playwright-full)
-    run_playwright_full
+    run_playwright_full "$@"
     ;;
   dev-modes)
     run pnpm run test:dev-modes
