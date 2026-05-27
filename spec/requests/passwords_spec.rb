@@ -42,18 +42,23 @@ RSpec.describe "Passwords", type: :request do
     expect(response.body).to include("Choose a new password")
   end
 
-  it "resets the password and clears existing sessions for a valid token" do
+  it "resets the password and rotates into a fresh session for a valid token" do
     user = create(:user, :verified, password: "old-password", password_confirmation: "old-password")
     old_session = create(:session, user: user)
     token = user.password_reset_token
 
     put password_path(token), params: { password: "new-password", password_confirmation: "new-password" }
 
-    expect(response).to redirect_to(new_session_path)
+    expect(response).to redirect_to(dashboard_path)
     expect(flash[:notice]).to eq("Password has been reset.")
     expect(user.reload.authenticate("new-password")).to eq(user)
     expect(Session.exists?(old_session.id)).to be(false)
+    expect(user.sessions.reload.count).to eq(1)
     expect(User.find_by_password_reset_token(token)).to be_nil
+
+    follow_redirect!
+    expect(response).to have_http_status(:ok)
+    expect(response.request.path).to eq(dashboard_path)
   end
 
   it "keeps the current password and sessions when confirmation fails" do
@@ -86,5 +91,28 @@ RSpec.describe "Passwords", type: :request do
 
     expect(response).to redirect_to(new_password_path)
     expect(flash[:alert]).to eq("Password reset link is invalid or has expired.")
+  end
+
+  it "throttles repeated reset requests by IP" do
+    5.times do |index|
+      post passwords_path, params: { email_address: "probe#{index}@example.com" }
+      expect(response).to have_http_status(:redirect)
+    end
+
+    post passwords_path, params: { email_address: "probe6@example.com" }
+
+    expect(response).to have_http_status(:too_many_requests)
+    expect(response.body).to include("Too many requests")
+  end
+
+  it "throttles repeated reset requests by email" do
+    3.times do
+      post passwords_path, params: { email_address: " Same@Example.com " }
+      expect(response).to have_http_status(:redirect)
+    end
+
+    post passwords_path, params: { email_address: "same@example.com" }
+
+    expect(response).to have_http_status(:too_many_requests)
   end
 end

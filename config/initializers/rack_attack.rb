@@ -6,7 +6,15 @@ class Rack::Attack
   end
 
   throttle("email verification sends by email", limit: 3, period: 1.hour) do |request|
-    request.params["email_address"].to_s.strip.downcase.presence if email_verification_send?(request)
+    normalized_email_param(request) if email_verification_send?(request)
+  end
+
+  throttle("password reset sends by ip", limit: 5, period: 1.hour) do |request|
+    request.ip if password_reset_send?(request)
+  end
+
+  throttle("password reset sends by email", limit: 3, period: 1.hour) do |request|
+    normalized_email_param(request) if password_reset_send?(request)
   end
 
   self.throttled_responder = lambda do |request|
@@ -26,5 +34,13 @@ class Rack::Attack
 
   def self.email_verification_send?(request)
     request.post? && request.path == "/email_verifications"
+  end
+
+  def self.password_reset_send?(request)
+    request.post? && request.path == "/passwords"
+  end
+
+  def self.normalized_email_param(request)
+    request.params["email_address"].to_s.strip.downcase.presence
   end
 end
