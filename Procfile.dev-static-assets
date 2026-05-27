@@ -1,3 +1,4 @@
+# REFERENCE PATTERN: rspack-static-assets-procfile - see AGENTS.md section 9
 web: bin/rails server -p ${PORT:-3000}
 js: bin/shakapacker-watch --watch
 worker: bin/jobs

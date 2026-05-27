@@ -5,6 +5,7 @@ const commonWebpackConfig = require('./commonWebpackConfig');
 const { config } = require('shakapacker');
 const { RSCWebpackPlugin } = require('react-on-rails-rsc/WebpackPlugin');
 
+// REFERENCE PATTERN: rspack-client-config - see AGENTS.md section 9
 const configureClient = () => {
   const clientConfig = commonWebpackConfig();
 

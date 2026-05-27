@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// REFERENCE PATTERN: dev-mode-smoke - see AGENTS.md section 9
 
 import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';

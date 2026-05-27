@@ -5,6 +5,7 @@ const { devServer, inliningCss, config } = require('shakapacker');
 
 const serverClientOrBoth = require('./ServerClientOrBoth');
 
+// REFERENCE PATTERN: rspack-dev-config - see AGENTS.md section 9
 const developmentEnvOnly = (clientWebpackConfig, serverWebpackConfig, rscWebpackConfig) => {
   clientWebpackConfig.experiments = {
     ...clientWebpackConfig.experiments,
