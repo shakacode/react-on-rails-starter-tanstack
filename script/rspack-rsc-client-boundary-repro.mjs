@@ -28,6 +28,7 @@ for (const manifestPath of [clientManifestPath, serverManifestPath]) {
   fs.rmSync(manifestPath, { force: true });
 }
 
+run('bin/rails', ['react_on_rails:generate_packs']);
 run('bin/shakapacker', []);
 
 const clientBoundarySource = fs.readFileSync(clientBoundaryPath, 'utf8');
