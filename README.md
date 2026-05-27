@@ -1,10 +1,10 @@
 # React on Rails Starter TanStack
 
-Flagship React on Rails + TanStack starter. It uses the RC releases of React on Rails Pro and Shakapacker with Rspack:
+Flagship React on Rails + TanStack starter. It uses the React on Rails Pro RC releases with the latest verified Shakapacker/Rspack release line:
 
-- `react_on_rails` / `react_on_rails_pro` `16.7.0.rc.1`
-- `react-on-rails-pro` / `react-on-rails-pro-node-renderer` `16.7.0-rc.1`
-- `shakapacker` / `shakapacker-rspack` `10.1.0-rc.2`
+- `react_on_rails` / `react_on_rails_pro` `16.7.0.rc.3`
+- `react-on-rails-pro` / `react-on-rails-pro-node-renderer` `16.7.0-rc.3`
+- `shakapacker` / `shakapacker-rspack` `10.1.0`
 - Rails 8.1, React 19, TypeScript, pnpm, Rspack, React Server Components
 
 ## Quick Start

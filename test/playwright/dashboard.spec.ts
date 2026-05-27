@@ -1,49 +1,48 @@
-import { execFileSync } from 'node:child_process';
 import { expect, test } from '@playwright/test';
+import { seedUser, signIn, submitSignInForm } from './support/auth';
+import { preparePlaywrightAssets } from './support/rails';
 
 const email = 'tanstack-playwright@example.com';
 const emptyEmail = 'tanstack-empty-playwright@example.com';
-const password = 'password';
 
 test.beforeAll(() => {
-  const env = { ...process.env, RAILS_ENV: 'test' };
+  preparePlaywrightAssets();
+  seedUser({
+    email,
+    name: 'TanStack Playwright',
+    projects: {
+      count: 12,
+      description: 'Dashboard regression coverage',
+      namePrefix: 'Playwright Project',
+    },
+  });
+  seedUser({
+    email: emptyEmail,
+    name: 'TanStack Empty',
+    projects: {
+      count: 0,
+    },
+  });
+});
 
-  execFileSync('bin/rails', ['react_on_rails:generate_packs'], { env, stdio: 'inherit' });
-  execFileSync('bin/shakapacker', { env, stdio: 'inherit' });
-  execFileSync(
-    'bin/rails',
-    [
-      'runner',
-      `
-        user = User.find_or_initialize_by(email_address: "${email}")
-        user.update!(
-          name: "TanStack Playwright",
-          password: "${password}",
-          password_confirmation: "${password}",
-          email_verified_at: Time.current
-        )
-        user.projects.destroy_all
-        12.times do |index|
-          user.projects.create!(
-            name: "Playwright Project #{index + 1}",
-            description: "Dashboard regression coverage",
-            status: Project.statuses.keys[index % Project.statuses.size],
-            last_activity_at: index.hours.ago
-          )
-        end
+test('protected TanStack route returns to URL-backed table state after sign in', async ({ page }) => {
+  await page.goto('/projects?status=paused&sort=name&dir=desc');
+  await expect(page).toHaveURL('/session/new');
+  await expect(page.getByRole('heading', { name: 'Sign in' })).toBeVisible();
 
-        empty_user = User.find_or_initialize_by(email_address: "${emptyEmail}")
-        empty_user.update!(
-          name: "TanStack Empty",
-          password: "${password}",
-          password_confirmation: "${password}",
-          email_verified_at: Time.current
-        )
-        empty_user.projects.destroy_all
-      `,
-    ],
-    { env, stdio: 'inherit' },
-  );
+  await submitSignInForm(page, email, {
+    expectedURL: (url) =>
+      url.pathname === '/projects' &&
+      url.searchParams.get('status') === 'paused' &&
+      url.searchParams.get('sort') === 'name' &&
+      url.searchParams.get('dir') === 'desc',
+  });
+
+  const shell = page.locator('main.tanstack-shell');
+  await expect(shell.getByRole('heading', { name: 'Projects' })).toBeVisible();
+  await expect(page.getByLabel('Status')).toHaveValue('paused');
+  await expect(shell.getByRole('cell', { name: 'paused' }).first()).toBeVisible();
+  await expect(page.locator('body')).not.toContainText('Loading projects...');
 });
 
 test('authenticated dashboard hydrates client routes and project mutations', async ({ page }) => {
@@ -59,13 +58,7 @@ test('authenticated dashboard hydrates client routes and project mutations', asy
     if (request.resourceType() === 'document') documentRequests += 1;
   });
 
-  await page.goto('/session/new');
-  await page.getByLabel('Email').fill(email);
-  await page.getByLabel('Password').fill(password);
-  await Promise.all([
-    page.waitForURL('/'),
-    page.getByRole('button', { name: 'Sign in' }).click(),
-  ]);
+  await signIn(page, email);
 
   await page.goto('/projects/new');
   await expect(page.locator('main.tanstack-shell').getByRole('heading', { name: 'New project' })).toBeVisible();
@@ -131,13 +124,7 @@ test('authenticated dashboard hydrates client routes and project mutations', asy
 });
 
 test('first project creation enables metrics without a reload', async ({ page }) => {
-  await page.goto('/session/new');
-  await page.getByLabel('Email').fill(emptyEmail);
-  await page.getByLabel('Password').fill(password);
-  await Promise.all([
-    page.waitForURL('/'),
-    page.getByRole('button', { name: 'Sign in' }).click(),
-  ]);
+  await signIn(page, emptyEmail);
 
   await page.goto('/dashboard');
   await expect(page.locator('.metric-card').first().locator('strong')).toHaveText('0');

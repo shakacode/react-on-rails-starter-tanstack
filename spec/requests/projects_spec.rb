@@ -121,6 +121,17 @@ RSpec.describe "Projects", type: :request do
       expect(json["projects"].map { |project| project["id"] }).not_to include(other.id)
     end
 
+    it "ignores unsupported status filters without dispatching them as methods" do
+      sign_in(user)
+      active = create(:project, :active, user: user)
+      paused = create(:project, :paused, user: user)
+
+      get api_projects_path, params: { status: "destroy_all", sort: "created_at", dir: "asc" }
+
+      expect(response).to have_http_status(:ok)
+      expect(json["projects"].map { |project| project["id"] }).to contain_exactly(active.id, paused.id)
+    end
+
     it "shows a single project scoped to the current user" do
       sign_in(user)
       project = create(:project, user: user)

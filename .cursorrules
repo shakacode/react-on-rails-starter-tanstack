@@ -1,0 +1,6 @@
+Use AGENTS.md as the canonical repository guide for current patterns, commands,
+and known limitations.
+
+Do not duplicate long-form instructions here. Keep Cursor-specific guidance
+thin and defer to AGENTS.md for implementation patterns, checks, and unfinished
+spec caveats.
