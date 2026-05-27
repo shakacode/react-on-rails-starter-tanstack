@@ -1,4 +1,5 @@
 class DashboardController < AuthenticatedController
+  # REFERENCE PATTERN: dashboard-props-controller - see AGENTS.md sections 2 and 8
   def show
     @dashboard_props = {
       initialPath: request.path,

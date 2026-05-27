@@ -1,4 +1,5 @@
 class SettingsController < AuthenticatedController
+  # REFERENCE PATTERN: settings-profile-controller - see AGENTS.md section 3
   def update_profile
     email_changed = profile_params[:email_address].present? &&
       profile_params[:email_address].strip.downcase != Current.user.email_address

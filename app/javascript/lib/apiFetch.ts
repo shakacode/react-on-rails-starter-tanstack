@@ -14,6 +14,7 @@ export class ApiError extends Error {
   }
 }
 
+// REFERENCE PATTERN: csrf-json-fetch - see AGENTS.md section 5
 export async function apiFetch<T>(path: string, options: ApiFetchOptions = {}): Promise<T> {
   const headers = new Headers(options.headers);
   headers.set('Accept', 'application/json');

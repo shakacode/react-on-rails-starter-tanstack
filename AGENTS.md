@@ -36,6 +36,9 @@ Canonical examples:
 - `app/controllers/dashboard_controller.rb` for passing Rails-owned paths,
   current-user props, initial location, and API links into the TanStack shell.
 
+Reference marker IDs: `signup-controller`, `controller`,
+`json-api-controller`, `dashboard-props-controller`.
+
 Rules:
 
 - In authenticated controllers, inherit from `AuthenticatedController` unless
@@ -62,6 +65,10 @@ Canonical examples:
 - `app/controllers/settings_controller.rb` for profile updates from the
   TanStack dashboard.
 
+Reference marker IDs: `session-authentication`, `verified-authentication`,
+`email-verification-controller`, `password-reset-controller`,
+`settings-profile-controller`.
+
 Rules:
 
 - Keep dashboard and project data behind verified authentication.
@@ -78,6 +85,8 @@ Canonical examples:
   autocomplete, and semantic labels.
 - `app/views/projects/_form.html.erb` for model-backed classic Rails forms with
   inline validation messages and `aria-describedby`.
+
+Reference marker ID: `form`.
 
 Rules:
 
@@ -100,6 +109,9 @@ Canonical examples:
 - `app/javascript/src/Dashboard/ror_components/DashboardApp.tsx` for query keys,
   mutations, invalidation, loading states, and error states.
 
+Reference marker IDs: `json-api-controller`, `csrf-json-fetch`,
+`query-client-defaults`.
+
 Rules:
 
 - Use `apiFetch` for browser requests back to Rails so CSRF headers and
@@ -118,6 +130,8 @@ Canonical examples:
 - `app/mailers/welcome_mailer.rb` for the signup welcome email.
 - `test/mailers/previews/*` for local mail previews.
 
+Reference marker IDs: `mailer`, `mailer-preview`.
+
 Rules:
 
 - Use `deliver_later` from request/controller flows unless a test explicitly
@@ -132,6 +146,8 @@ Rules:
 Canonical example:
 
 - `ProjectsTable` in `app/javascript/src/Dashboard/ror_components/DashboardApp.tsx`.
+
+Reference marker ID: `tanstack-table`.
 
 Rules:
 
@@ -149,6 +165,8 @@ Rules:
 Canonical example:
 
 - `DashboardApp` in `app/javascript/src/Dashboard/ror_components/DashboardApp.tsx`.
+
+Reference marker IDs: `dashboard-props-controller`, `tanstack-route`.
 
 Rules:
 
@@ -177,6 +195,12 @@ Canonical examples:
 - `Procfile.dev-prod-assets`
 - `script/dev-mode-smoke.mjs`
 - `script/rspack-rsc-client-boundary-repro.mjs`
+
+Reference marker IDs: `shakapacker-rspack-config`,
+`rspack-client-config`, `rspack-server-config`, `rspack-rsc-config`,
+`rspack-dev-config`, `rspack-live-reload-procfile`,
+`rspack-static-assets-procfile`, `rspack-production-assets-procfile`,
+`dev-mode-smoke`, `rspack-rsc-repro`.
 
 Rules:
 

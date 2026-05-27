@@ -1,5 +1,6 @@
 # Development process file. `bin/dev` reads this through the React on Rails
 # process manager.
+# REFERENCE PATTERN: rspack-live-reload-procfile - see AGENTS.md section 9
 web: bundle exec rails s -p ${PORT:-3000}
 rspack: bin/shakapacker-dev-server
 server-bundle: SERVER_BUNDLE_ONLY=true bin/shakapacker-watch --watch

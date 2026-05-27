@@ -23,6 +23,7 @@ function extractLoader(rule, loaderName) {
 }
 
 // rscBundle parameter: when true, skips RSCWebpackPlugin (RSC bundle doesn't need it)
+// REFERENCE PATTERN: rspack-server-config - see AGENTS.md section 9
 const configureServer = (rscBundle = false) => {
   // We need to use "merge" because the clientConfigObject, EVEN after running
   // toWebpackConfig() is a mutable GLOBAL. Thus any changes, like modifying the
