@@ -35,6 +35,9 @@ expected before changing build, rendering, or routing behavior.
 
 - Use `demo@example.com / password` for authenticated browser checks.
 - `bin/dev`, `bin/dev static`, and `bin/dev prod` must start `client/node-renderer.js`; otherwise prerendered TanStack routes fail with a Node renderer connection error.
+- Static assets dev mode cleans the Rspack client output before writing
+  `public/packs` so stale dev-server chunks from a previous live-reload run do
+  not open websocket clients on static pages.
 - Tailwind v4 is loaded with explicit CSS `@source` paths. Keep
   `@import "tailwindcss" source(none);` unless you have re-tested live reload,
   static assets, production-like assets, and HMR for rebuild loops.
