@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// REFERENCE PATTERN: rspack-rsc-repro - see AGENTS.md section 9
+// REFERENCE PATTERN: rspack-rsc-repro — see AGENTS.md
 
 import fs from 'node:fs';
 import { spawnSync } from 'node:child_process';
