@@ -221,7 +221,7 @@ the wrappers to the full 40-character commit SHA behind the release tag with
 To move to a newer stable `cpflow` release when generated templates changed:
 
 1. Install or bundle the released `cpflow` gem.
-2. Run `cpflow generate-github-actions`.
+2. Run `cpflow update-github-actions`.
 3. Verify the generated wrappers point to the matching tag, such as `v5.0.4`.
 4. Leave `CPFLOW_VERSION` unset, or set it to the same RubyGems version without
    the leading `v`. For prereleases, use dot syntax such as `5.0.0.rc.1`.
