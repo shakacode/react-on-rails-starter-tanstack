@@ -1,11 +1,13 @@
 # React on Rails Starter TanStack
 
-Flagship React on Rails + TanStack starter. It uses the React on Rails Pro RC releases with the latest verified Shakapacker/Rspack release line:
+Flagship React on Rails + TanStack starter. The launch stack is Rspack-only and uses the current React on Rails Pro RC with Shakapacker's latest visible public Rspack artifacts:
 
 - `react_on_rails` / `react_on_rails_pro` `16.7.0.rc.3`
 - `react-on-rails-pro` / `react-on-rails-pro-node-renderer` `16.7.0-rc.3`
 - `shakapacker` / `shakapacker-rspack` `10.1.0`
 - Rails 8.1, React 19, TypeScript, pnpm, Rspack, React Server Components
+
+Shakapacker stays on `10.1.0` for this release because public `11.1.0` artifacts are not visible in the registries consumed by the starter. Treat Rspack as the supported bundler; Webpack is not part of the tested starter matrix unless a task explicitly asks to evaluate it.
 
 ## Quick Start
 
@@ -61,7 +63,7 @@ This repo is the public template seed. Phase 2 adds Rails 8 authentication, sign
 
 Phase 4 implements the TanStack Router/Query/Table authenticated surface described in [shakacode/react_on_rails#3364](https://github.com/shakacode/react_on_rails/pull/3364).
 
-See [SPIKE.md](SPIKE.md) for the current AMBER RSC/Rspack compatibility note: Rspack builds are green, but interactive RSC client-reference plugin support is blocked upstream.
+See [SPIKE.md](SPIKE.md) for the current AMBER RSC/Rspack compatibility note: Rspack builds and server-only RSC bundling are green, but interactive RSC client references are blocked until Rspack emits the React Server Components client/server manifests expected by the React on Rails RSC path.
 
 ## Docs
 
