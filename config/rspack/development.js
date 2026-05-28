@@ -18,24 +18,6 @@ const developmentEnvOnly = (clientWebpackConfig, serverWebpackConfig, rscWebpack
       delete webpackConfig.devServer;
     });
   }
-
-  // React Refresh (Fast Refresh) setup - only when dev server is running (HMR mode)
-  if (process.env.WEBPACK_SERVE === 'true') {
-    // eslint-disable-next-line global-require
-    if (config.assets_bundler === 'rspack') {
-      // Rspack React Refresh currently trips webpack-dev-server's active-module
-      // endpoint in this rc stack, which raises a full-screen overlay on every page.
-      // Keep the dev server usable until shakapacker-rspack's Rspack 2 peer lands.
-    } else {
-      // Webpack uses @pmmmwh/react-refresh-webpack-plugin
-      const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-      clientWebpackConfig.plugins.push(
-        new ReactRefreshWebpackPlugin({
-          // Use default overlay configuration for better compatibility
-        }),
-      );
-    }
-  }
 };
 
 module.exports = serverClientOrBoth(developmentEnvOnly);

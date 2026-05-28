@@ -83,7 +83,7 @@ The devtools are off by default because optional devtools chunks can trigger noi
 
 Symptom: the SSR dashboard shell renders, but metric cards and the projects table keep showing loading placeholders in development.
 
-Fix: restart `bin/dev` after changing `config/shakapacker.yml`. This starter defaults to Rspack live reload for deterministic SSR smoke tests. To exercise HMR without editing configuration, run `SHAKAPACKER_DEV_SERVER_HMR=true bin/dev --no-open-browser --route=dashboard` or `pnpm run test:hmr`. If the dashboard still hangs, check the browser network panel for missing hot-update or hot-dev-server chunks.
+Fix: restart `bin/dev` after changing `config/shakapacker.yml`. This starter defaults to Rspack live reload for deterministic SSR smoke tests. To exercise HMR and React Fast Refresh without editing configuration, run `SHAKAPACKER_DEV_SERVER_HMR=true bin/dev --no-open-browser --route=dashboard` or `pnpm run test:hmr`. If the dashboard still hangs, check the browser network panel for missing hot-update or hot-dev-server chunks.
 
 ## Browser Reports Content Security Policy Violations
 
