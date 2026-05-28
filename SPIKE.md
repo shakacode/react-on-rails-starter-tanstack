@@ -38,7 +38,8 @@ Impact:
 
 - Rspack build is green.
 - Server-only RSC bundle compilation is green.
-- Interactive client-component references inside RSC remain blocked until the required RSC manifests are available from the Rspack path.
+- Interactive client-component references inside RSC remain blocked until the Rspack path can provide the required RSC manifests, or `react-on-rails-rsc` supports Rspack's plugin API directly.
+- `/hello_server` is covered by `bin/test hello-server-rsc`, which treats a render as passing and also treats the current missing-manifest route failure as the expected Rspack/RSC limitation unless `REQUIRE_RSC_MANIFESTS=true` is set.
 
 ## Phase 4 Validation
 
