@@ -1,6 +1,8 @@
 # Architecture
 
-This starter began from `create-react-on-rails-app --rsc --rspack` and is currently pinned to React on Rails `16.7.0-rc.3`.
+This starter begins from `create-react-on-rails-app --rsc --rspack` and is launched on the React on Rails Pro `16.7.0-rc.3` RC stack with Shakapacker `10.1.0`.
+
+Shakapacker remains on `10.1.0` because public `11.1.0` artifacts are not visible in the registries this starter consumes. Rspack is the only supported bundler for the starter's checked-in configuration and tested modes.
 
 - Rails owns the public routes, auth routes, API routes, and the HTML shells.
 - Shakapacker uses Rspack for client, server, and RSC bundles.
@@ -34,6 +36,6 @@ The Node renderer receives Fetch API globals from `client/node-renderer.js` so T
 
 ## Rspack Notes
 
-Rspack is the active bundler in `config/shakapacker.yml`. Development keeps `experiments.lazyCompilation = false`, uses live reload instead of HMR for this RC stack, omits Rspack React Refresh, and gates TanStack devtools behind `localStorage["tanstack-devtools"] = "1"` to avoid dev-server overlay requests from optional chunks.
+Rspack is the active bundler in `config/shakapacker.yml`. Development keeps `experiments.lazyCompilation = false`, uses live reload by default for this RC stack, omits Rspack React Refresh, and gates TanStack devtools behind `localStorage["tanstack-devtools"] = "1"` to avoid dev-server overlay requests from optional chunks. HMR remains available as an explicit smoke path.
 
-The public React Server Components path still carries the Phase 0 AMBER note: `react-on-rails-rsc`'s client-reference plugin depends on Webpack APIs that Rspack does not currently expose. The starter keeps Rspack builds green and skips that plugin only for Rspack builds.
+The public React Server Components path still carries the Phase 0 AMBER note. The starter keeps Rspack client, server, and server-only RSC bundles green, but interactive RSC client references remain blocked because the Rspack build does not emit the React client/server manifests expected by the React on Rails RSC client-reference path.
