@@ -4,7 +4,7 @@
 # License: Set REACT_ON_RAILS_PRO_LICENSE environment variable
 ReactOnRailsPro.configure do |config|
   config.server_renderer = "NodeRenderer"
-  config.renderer_url = ENV.fetch("REACT_RENDERER_URL", "http://localhost:3800")
+  config.renderer_url = ENV.fetch("REACT_RENDERER_URL", "http://127.0.0.1:3800")
 
   # See value in client/node-renderer.js
   config.renderer_password = ENV.fetch("RENDERER_PASSWORD", "devPassword")

@@ -3,6 +3,7 @@
 
 import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
+import net from 'node:net';
 import process from 'node:process';
 import { setTimeout as delay } from 'node:timers/promises';
 import { chromium } from '@playwright/test';
@@ -37,7 +38,8 @@ const env = {
   RAILS_ENV: 'development',
   PORT: String(basePort),
   REACT_ON_RAILS_BASE_PORT: String(basePort),
-  REACT_RENDERER_URL: `http://localhost:${rendererPort}`,
+  REACT_RENDERER_URL: `http://127.0.0.1:${rendererPort}`,
+  RENDERER_HOST: '127.0.0.1',
   RENDERER_PORT: String(rendererPort),
   RENDERER_LOG_LEVEL: process.env.RENDERER_LOG_LEVEL || 'info',
   SKIP_DATABASE_CHECK: 'true',
@@ -76,6 +78,38 @@ async function waitForUrl(url, timeoutMs = 180_000) {
 
   assertServerRunning();
   throw new Error(`Timed out waiting for ${url}: ${lastError?.message || 'no response'}`);
+}
+
+async function waitForTcpPort(host, port, timeoutMs = 180_000) {
+  const startedAt = Date.now();
+  let lastError = null;
+
+  while (Date.now() - startedAt < timeoutMs) {
+    assertServerRunning();
+
+    const connected = await new Promise((resolve) => {
+      const socket = net.connect({ host, port });
+      socket.once('connect', () => {
+        socket.destroy();
+        resolve(true);
+      });
+      socket.once('error', (error) => {
+        lastError = error;
+        resolve(false);
+      });
+      socket.setTimeout(1_000, () => {
+        lastError = new Error(`Timed out connecting to ${host}:${port}`);
+        socket.destroy();
+        resolve(false);
+      });
+    });
+
+    if (connected) return;
+    await delay(500);
+  }
+
+  assertServerRunning();
+  throw new Error(`Timed out waiting for ${host}:${port}: ${lastError?.message || 'no response'}`);
 }
 
 function manifestAssetValues(value) {
@@ -456,6 +490,7 @@ try {
   });
 
   await waitForUrl(`${baseURL}/session/new`);
+  await waitForTcpPort('127.0.0.1', rendererPort);
   if (mode === 'static' || mode === 'prod') await waitForStaticManifest();
   assertServerRunning();
   await whileServerRuns(smokeBrowser);

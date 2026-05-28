@@ -7,7 +7,7 @@ const configuredWorkersCount =
 
 const config = {
   serverBundleCachePath: path.resolve(__dirname, '../.node-renderer-bundles'),
-  host: env.RENDERER_HOST || (env.RAILS_ENV === 'production' ? '0.0.0.0' : 'localhost'),
+  host: env.RENDERER_HOST || (env.RAILS_ENV === 'production' ? '0.0.0.0' : '127.0.0.1'),
   port: Number(env.RENDERER_PORT) || 3800,
   logLevel: env.RENDERER_LOG_LEVEL || 'info',
 
