@@ -150,14 +150,20 @@ const formClassName = 'auth-form settings-pane grid max-w-2xl gap-4';
 const fieldClassName = 'auth-field grid gap-2';
 const inputLikeClassName = 'border-input bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 flex min-h-9 w-full rounded-md border px-3 py-2 text-sm shadow-xs outline-none transition-[color,box-shadow] focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50';
 
+type DashboardLinkProps = Omit<React.ComponentProps<typeof Link>, 'className' | 'params' | 'to'> & {
+  className?: string;
+  params?: Record<string, string>;
+  to: string;
+};
+
 function DashboardLink({
   className,
   ...props
-}: React.ComponentProps<typeof Link>) {
+}: DashboardLinkProps) {
   return (
     <Link
       className={cn('text-sm font-medium text-primary underline-offset-4 hover:underline', className)}
-      {...props}
+      {...(props as React.ComponentProps<typeof Link>)}
     />
   );
 }
@@ -288,7 +294,7 @@ function RootLayout() {
 
   return (
     <main className="tanstack-shell bg-background text-foreground">
-      <header className="tanstack-header border-border/70 bg-card/95 shadow-sm">
+      <header className="tanstack-header border border-border/70 bg-card/95 shadow-sm">
         <div>
           <p className={eyebrowClassName}>React on Rails + TanStack</p>
           <h1>Dashboard</h1>
@@ -326,10 +332,10 @@ function RouteError({ error }: { error: Error }) {
       <AlertTitle>This section is unavailable</AlertTitle>
       <AlertDescription>
         <p>{error.message}</p>
+        <Button className="mt-3" type="button" onClick={() => window.location.reload()}>
+          Retry
+        </Button>
       </AlertDescription>
-      <Button type="button" onClick={() => window.location.reload()}>
-        Retry
-      </Button>
     </Alert>
   );
 }
@@ -515,13 +521,12 @@ function ProjectsTable({
         accessorKey: 'name',
         header: 'Name',
         cell: ({ row }) => (
-          <Link
-            className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+          <DashboardLink
             to="/projects/$projectId"
             params={{ projectId: String(row.original.id) }}
           >
             {row.original.name}
-          </Link>
+          </DashboardLink>
         ),
       },
       {
@@ -538,13 +543,12 @@ function ProjectsTable({
         id: 'actions',
         header: 'Actions',
         cell: ({ row }) => (
-          <Link
-            className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+          <DashboardLink
             to="/projects/$projectId/edit"
             params={{ projectId: String(row.original.id) }}
           >
             Edit
-          </Link>
+          </DashboardLink>
         ),
       },
     ],
@@ -793,10 +797,10 @@ function EditProjectPage() {
         <AlertTitle>Project unavailable</AlertTitle>
         <AlertDescription>
           <p>{projectQuery.error.message}</p>
+          <Button className="mt-3" type="button" onClick={() => projectQuery.refetch()}>
+            Retry
+          </Button>
         </AlertDescription>
-        <Button type="button" onClick={() => projectQuery.refetch()}>
-          Retry
-        </Button>
       </Alert>
     );
   }
