@@ -78,12 +78,25 @@ localStorage.setItem("tanstack-devtools", "1")
 ```
 
 The devtools are off by default because optional devtools chunks can trigger noisy dev-server overlay requests in the current Rspack RC stack.
+The dashboard code only imports them when `localStorage["tanstack-devtools"]`
+is set to `"1"`, so normal development sessions should not request TanStack
+devtools chunks.
+
+Symptom: after enabling devtools, the browser reports a 404 for a Rspack
+lazy-trigger URL while loading a TanStack devtools chunk.
+
+Fix: keep `config/rspack/development.js` disabling
+`clientWebpackConfig.lazyCompilation` at the top level. Rspack 2 uses that
+top-level option for lazy dynamic-import trigger endpoints, and those endpoints
+can 404 for optional devtools chunks in this starter. The config also keeps
+`experiments.lazyCompilation = false` explicit for older compatible option
+shapes.
 
 ## Dashboard Stays In Loading State
 
 Symptom: the SSR dashboard shell renders, but metric cards and the projects table keep showing loading placeholders in development.
 
-Fix: restart `bin/dev` after changing `config/shakapacker.yml`. This starter defaults to Rspack live reload for deterministic SSR smoke tests. To exercise HMR without editing configuration, run `SHAKAPACKER_DEV_SERVER_HMR=true bin/dev --no-open-browser --route=dashboard` or `pnpm run test:hmr`. If the dashboard still hangs, check the browser network panel for missing hot-update or hot-dev-server chunks.
+Fix: restart `bin/dev` after changing `config/shakapacker.yml`. This starter defaults to Rspack live reload for deterministic SSR smoke tests. To exercise HMR and React Fast Refresh without editing configuration, run `SHAKAPACKER_DEV_SERVER_HMR=true bin/dev --no-open-browser --route=dashboard` or `pnpm run test:hmr`. If the dashboard still hangs, check the browser network panel for missing hot-update or hot-dev-server chunks.
 
 ## Browser Reports Content Security Policy Violations
 

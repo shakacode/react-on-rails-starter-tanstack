@@ -36,6 +36,6 @@ The Node renderer receives Fetch API globals from `client/node-renderer.js` so T
 
 ## Rspack Notes
 
-Rspack is the active bundler in `config/shakapacker.yml`. Development keeps `experiments.lazyCompilation = false`, uses live reload by default for this RC stack, omits Rspack React Refresh, and gates TanStack devtools behind `localStorage["tanstack-devtools"] = "1"` to avoid dev-server overlay requests from optional chunks. HMR remains available as an explicit smoke path.
+Rspack is the active bundler in `config/shakapacker.yml`. Development disables client lazy compilation at the config top level and at `experiments.lazyCompilation`, uses live reload by default for this RC stack, and gates TanStack devtools behind `localStorage["tanstack-devtools"] = "1"` to avoid dev-server overlay requests from optional chunks. Explicit HMR mode enables React Fast Refresh through Shakapacker's Rspack wiring, while static and production-assets dev modes remain free of Rspack dev-server clients.
 
 The public React Server Components path still carries the Phase 0 AMBER note. The starter keeps Rspack client, server, and server-only RSC bundles green, but interactive RSC client references remain blocked because the Rspack build does not emit the React client/server manifests expected by the React on Rails RSC client-reference path.
