@@ -1,25 +1,32 @@
-<main class="auth-page">
-  <section class="auth-card">
-    <header class="auth-card-header">
-      <h1>Reset your password</h1>
-      <p>Send a reset link to the email on your account.</p>
+<main class="grid min-h-screen place-items-center bg-muted/40 px-4 py-10 text-foreground sm:px-6 lg:px-8">
+  <section class="w-full max-w-md overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm">
+    <div class="grid h-1 grid-cols-3" aria-hidden="true">
+      <span class="bg-emerald-500"></span>
+      <span class="bg-sky-500"></span>
+      <span class="bg-amber-500"></span>
+    </div>
+
+    <header class="space-y-1.5 border-b px-6 py-5">
+      <p class="text-sm font-medium text-muted-foreground">React on Rails Starter</p>
+      <h1 class="text-2xl font-semibold leading-8">Reset your password</h1>
+      <p class="text-sm leading-6 text-muted-foreground">Send a reset link to the email on your account.</p>
     </header>
 
-    <div class="auth-card-body">
-      <%= tag.div(flash[:alert], class: "auth-alert", aria: { live: "polite" }) if flash[:alert] %>
+    <div class="space-y-4 px-6 py-6">
+      <%= tag.div(flash[:alert], class: "rounded-md border border-destructive/50 bg-destructive/10 px-4 py-3 text-sm text-destructive", aria: { live: "polite" }) if flash[:alert] %>
 
-      <%= form_with url: passwords_path, class: "auth-form" do |form| %>
-        <div class="auth-field">
-          <%= form.label :email_address, "Email", class: "auth-label" %>
-          <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", value: params[:email_address], class: "auth-input" %>
+      <%= form_with url: passwords_path, class: "space-y-4" do |form| %>
+        <div class="space-y-2">
+          <%= form.label :email_address, "Email", class: "text-sm font-medium leading-none" %>
+          <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", value: params[:email_address], class: "h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base text-foreground shadow-xs outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm" %>
         </div>
 
-        <%= form.submit "Email reset instructions", class: "auth-button" %>
+        <%= form.submit "Email reset instructions", class: "inline-flex h-10 w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50" %>
       <% end %>
     </div>
 
-    <footer class="auth-card-footer">
-      <%= link_to "Back to sign in", new_session_path, class: "auth-link" %>
+    <footer class="flex flex-wrap items-center gap-3 border-t px-6 py-4 text-sm">
+      <%= link_to "Back to sign in", new_session_path, class: "font-medium text-foreground underline-offset-4 hover:underline" %>
     </footer>
   </section>
 </main>
