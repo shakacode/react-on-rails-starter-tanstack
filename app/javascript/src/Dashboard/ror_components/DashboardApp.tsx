@@ -27,7 +27,25 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Toaster } from '@/components/ui/sonner';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 import { apiFetch } from '../../../lib/apiFetch';
 import { createQueryClient } from '../../../lib/queryClient';
 import { installRouterStoreShim } from '../../../lib/tanstackRouterStoreShim';
@@ -122,6 +140,56 @@ const useDashboardProps = () => {
 
 const showTanStackDevtools = () =>
   typeof window !== 'undefined' && window.localStorage.getItem('tanstack-devtools') === '1';
+
+const panelClassName = 'tanstack-panel border-border/70 bg-card/95 shadow-sm';
+const panelHeaderClassName = 'tanstack-panel-header gap-4 border-b border-border/60 pb-4';
+const eyebrowClassName = 'tanstack-eyebrow text-muted-foreground';
+const mutedTextClassName = 'text-sm text-muted-foreground';
+const actionRowClassName = 'auth-actions flex flex-wrap items-center gap-2';
+const formClassName = 'auth-form settings-pane grid max-w-2xl gap-4';
+const fieldClassName = 'auth-field grid gap-2';
+const inputLikeClassName = 'border-input bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 flex min-h-9 w-full rounded-md border px-3 py-2 text-sm shadow-xs outline-none transition-[color,box-shadow] focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50';
+const dashboardLinkClassName = 'text-sm font-medium text-primary underline-offset-4 hover:underline';
+
+type DashboardLinkProps = Omit<React.ComponentProps<typeof Link>, 'className' | 'params' | 'to'> & {
+  className?: string;
+  params?: Record<string, string>;
+  to: string;
+};
+
+function DashboardLink({
+  className,
+  ...props
+}: DashboardLinkProps) {
+  return (
+    <Link
+      className={cn(dashboardLinkClassName, className)}
+      {...(props as React.ComponentProps<typeof Link>)}
+    />
+  );
+}
+
+function ExternalDashboardLink({
+  className,
+  ...props
+}: React.ComponentProps<'a'>) {
+  return (
+    <a
+      className={cn(dashboardLinkClassName, className)}
+      {...props}
+    />
+  );
+}
+
+function ProjectStatusBadge({ status }: { status: string }) {
+  const variant = status === 'active' ? 'default' : status === 'archived' ? 'outline' : 'secondary';
+
+  return (
+    <Badge className="capitalize" variant={variant}>
+      {status}
+    </Badge>
+  );
+}
 
 const allowedStatuses = new Set(['active', 'paused', 'completed', 'archived']);
 const allowedSorts = new Set(['name', 'status', 'last_activity_at', 'created_at']);
@@ -226,27 +294,35 @@ function RootLayout() {
   const showDevtools = showTanStackDevtools();
 
   return (
-    <main className="tanstack-shell">
-      <header className="tanstack-header">
+    <main className="tanstack-shell bg-background text-foreground">
+      <header className="tanstack-header border border-border/70 bg-card/95 shadow-sm">
         <div>
-          <p className="tanstack-eyebrow">React on Rails + TanStack</p>
+          <p className={eyebrowClassName}>React on Rails + TanStack</p>
           <h1>Dashboard</h1>
-          <p>Signed in as <strong>{user.emailAddress}</strong>.</p>
+          <p className={mutedTextClassName}>Signed in as <strong>{user.emailAddress}</strong>.</p>
         </div>
         <nav className="tanstack-nav" aria-label="Dashboard navigation">
-          <Link to="/dashboard">Dashboard</Link>
-          <Link to="/projects">Projects</Link>
-          <Link to="/settings">Settings</Link>
-          <a href={links.classicProjects}>Classic Rails CRUD</a>
+          <DashboardLink to="/dashboard">Dashboard</DashboardLink>
+          <DashboardLink to="/projects">Projects</DashboardLink>
+          <DashboardLink to="/settings">Settings</DashboardLink>
+          <ExternalDashboardLink href={links.classicProjects}>Classic Rails CRUD</ExternalDashboardLink>
           <Button asChild size="sm" className="shrink-0">
             <Link to="/projects/new">Create project</Link>
           </Button>
         </nav>
       </header>
 
-      <Suspense fallback={<section className="tanstack-panel">Loading route...</section>}>
+      <Suspense
+        fallback={(
+          <Card className={panelClassName}>
+            <CardContent>Loading route...</CardContent>
+          </Card>
+        )}
+      >
         <Outlet />
       </Suspense>
+
+      <Toaster richColors position="top-right" />
 
       {showDevtools ? (
         <Suspense fallback={null}>
@@ -259,13 +335,15 @@ function RootLayout() {
 
 function RouteError({ error }: { error: Error }) {
   return (
-    <section className="tanstack-panel" role="alert">
-      <h2>This section is unavailable</h2>
-      <p>{error.message}</p>
-      <button className="auth-button" type="button" onClick={() => window.location.reload()}>
-        Retry
-      </button>
-    </section>
+    <Alert className={panelClassName} variant="destructive">
+      <AlertTitle>This section is unavailable</AlertTitle>
+      <AlertDescription>
+        <p>{error.message}</p>
+        <Button className="mt-3" type="button" onClick={() => window.location.reload()}>
+          Retry
+        </Button>
+      </AlertDescription>
+    </Alert>
   );
 }
 
@@ -362,40 +440,56 @@ function MetricCard({
 
   if (!metricsProjectId) {
     return (
-      <article className="metric-card">
-        <span>{label}</span>
-        <strong>0</strong>
-        <p>Create a project to populate metrics.</p>
-      </article>
+      <Card className="metric-card">
+        <CardHeader>
+          <CardDescription>{label}</CardDescription>
+          <CardTitle className="text-3xl"><strong>0</strong></CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p>Create a project to populate metrics.</p>
+        </CardContent>
+      </Card>
     );
   }
 
   if (query.isPending) {
     return (
-      <article className="metric-card metric-card-muted">
-        <span>{label}</span>
-        <strong>...</strong>
-        <p>Loading</p>
-      </article>
+      <Card className="metric-card metric-card-muted">
+        <CardHeader>
+          <CardDescription>{label}</CardDescription>
+          <CardTitle className="text-3xl"><strong>...</strong></CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p>Loading</p>
+        </CardContent>
+      </Card>
     );
   }
 
   if (query.isError) {
     return (
-      <article className="metric-card metric-card-error">
-        <span>{label}</span>
-        <strong>!</strong>
-        <p>{query.error.message}</p>
-      </article>
+      <Card className="metric-card metric-card-error border-destructive/50">
+        <CardHeader>
+          <CardDescription>{label}</CardDescription>
+          <CardTitle className="text-3xl"><strong>!</strong></CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p>{query.error.message}</p>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <article className="metric-card">
-      <span>{label}</span>
-      <strong>{query.data[metricKey]}</strong>
-      <p>Loaded independently with TanStack Query.</p>
-    </article>
+    <Card className="metric-card">
+      <CardHeader>
+        <CardDescription>{label}</CardDescription>
+        <CardTitle className="text-3xl"><strong>{query.data[metricKey]}</strong></CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p>Loaded independently with TanStack Query.</p>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -434,19 +528,18 @@ function ProjectsTable({
         accessorKey: 'name',
         header: 'Name',
         cell: ({ row }) => (
-          <Link
-            className="auth-link"
+          <DashboardLink
             to="/projects/$projectId"
             params={{ projectId: String(row.original.id) }}
           >
             {row.original.name}
-          </Link>
+          </DashboardLink>
         ),
       },
       {
         accessorKey: 'status',
         header: 'Status',
-        cell: ({ row }) => <span className="project-badge">{row.original.status}</span>,
+        cell: ({ row }) => <ProjectStatusBadge status={row.original.status} />,
       },
       {
         accessorKey: 'last_activity_at',
@@ -457,13 +550,12 @@ function ProjectsTable({
         id: 'actions',
         header: 'Actions',
         cell: ({ row }) => (
-          <Link
-            className="auth-link"
+          <DashboardLink
             to="/projects/$projectId/edit"
             params={{ projectId: String(row.original.id) }}
           >
             Edit
-          </Link>
+          </DashboardLink>
         ),
       },
     ],
@@ -477,94 +569,102 @@ function ProjectsTable({
   });
 
   return (
-    <section className="tanstack-panel">
-      <div className="tanstack-panel-header">
+    <Card className={panelClassName}>
+      <CardHeader className={panelHeaderClassName}>
         <div>
-          <p className="tanstack-eyebrow">TanStack Table</p>
-          <h2>Projects</h2>
-          <p>Server-driven sort, filter, and pagination stored in the URL.</p>
+          <p className={eyebrowClassName}>TanStack Table</p>
+          <CardTitle><h2>Projects</h2></CardTitle>
+          <CardDescription>Server-driven sort, filter, and pagination stored in the URL.</CardDescription>
         </div>
-        <Link className="auth-button" to="/projects/new">New project</Link>
-      </div>
+        <Button asChild>
+          <Link to="/projects/new">New project</Link>
+        </Button>
+      </CardHeader>
 
-      <div className="table-controls">
-        <label>
-          Status
-          <select
-            value={status}
-            onChange={(event) => updateSearch({ status: event.target.value || undefined })}
-          >
-            <option value="">All</option>
-            <option value="active">Active</option>
-            <option value="paused">Paused</option>
-            <option value="completed">Completed</option>
-            <option value="archived">Archived</option>
-          </select>
-        </label>
-        <button className="auth-button auth-button-secondary" type="button" onClick={() => updateSearch({ sort: 'name', dir: sort === 'name' && dir === 'asc' ? 'desc' : 'asc' })}>
-          Sort name {sort === 'name' ? dir : ''}
-        </button>
-        <button className="auth-button auth-button-secondary" type="button" onClick={() => updateSearch({ sort: 'last_activity_at', dir: sort === 'last_activity_at' && dir === 'asc' ? 'desc' : 'asc' })}>
-          Sort activity {sort === 'last_activity_at' ? dir : ''}
-        </button>
-      </div>
-
-      {projectsQuery.isError ? (
-        <div className="auth-alert" role="alert">
-          This section is unavailable. <button type="button" onClick={() => projectsQuery.refetch()}>Retry</button>
+      <CardContent className="grid gap-4">
+        <div className="table-controls">
+          <Label className="grid gap-2">
+            Status
+            <select
+              className={inputLikeClassName}
+              value={status}
+              onChange={(event) => updateSearch({ status: event.target.value || undefined })}
+            >
+              <option value="">All</option>
+              <option value="active">Active</option>
+              <option value="paused">Paused</option>
+              <option value="completed">Completed</option>
+              <option value="archived">Archived</option>
+            </select>
+          </Label>
+          <Button variant="secondary" type="button" onClick={() => updateSearch({ sort: 'name', dir: sort === 'name' && dir === 'asc' ? 'desc' : 'asc' })}>
+            Sort name {sort === 'name' ? dir : ''}
+          </Button>
+          <Button variant="secondary" type="button" onClick={() => updateSearch({ sort: 'last_activity_at', dir: sort === 'last_activity_at' && dir === 'asc' ? 'desc' : 'asc' })}>
+            Sort activity {sort === 'last_activity_at' ? dir : ''}
+          </Button>
         </div>
-      ) : (
-        <div className="table-wrap" aria-busy={projectsQuery.isPending}>
-          <table className="data-table">
-            <thead>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <th key={header.id}>
-                      {flexRender(header.column.columnDef.header, header.getContext())}
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody>
-              {projectsQuery.isPending ? (
-                <tr>
-                  <td colSpan={columns.length}>Loading projects...</td>
-                </tr>
-              ) : table.getRowModel().rows.length > 0 ? (
-                table.getRowModel().rows.map((row) => (
-                  <tr key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+
+        {projectsQuery.isError ? (
+          <Alert variant="destructive">
+            <AlertTitle>This section is unavailable.</AlertTitle>
+            <AlertDescription>
+              <Button variant="outline" type="button" onClick={() => projectsQuery.refetch()}>Retry</Button>
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <div className="table-wrap" aria-busy={projectsQuery.isPending}>
+            <Table className="data-table">
+              <TableHeader>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <TableHead key={header.id}>
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                      </TableHead>
                     ))}
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={columns.length}>No projects match this view.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {projectsQuery.isPending ? (
+                  <TableRow>
+                    <TableCell colSpan={columns.length}>Loading projects...</TableCell>
+                  </TableRow>
+                ) : table.getRowModel().rows.length > 0 ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow key={row.id}>
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={columns.length}>No projects match this view.</TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        )}
 
-      <div className="table-controls">
-        <button className="auth-button auth-button-secondary" type="button" disabled={page <= 1} onClick={() => updateSearch({ page: page - 1 })}>
-          Previous
-        </button>
-        <span>Page {page}</span>
-        <button
-          className="auth-button auth-button-secondary"
-          type="button"
-          disabled={!projectsQuery.data || page * projectsQuery.data.meta.per_page >= projectsQuery.data.meta.total}
-          onClick={() => updateSearch({ page: page + 1 })}
-        >
-          Next
-        </button>
-      </div>
-    </section>
+        <div className="table-controls">
+          <Button variant="secondary" type="button" disabled={page <= 1} onClick={() => updateSearch({ page: page - 1 })}>
+            Previous
+          </Button>
+          <span>Page {page}</span>
+          <Button
+            variant="secondary"
+            type="button"
+            disabled={!projectsQuery.data || page * projectsQuery.data.meta.per_page >= projectsQuery.data.meta.total}
+            onClick={() => updateSearch({ page: page + 1 })}
+          >
+            Next
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -600,6 +700,7 @@ function NewProjectPage() {
       if (!api.metricsProjectId) setMetricsProjectId(project.id);
       queryClient.invalidateQueries({ queryKey: ['projects'] });
       queryClient.invalidateQueries({ queryKey: ['metric'] });
+      toast.success('Project created.');
       navigate({ to: '/projects/$projectId', params: { projectId: String(project.id) } });
     },
   });
@@ -620,50 +721,55 @@ function ProjectShowPage() {
   const projectQuery = useProject(projectId);
 
   return (
-    <section className="tanstack-panel">
-      <div className="tanstack-panel-header">
+    <Card className={panelClassName}>
+      <CardHeader className={panelHeaderClassName}>
         <div>
-          <p className="tanstack-eyebrow">TanStack route</p>
-          <h2>{projectQuery.data?.project.name ?? 'Project'}</h2>
-          <p>Read through the Rails JSON API, with the classic Rails CRUD page still available as a fallback.</p>
+          <p className={eyebrowClassName}>TanStack route</p>
+          <CardTitle><h2>{projectQuery.data?.project.name ?? 'Project'}</h2></CardTitle>
+          <CardDescription>Read through the Rails JSON API, with the classic Rails CRUD page still available as a fallback.</CardDescription>
         </div>
-        <div className="auth-actions">
-          <Link className="auth-button" to="/projects/$projectId/edit" params={{ projectId }}>
-            Edit
-          </Link>
-          <Link className="auth-button auth-button-secondary" to="/dashboard">
-            Dashboard
-          </Link>
+        <div className={actionRowClassName}>
+          <Button asChild>
+            <Link to="/projects/$projectId/edit" params={{ projectId }}>Edit</Link>
+          </Button>
+          <Button asChild variant="secondary">
+            <Link to="/dashboard">Dashboard</Link>
+          </Button>
         </div>
-      </div>
+      </CardHeader>
 
-      {projectQuery.isPending ? (
-        <p className="auth-muted">Loading project...</p>
-      ) : projectQuery.isError ? (
-        <div className="auth-alert" role="alert">
-          {projectQuery.error.message}
-          <button className="auth-button auth-button-secondary" type="button" onClick={() => projectQuery.refetch()}>
-            Retry
-          </button>
-        </div>
-      ) : (
-        <div className="project-summary">
-          <div>
-            <h3>Description</h3>
-            <p>{projectQuery.data.project.description || 'No description yet.'}</p>
+      <CardContent>
+        {projectQuery.isPending ? (
+          <p className="auth-muted">Loading project...</p>
+        ) : projectQuery.isError ? (
+          <Alert variant="destructive">
+            <AlertTitle>Project unavailable</AlertTitle>
+            <AlertDescription>
+              <p>{projectQuery.error.message}</p>
+              <Button variant="outline" type="button" onClick={() => projectQuery.refetch()}>
+                Retry
+              </Button>
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <div className="project-summary">
+            <div>
+              <h3>Description</h3>
+              <p>{projectQuery.data.project.description || 'No description yet.'}</p>
+            </div>
+            <div className="project-meta">
+              <ProjectStatusBadge status={projectQuery.data.project.status} />
+              <Badge variant="outline">
+                Last activity {new Date(projectQuery.data.project.last_activity_at).toLocaleDateString()}
+              </Badge>
+            </div>
+            <ExternalDashboardLink href={classicProjectPath(links.classicProjects, projectId)}>
+              Open classic Rails-rendered project page
+            </ExternalDashboardLink>
           </div>
-          <div className="project-meta">
-            <span className="project-badge">{projectQuery.data.project.status}</span>
-            <span className="project-badge">
-              Last activity {new Date(projectQuery.data.project.last_activity_at).toLocaleDateString()}
-            </span>
-          </div>
-          <a className="auth-link" href={classicProjectPath(links.classicProjects, projectId)}>
-            Open classic Rails-rendered project page
-          </a>
-        </div>
-      )}
-    </section>
+        )}
+      </CardContent>
+    </Card>
   );
 }
 
@@ -683,23 +789,30 @@ function EditProjectPage() {
       queryClient.setQueryData(['project', String(project.id)], { project });
       queryClient.invalidateQueries({ queryKey: ['projects'] });
       queryClient.invalidateQueries({ queryKey: ['metric'] });
+      toast.success('Project saved.');
       navigate({ to: '/projects/$projectId', params: { projectId: String(project.id) } });
     },
   });
 
   if (projectQuery.isPending) {
-    return <section className="tanstack-panel">Loading project...</section>;
+    return (
+      <Card className={panelClassName}>
+        <CardContent>Loading project...</CardContent>
+      </Card>
+    );
   }
 
   if (projectQuery.isError) {
     return (
-      <section className="tanstack-panel" role="alert">
-        <h2>Project unavailable</h2>
-        <p>{projectQuery.error.message}</p>
-        <button className="auth-button" type="button" onClick={() => projectQuery.refetch()}>
-          Retry
-        </button>
-      </section>
+      <Alert className={panelClassName} variant="destructive">
+        <AlertTitle>Project unavailable</AlertTitle>
+        <AlertDescription>
+          <p>{projectQuery.error.message}</p>
+          <Button className="mt-3" type="button" onClick={() => projectQuery.refetch()}>
+            Retry
+          </Button>
+        </AlertDescription>
+      </Alert>
     );
   }
 
@@ -741,15 +854,14 @@ function ProjectFormPanel({
   }, [initialProject]);
 
   return (
-    <section className="tanstack-panel">
-      <div className="tanstack-panel-header">
+    <Card className={panelClassName}>
+      <CardHeader className={panelHeaderClassName}>
         <div>
-          <p className="tanstack-eyebrow">TanStack Router</p>
-          <h2>{title}</h2>
-          <p>{description}</p>
+          <p className={eyebrowClassName}>TanStack Router</p>
+          <CardTitle><h2>{title}</h2></CardTitle>
+          <CardDescription>{description}</CardDescription>
         </div>
-        <a
-          className="auth-link"
+        <ExternalDashboardLink
           href={
             initialProject
               ? classicProjectPath(links.classicProjects, String(initialProject.id), '/edit')
@@ -757,76 +869,84 @@ function ProjectFormPanel({
           }
         >
           Open classic Rails form
-        </a>
-      </div>
+        </ExternalDashboardLink>
+      </CardHeader>
 
-      <form
-        className="auth-form settings-pane"
-        onSubmit={(event) => {
-          event.preventDefault();
-          mutation.mutate({
-            name,
-            description: projectDescription,
-            status,
-          });
-        }}
-      >
-        <div className="auth-field">
-          <label className="auth-label" htmlFor="project_name">Name</label>
-          <input
-            id="project_name"
-            className="auth-input"
-            value={name}
-            maxLength={120}
-            onChange={(event) => setName(event.target.value)}
-          />
-        </div>
-        <div className="auth-field">
-          <label className="auth-label" htmlFor="project_description">Description</label>
-          <textarea
-            id="project_description"
-            className="auth-input"
-            value={projectDescription}
-            rows={5}
-            maxLength={2_000}
-            onChange={(event) => setProjectDescription(event.target.value)}
-          />
-        </div>
-        <div className="auth-field">
-          <label className="auth-label" htmlFor="project_status">Status</label>
-          <select id="project_status" className="auth-input" value={status} onChange={(event) => setStatus(event.target.value)}>
-            <option value="active">Active</option>
-            <option value="paused">Paused</option>
-            <option value="completed">Completed</option>
-            <option value="archived">Archived</option>
-          </select>
-        </div>
-        {mutation.isError ? <div className="auth-alert" role="alert">{mutation.error.message}</div> : null}
-        <button className="auth-button" type="submit" disabled={mutation.isPending}>
-          {mutation.isPending ? 'Saving...' : submitLabel}
-        </button>
-      </form>
-    </section>
+      <CardContent>
+        <form
+          className={formClassName}
+          onSubmit={(event) => {
+            event.preventDefault();
+            mutation.mutate({
+              name,
+              description: projectDescription,
+              status,
+            });
+          }}
+        >
+          <div className={fieldClassName}>
+            <Label htmlFor="project_name">Name</Label>
+            <Input
+              id="project_name"
+              value={name}
+              maxLength={120}
+              onChange={(event) => setName(event.target.value)}
+            />
+          </div>
+          <div className={fieldClassName}>
+            <Label htmlFor="project_description">Description</Label>
+            <textarea
+              id="project_description"
+              className={inputLikeClassName}
+              value={projectDescription}
+              rows={5}
+              maxLength={2_000}
+              onChange={(event) => setProjectDescription(event.target.value)}
+            />
+          </div>
+          <div className={fieldClassName}>
+            <Label htmlFor="project_status">Status</Label>
+            <select id="project_status" className={inputLikeClassName} value={status} onChange={(event) => setStatus(event.target.value)}>
+              <option value="active">Active</option>
+              <option value="paused">Paused</option>
+              <option value="completed">Completed</option>
+              <option value="archived">Archived</option>
+            </select>
+          </div>
+          {mutation.isError ? (
+            <Alert variant="destructive">
+              <AlertTitle>Unable to save project</AlertTitle>
+              <AlertDescription>{mutation.error.message}</AlertDescription>
+            </Alert>
+          ) : null}
+          <Button type="submit" disabled={mutation.isPending}>
+            {mutation.isPending ? 'Saving...' : submitLabel}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
 
 function SettingsLayout() {
   return (
-    <section className="tanstack-panel">
-      <div className="tanstack-panel-header">
+    <Card className={panelClassName}>
+      <CardHeader className={panelHeaderClassName}>
         <div>
-          <p className="tanstack-eyebrow">TanStack Router</p>
-          <h2>Settings</h2>
-          <p>Nested routes render client-side without leaving the Rails shell.</p>
+          <p className={eyebrowClassName}>TanStack Router</p>
+          <CardTitle><h2>Settings</h2></CardTitle>
+          <CardDescription>Nested routes render client-side without leaving the Rails shell.</CardDescription>
         </div>
-      </div>
+      </CardHeader>
+      <CardContent className="grid gap-4">
       <nav className="tanstack-nav tanstack-tabs" aria-label="Settings tabs">
-        <Link to="/settings">Overview</Link>
-        <Link to="/settings/profile">Profile</Link>
-        <Link to="/settings/security">Security</Link>
+        <DashboardLink to="/settings">Overview</DashboardLink>
+        <DashboardLink to="/settings/profile">Profile</DashboardLink>
+        <DashboardLink to="/settings/security">Security</DashboardLink>
       </nav>
       <Outlet />
-    </section>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -836,7 +956,7 @@ function SettingsOverview() {
   return (
     <div className="settings-pane">
       <h3>{user.name}</h3>
-      <p>{user.emailAddress}</p>
+      <p className={mutedTextClassName}>{user.emailAddress}</p>
     </div>
   );
 }
@@ -864,21 +984,31 @@ function ProfileSettings() {
     },
   });
 
+  useEffect(() => {
+    if (mutation.isSuccess && !mutation.data?.redirect_to) {
+      toast.success('Profile updated.', { duration: 6_000 });
+    }
+  }, [mutation.data?.redirect_to, mutation.isSuccess]);
+
   return (
-    <form className="auth-form settings-pane" onSubmit={(event) => { event.preventDefault(); mutation.mutate(); }}>
-      <div className="auth-field">
-        <label className="auth-label" htmlFor="settings_name">Name</label>
-        <input id="settings_name" className="auth-input" value={name} onChange={(event) => setName(event.target.value)} />
+    <form className={formClassName} onSubmit={(event) => { event.preventDefault(); mutation.mutate(); }}>
+      <div className={fieldClassName}>
+        <Label htmlFor="settings_name">Name</Label>
+        <Input id="settings_name" value={name} onChange={(event) => setName(event.target.value)} />
       </div>
-      <div className="auth-field">
-        <label className="auth-label" htmlFor="settings_email">Email</label>
-        <input id="settings_email" className="auth-input" type="email" value={emailAddress} onChange={(event) => setEmailAddress(event.target.value)} />
+      <div className={fieldClassName}>
+        <Label htmlFor="settings_email">Email</Label>
+        <Input id="settings_email" type="email" value={emailAddress} onChange={(event) => setEmailAddress(event.target.value)} />
       </div>
-      {mutation.isError ? <div className="auth-alert" role="alert">{mutation.error.message}</div> : null}
-      {mutation.isSuccess && !mutation.data.redirect_to ? <div className="auth-notice">Profile updated.</div> : null}
-      <button className="auth-button" type="submit" disabled={mutation.isPending}>
+      {mutation.isError ? (
+        <Alert variant="destructive">
+          <AlertTitle>Unable to update profile</AlertTitle>
+          <AlertDescription>{mutation.error.message}</AlertDescription>
+        </Alert>
+      ) : null}
+      <Button type="submit" disabled={mutation.isPending}>
         {mutation.isPending ? 'Saving...' : 'Save profile'}
-      </button>
+      </Button>
     </form>
   );
 }
@@ -887,87 +1017,61 @@ function SecuritySettings() {
   return (
     <div className="settings-pane">
       <h3>Password</h3>
-      <p>Use the Rails password reset flow to rotate credentials.</p>
-      <a className="auth-button" href="/passwords/new">Send reset link</a>
+      <p className={mutedTextClassName}>Use the Rails password reset flow to rotate credentials.</p>
+      <Button asChild>
+        <a href="/passwords/new">Send reset link</a>
+      </Button>
     </div>
   );
 }
 
 function RenderingModeDrawer() {
   const [open, setOpen] = useState(false);
-  const drawerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open || typeof document === 'undefined') return undefined;
-
-    const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    drawerRef.current?.focus();
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setOpen(false);
-        return;
-      }
-
-      if (event.key !== 'Tab' || !drawerRef.current) return;
-
-      const focusable = Array.from(
-        drawerRef.current.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'),
-      );
-      if (focusable.length === 0) return;
-
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (!first || !last) return;
-
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      previouslyFocused?.focus();
-    };
-  }, [open]);
 
   return (
-    <section className="tanstack-panel">
-      <div className="tanstack-panel-header">
+    <Card className={panelClassName}>
+      <CardHeader className={panelHeaderClassName}>
         <div>
-          <p className="tanstack-eyebrow">Rendering mode</p>
-          <h2>Classic SSR + TanStack</h2>
-          <p>This authenticated surface renders through React on Rails Pro's Node renderer, then TanStack Router, Query, and Table own the client experience.</p>
+          <p className={eyebrowClassName}>Rendering mode</p>
+          <CardTitle><h2>Classic SSR + TanStack</h2></CardTitle>
+          <CardDescription>This authenticated surface renders through React on Rails Pro's Node renderer, then TanStack Router, Query, and Table own the client experience.</CardDescription>
         </div>
-        <button
-          className="auth-button auth-button-secondary rendering-info-button"
-          type="button"
-          aria-expanded={open}
-          aria-label="Rendering mode details"
-          onClick={() => setOpen((value) => !value)}
-        >
-          i
-        </button>
-      </div>
-      {open ? (
-        <div className="drawer" role="dialog" aria-label="Rendering mode details" ref={drawerRef} tabIndex={-1}>
-          <p>The public landing is where RSC streaming pays off for cold visitors and SEO. Behind auth, URL state, cached data, and table interactivity matter more.</p>
-          <div className="auth-actions">
-            <a className="auth-link" href="https://github.com/shakacode/react-on-rails-demo-hacker-news-rsc">Hacker News RSC demo</a>
-            <a className="auth-link" href="https://github.com/shakacode/react-on-rails-demo-ssr-hmr">SSR/HMR demo</a>
-            <button className="auth-button auth-button-secondary" type="button" onClick={() => setOpen(false)}>
-              Close
-            </button>
-          </div>
-        </div>
-      ) : null}
-    </section>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button
+              className="rendering-info-button"
+              type="button"
+              variant="secondary"
+              size="icon"
+              aria-label="Rendering mode details"
+            >
+              i
+            </Button>
+          </DialogTrigger>
+          <DialogContent aria-label="Rendering mode details">
+            <DialogHeader>
+              <DialogTitle>Rendering mode details</DialogTitle>
+              <DialogDescription>
+                The public landing is where RSC streaming pays off for cold visitors and SEO. Behind auth, URL state, cached data, and table interactivity matter more.
+              </DialogDescription>
+            </DialogHeader>
+            <div className={actionRowClassName}>
+              <ExternalDashboardLink href="https://github.com/shakacode/react-on-rails-demo-hacker-news-rsc">
+                Hacker News RSC demo
+              </ExternalDashboardLink>
+              <ExternalDashboardLink href="https://github.com/shakacode/react-on-rails-demo-ssr-hmr">
+                SSR/HMR demo
+              </ExternalDashboardLink>
+            </div>
+            <DialogFooter>
+              <Button variant="secondary" type="button" onClick={() => setOpen(false)}>
+                Close
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </CardHeader>
+    </Card>
   );
 }
 

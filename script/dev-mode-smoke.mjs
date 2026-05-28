@@ -242,6 +242,25 @@ function responseSummary(response) {
   };
 }
 
+async function gotoDocument(page, path, options = {}) {
+  let lastError = null;
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      return await page.goto(path, options);
+    } catch (error) {
+      lastError = error;
+      if (!error.message.includes('net::ERR_ABORTED') || attempt === 3) throw error;
+
+      // HMR can reload the current document while Playwright starts a route navigation.
+      await page.waitForLoadState('domcontentloaded', { timeout: 5_000 }).catch(() => {});
+      await delay(500 * attempt);
+    }
+  }
+
+  throw lastError;
+}
+
 function assertHtmlContains(body, expected, description) {
   if (!body.includes(expected)) {
     throw new Error(`Dashboard SSR contract response is missing ${description}: ${expected}`);
@@ -470,7 +489,7 @@ async function smokeBrowser() {
 
   try {
     state.lastStep = 'opening sign-in form';
-    state.status.signInForm = responseSummary(await page.goto('/session/new', { waitUntil: 'domcontentloaded' }));
+    state.status.signInForm = responseSummary(await gotoDocument(page, '/session/new', { waitUntil: 'domcontentloaded' }));
     if (modeConfig.browserSettleMs) await delay(modeConfig.browserSettleMs);
     await page.getByLabel('Email').fill('demo@example.com');
     await page.getByLabel('Password').fill('password');
@@ -478,7 +497,7 @@ async function smokeBrowser() {
 
     state.lastStep = 'opening dashboard';
     const documentRequestsBeforeDashboard = state.status.documentRequests || 0;
-    const dashboardResponse = await page.goto(ssrDashboardPath, { waitUntil: 'domcontentloaded' });
+    const dashboardResponse = await gotoDocument(page, ssrDashboardPath, { waitUntil: 'domcontentloaded' });
     state.status.dashboard = responseSummary(dashboardResponse);
     await assertDashboardSsrRouterContract(page, dashboardResponse, state, documentRequestsBeforeDashboard);
     await assertBrowserPicksUpSourceEdit(page, state);
@@ -487,7 +506,7 @@ async function smokeBrowser() {
     await page.waitForURL('**/settings', { timeout: 20_000 });
 
     state.lastStep = 'opening new project route';
-    state.status.newProject = responseSummary(await page.goto('/projects/new', { waitUntil: 'domcontentloaded' }));
+    state.status.newProject = responseSummary(await gotoDocument(page, '/projects/new', { waitUntil: 'domcontentloaded' }));
     await page.locator('main.tanstack-shell').getByRole('heading', { name: 'New project' }).waitFor({ timeout: 30_000 });
 
     if (diagnostics.consoleErrors.length > 0 || diagnostics.pageErrors.length > 0 || diagnostics.failedRequests.length > 0) {
