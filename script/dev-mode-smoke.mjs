@@ -28,18 +28,21 @@ const recoverableReactPageErrors = [
   'There was an error during concurrent rendering but React was able to recover',
   'There was an error while hydrating but React was able to recover',
 ];
+const allowTanStackDevtoolsAssets = ['1', 'true', 'yes'].includes(
+  String(process.env.TANSTACK_DEVTOOLS || '').toLowerCase(),
+);
 const forbiddenDevClientUrlPatterns = [
   { reason: 'Rspack dev-server client', pattern: /(?:rspack|webpack)(?:[_-]|%2f)?dev-server|dev-server(?:[_-]|%2f)?client|hot[_-]dev-server/i },
   { reason: 'hot-update asset', pattern: /hot-update/i },
   { reason: 'dev-server overlay asset', pattern: /(?:rspack|webpack)-dev-server(?:[_-]|%2f)client(?:[_-]|%2f)overlay|(?:^|[/_-])overlay(?:[/_.-]|$)/i },
-  { reason: 'TanStack devtools chunk', pattern: /tanstack.*devtools|react-query-devtools|react-router-devtools|query-devtools|router-devtools/i },
+  { reason: 'TanStack devtools chunk', pattern: /tanstack.*devtools|react-query-devtools|react-router-devtools|query-devtools|router-devtools/i, allowWhenDevtoolsEnabled: true },
 ];
 const forbiddenDevClientBodyPatterns = [
   { reason: 'Rspack dev-server client code', pattern: /@rspack[+/]dev-server|__rspack_dev_server_client__|webpack-dev-server\/client|__webpack_dev_server_client__/i },
   { reason: 'hot-update runtime code', pattern: /webpackHotUpdate|hot-update/i },
   { reason: 'dev-server overlay code', pattern: /(?:rspack|webpack)-dev-server#overlay|(?:rspack|webpack)-dev-server-client-overlay|client\/overlay\.js/i },
-  { reason: 'TanStack Query devtools code', pattern: /ReactQueryDevtoolsPanel|TanstackQueryDevtoolsPanel|@tanstack[+/]query-devtools/i },
-  { reason: 'TanStack Router devtools code', pattern: /TanStackRouterDevtoolsCore|TanStackRouterDevtoolsPanel|@tanstack[+/]router-devtools-core/i },
+  { reason: 'TanStack Query devtools code', pattern: /ReactQueryDevtoolsPanel|TanstackQueryDevtoolsPanel|@tanstack[+/]query-devtools/i, allowWhenDevtoolsEnabled: true },
+  { reason: 'TanStack Router devtools code', pattern: /TanStackRouterDevtoolsCore|TanStackRouterDevtoolsPanel|@tanstack[+/]router-devtools-core/i, allowWhenDevtoolsEnabled: true },
 ];
 const env = {
   ...process.env,
@@ -151,6 +154,7 @@ function forbiddenDevClientUrlReasons(rawUrl) {
   }
 
   return forbiddenDevClientUrlPatterns
+    .filter(({ allowWhenDevtoolsEnabled }) => !(allowWhenDevtoolsEnabled && allowTanStackDevtoolsAssets))
     .filter(({ pattern }) => pattern.test(decodedUrl))
     .map(({ reason }) => reason);
 }
@@ -197,7 +201,9 @@ async function inspectResponseBodyForDevClientAssets(response, diagnostics) {
     return;
   }
 
-  const pattern = forbiddenDevClientBodyPatterns.find(({ pattern: bodyPattern }) => bodyPattern.test(body));
+  const pattern = forbiddenDevClientBodyPatterns
+    .filter(({ allowWhenDevtoolsEnabled }) => !(allowWhenDevtoolsEnabled && allowTanStackDevtoolsAssets))
+    .find(({ pattern: bodyPattern }) => bodyPattern.test(body));
   if (!pattern) return;
 
   recordForbiddenDevClientAsset(diagnostics, {
@@ -348,6 +354,9 @@ async function submitDemoSignIn(page, state) {
 async function smokeBrowser() {
   const browser = await chromium.launch();
   const page = await browser.newPage({ baseURL });
+  if (allowTanStackDevtoolsAssets) {
+    await page.addInitScript(() => window.localStorage.setItem('tanstack-devtools', '1'));
+  }
   const diagnostics = {
     consoleErrors: [],
     pageErrors: [],

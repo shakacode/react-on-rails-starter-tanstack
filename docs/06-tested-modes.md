@@ -51,6 +51,8 @@ build, rendering, or routing behavior.
 - Static and production-assets smoke runs also record browser requests,
   websocket attempts, and script/document responses to ensure those modes do not
   load Rspack dev-server clients, hot-update files, overlay code, or TanStack
-  devtools chunks unless the devtools gate is explicitly enabled.
+  devtools chunks. To intentionally smoke the optional devtools chunks, run with
+  `TANSTACK_DEVTOOLS=1`; the smoke sets the localStorage gate and allows only the
+  TanStack devtools patterns.
 - The Rspack/RSC manifest gap is tracked upstream in [shakacode/react_on_rails#1828](https://github.com/shakacode/react_on_rails/issues/1828).
 - The React on Rails Pro TanStack Router private-store compatibility issue is tracked in [shakacode/react_on_rails#3375](https://github.com/shakacode/react_on_rails/issues/3375).
