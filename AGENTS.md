@@ -229,6 +229,9 @@ Canonical examples:
 - `components.json` for the shadcn/ui CLI setup.
 - `app/javascript/src/components/ui/*` for generated shadcn primitives.
 - `app/javascript/src/lib/utils.ts` for the shared `cn` helper.
+- `app/javascript/src/Dashboard/ror_components/DashboardApp.tsx` for the
+  authenticated dashboard surface using shadcn `Card`, `Table`, `Button`,
+  `Input`, `Label`, `Dialog`, `Badge`, `Alert`, and `Sonner` primitives.
 
 Rules:
 
@@ -237,8 +240,11 @@ Rules:
   source discovery can watch generated Rspack output and cause rebuild loops.
 - Use `bunx shadcn add ...` for new shadcn primitives, then commit the generated
   component file and any package/lockfile updates.
-- Do not reskin dashboard, auth, or error views as part of scaffold-only work.
-  Treat those as separate UI migration changes.
+- The authenticated TanStack dashboard is the shadcn/Tailwind reference surface.
+  Classic Rails auth, project CRUD, and error views still use the `auth-*`
+  Rails CSS conventions unless a later task explicitly migrates them.
+- Do not reskin unrelated Rails views as part of scaffold-only work. Treat those
+  as separate UI migration changes.
 - Re-run `bin/shakapacker`, dashboard Playwright coverage, `bin/test dev-modes`,
   and `bin/test hmr` after changing Tailwind, PostCSS, or shared UI primitives.
 
@@ -304,7 +310,8 @@ When changing behavior:
 - Keep deeper operational detail in `docs/`.
 - Update `SPIKE.md` when the Rspack/RSC status changes.
 - Do not claim unfinished spec work is complete. In particular, verify before
-  claiming a full shadcn/Tailwind reskin, a full pattern catalog, production
-  deployment, Sentry wiring, a dark-mode toggle, or complete RSC interactivity.
+  claiming a full app-wide shadcn/Tailwind reskin, a full pattern catalog,
+  production deployment, Sentry wiring, a dark-mode toggle, or complete RSC
+  interactivity.
 - If you add a `REFERENCE PATTERN` marker in code, add or update the matching
   entry in this file.
