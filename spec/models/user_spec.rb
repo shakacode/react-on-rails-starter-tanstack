@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe User, type: :model do
+  include ActiveSupport::Testing::TimeHelpers
+
   it "accepts the Phase 2 generator-compatible attributes" do
     user = described_class.new(email_address: "x@y.com", password: "z", name: "X")
 
@@ -11,6 +13,24 @@ RSpec.describe User, type: :model do
     user = create(:user, email_address: " USER@Example.COM ")
 
     expect(user.email_address).to eq("user@example.com")
+  end
+
+  it "authenticates by normalized email address and password" do
+    user = create(:user, email_address: "demo@example.com", password: "password", password_confirmation: "password")
+
+    expect(described_class.authenticate_by(email_address: "demo@example.com", password: "password")).to eq(user)
+    expect(described_class.authenticate_by(email_address: "demo@example.com", password: "wrong-password")).to be_nil
+  end
+
+  it "issues expiring password reset tokens through Rails secure password helpers" do
+    user = create(:user)
+    token = user.password_reset_token
+
+    expect(described_class.find_by_password_reset_token!(token)).to eq(user)
+
+    travel_to(user.password_reset_token_expires_in.from_now + 1.second) do
+      expect(described_class.find_by_password_reset_token(token)).to be_nil
+    end
   end
 
   it "generates a single-use verification token digest" do
