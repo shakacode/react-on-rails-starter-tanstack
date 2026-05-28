@@ -1147,7 +1147,6 @@ function RenderingModeDrawer() {
             </Button>
           </DialogTrigger>
           <DialogContent
-            aria-labelledby="rendering-mode-title"
             className="rendering-mode-dialog"
             onOpenAutoFocus={(event) => {
               event.preventDefault();
@@ -1155,7 +1154,7 @@ function RenderingModeDrawer() {
             }}
           >
             <DialogHeader>
-              <DialogTitle id="rendering-mode-title">Rendering on this page</DialogTitle>
+              <DialogTitle>Rendering on this page</DialogTitle>
               <DialogDescription>
                 This app keeps Rails as the system of record and chooses the React rendering model that fits each surface.
               </DialogDescription>

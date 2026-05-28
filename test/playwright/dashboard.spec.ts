@@ -90,9 +90,9 @@ test('authenticated dashboard hydrates client routes and project mutations', asy
   expect(documentRequests).toBe(documentRequestsBeforeClientRoutes);
 
   await page.getByRole('button', { name: 'Rendering mode details' }).click();
-  await expect(page.getByRole('dialog', { name: 'Rendering mode details' })).toBeVisible();
+  await expect(page.getByRole('dialog', { name: 'Rendering on this page' })).toBeVisible();
   await page.keyboard.press('Escape');
-  await expect(page.getByRole('dialog', { name: 'Rendering mode details' })).toBeHidden();
+  await expect(page.getByRole('dialog', { name: 'Rendering on this page' })).toBeHidden();
 
   await page.getByRole('link', { name: 'New project' }).click();
   await expect(page).toHaveURL('/projects/new');
