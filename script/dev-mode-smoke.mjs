@@ -30,6 +30,7 @@ const recoverableReactPageErrors = [
   'There was an error during concurrent rendering but React was able to recover',
   'There was an error while hydrating but React was able to recover',
 ];
+const ssrDashboardPath = '/dashboard?status=active&sort=name&dir=asc';
 const env = {
   ...process.env,
   ...modeConfig.env,
@@ -142,6 +143,49 @@ function responseSummary(response) {
     url: response.url(),
     location: headers.location || null,
   };
+}
+
+function assertHtmlContains(body, expected, description) {
+  if (!body.includes(expected)) {
+    throw new Error(`Dashboard SSR contract response is missing ${description}: ${expected}`);
+  }
+}
+
+async function assertDashboardSsrRouterContract(page, response, state, documentRequestsBefore) {
+  if (!response) {
+    throw new Error('Dashboard SSR contract did not receive a document response');
+  }
+
+  const body = await response.text();
+  assertHtmlContains(body, 'TANSTACK_SSR_SHELL', 'the Rails SSR shell marker');
+  assertHtmlContains(body, 'tanstack-shell', 'the server-rendered dashboard shell');
+  assertHtmlContains(body, 'React on Rails + TanStack', 'server-rendered dashboard content');
+  assertHtmlContains(body, '"initialPath":"/dashboard"', 'the Rails initialPath handoff');
+  assertHtmlContains(body, '"initialSearch":"?status=active', 'the Rails initialSearch handoff');
+  assertHtmlContains(body, 'sort=name', 'the Rails initialSearch sort handoff');
+  assertHtmlContains(body, 'dir=asc', 'the Rails initialSearch direction handoff');
+  assertHtmlContains(body, '__tanstackRouterDehydratedState', 'the dehydrated TanStack Router state');
+
+  await page.locator('main.tanstack-shell').waitFor({ timeout: 30_000 });
+  await page.getByRole('heading', { name: 'Dashboard' }).waitFor({ timeout: 30_000 });
+  await page.locator('.metric-card').first().waitFor({ timeout: 30_000 });
+  await page.waitForURL((url) => (
+    url.pathname === '/dashboard' &&
+    url.searchParams.get('status') === 'active' &&
+    url.searchParams.get('sort') === 'name' &&
+    url.searchParams.get('dir') === 'asc'
+  ), { timeout: 10_000 });
+
+  state.status.dashboardSsrContract = {
+    initialPathSerialized: true,
+    initialSearchSerialized: true,
+    dehydratedRouterStateSerialized: true,
+    documentRequestsDuringHydration: state.status.documentRequests - documentRequestsBefore,
+  };
+
+  if (state.status.dashboardSsrContract.documentRequestsDuringHydration !== 1) {
+    throw new Error(`Dashboard hydration triggered ${state.status.dashboardSsrContract.documentRequestsDuringHydration} document requests instead of preserving the SSR page`);
+  }
 }
 
 function isRelevantResponse(response) {
@@ -321,6 +365,12 @@ async function smokeBrowser() {
     }
   });
 
+  page.on('request', (request) => {
+    if (request.resourceType() === 'document') {
+      state.status.documentRequests = (state.status.documentRequests || 0) + 1;
+    }
+  });
+
   try {
     state.lastStep = 'opening sign-in form';
     state.status.signInForm = responseSummary(await page.goto('/session/new', { waitUntil: 'domcontentloaded' }));
@@ -330,10 +380,10 @@ async function smokeBrowser() {
     await submitDemoSignIn(page, state);
 
     state.lastStep = 'opening dashboard';
-    state.status.dashboard = responseSummary(await page.goto('/dashboard?status=active&sort=name&dir=asc', { waitUntil: 'domcontentloaded' }));
-    await page.locator('main.tanstack-shell').waitFor({ timeout: 30_000 });
-    await page.getByRole('heading', { name: 'Dashboard' }).waitFor({ timeout: 30_000 });
-    await page.locator('.metric-card').first().waitFor({ timeout: 30_000 });
+    const documentRequestsBeforeDashboard = state.status.documentRequests || 0;
+    const dashboardResponse = await page.goto(ssrDashboardPath, { waitUntil: 'domcontentloaded' });
+    state.status.dashboard = responseSummary(dashboardResponse);
+    await assertDashboardSsrRouterContract(page, dashboardResponse, state, documentRequestsBeforeDashboard);
     await assertBrowserPicksUpSourceEdit(page, state);
     state.lastStep = 'navigating to settings';
     await page.locator('nav[aria-label="Dashboard navigation"] a[href="/settings"]').click();
