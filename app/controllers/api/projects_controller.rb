@@ -1,6 +1,6 @@
 module Api
   class ProjectsController < BaseController
-    # REFERENCE PATTERN: json-api-controller - see AGENTS.md section 5
+    # REFERENCE PATTERN: json-api-controller — see AGENTS.md
     rescue_from ActiveRecord::RecordNotFound, with: :not_found
 
     def index

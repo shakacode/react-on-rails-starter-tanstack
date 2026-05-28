@@ -1,5 +1,5 @@
 class EmailVerificationsController < ApplicationController
-  # REFERENCE PATTERN: email-verification-controller - see AGENTS.md section 3
+  # REFERENCE PATTERN: email-verification-controller — see AGENTS.md
   allow_unauthenticated_access only: %i[create show sent expired]
 
   def create

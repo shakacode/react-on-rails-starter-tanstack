@@ -1,5 +1,5 @@
 module VerifiedAuthentication
-  # REFERENCE PATTERN: verified-authentication - see AGENTS.md section 3
+  # REFERENCE PATTERN: verified-authentication — see AGENTS.md
   extend ActiveSupport::Concern
 
   included do

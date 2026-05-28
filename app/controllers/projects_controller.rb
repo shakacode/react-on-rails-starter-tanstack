@@ -1,5 +1,5 @@
 class ProjectsController < AuthenticatedController
-  # REFERENCE PATTERN: controller - see AGENTS.md section 2
+  # REFERENCE PATTERN: controller — see AGENTS.md
   before_action :set_project, only: %i[show edit update destroy]
 
   def index
