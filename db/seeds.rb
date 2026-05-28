@@ -1,5 +1,7 @@
-unless Rails.env.development? || Rails.env.test?
-  Rails.logger.info("Skipping demo seeds outside development/test.")
+allow_demo_seed = Rails.env.development? || Rails.env.test? || ActiveModel::Type::Boolean.new.cast(ENV["ALLOW_DEMO_SEED"])
+
+unless allow_demo_seed
+  Rails.logger.info("Skipping demo seeds outside development/test. Set ALLOW_DEMO_SEED=true to seed the public demo account.")
 else
   demo_user = User.find_or_initialize_by(email_address: "demo@example.com")
   demo_user.assign_attributes(
