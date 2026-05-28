@@ -85,6 +85,18 @@ Symptom: the SSR dashboard shell renders, but metric cards and the projects tabl
 
 Fix: restart `bin/dev` after changing `config/shakapacker.yml`. This starter defaults to Rspack live reload for deterministic SSR smoke tests. To exercise HMR without editing configuration, run `SHAKAPACKER_DEV_SERVER_HMR=true bin/dev --no-open-browser --route=dashboard` or `pnpm run test:hmr`. If the dashboard still hangs, check the browser network panel for missing hot-update or hot-dev-server chunks.
 
+## Browser Reports Content Security Policy Violations
+
+Symptom: the browser console reports `Content Security Policy` violations after changing packs, inline scripts, RSC streaming, or dev-server wiring.
+
+Fix: keep scripts nonce-backed through Rails and React on Rails helpers. The checked-in policy allows same-origin production assets and adds development-only localhost HTTP/WebSocket sources for the Rspack dev server. Do not add the React on Rails Pro Node renderer URL to browser CSP; the browser talks to Rails, while Rails talks to the renderer server-side.
+
+Run the focused browser regression after CSP changes:
+
+```sh
+pnpm exec playwright test test/playwright/csp.spec.ts
+```
+
 ## Dashboard 500s In Static Or Production-Assets Mode
 
 Symptom: `/dashboard` raises a React on Rails server rendering error with `Connection refused - connect(2) for 127.0.0.1:3800`.
