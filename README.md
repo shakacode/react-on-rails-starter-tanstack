@@ -90,9 +90,12 @@ localStorage.setItem("tanstack-devtools", "1")
 
 ## Current Status
 
-This repo is the public template seed. Phase 2 adds Rails 8 authentication, signup, email verification, resend throttles, development mail previews, and a verified-email dashboard gate. Phase 3 adds Projects CRUD, scoped authorization, JSON API endpoints, metrics, factories, and demo seeds.
-
-Phase 4 implements the TanStack Router/Query/Table authenticated surface described in [shakacode/react_on_rails#3364](https://github.com/shakacode/react_on_rails/pull/3364).
+This repo is the public template seed for the Rails + React on Rails Pro +
+TanStack surface described in
+[shakacode/react_on_rails#3364](https://github.com/shakacode/react_on_rails/pull/3364).
+It includes Rails authentication, email verification, password reset, Projects
+CRUD, scoped JSON APIs, demo seeds, development mail previews, and the
+authenticated TanStack Router/Query/Table dashboard.
 
 See [SPIKE.md](SPIKE.md) for the current AMBER RSC/Rspack compatibility note: Rspack builds and server-only RSC bundling are green, but interactive RSC client references are blocked until Rspack emits the React Server Components client/server manifests expected by the React on Rails RSC path.
 
@@ -105,6 +108,7 @@ See [SPIKE.md](SPIKE.md) for the current AMBER RSC/Rspack compatibility note: Rs
 - [Troubleshooting](docs/05-troubleshooting.md)
 - [Tested Modes](docs/06-tested-modes.md)
 - [Control Plane Handoff](docs/07-control-plane-handoff.md)
+- [Why RSC on Rails](docs/08-why-rsc-on-rails.md)
 - [Upgrading](UPGRADING.md)
 
 ## License
