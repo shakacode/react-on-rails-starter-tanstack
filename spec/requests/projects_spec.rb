@@ -132,6 +132,42 @@ RSpec.describe "Projects", type: :request do
       expect(json["projects"].map { |project| project["id"] }).to contain_exactly(active.id, paused.id)
     end
 
+    it "returns paginated projects and metadata for the current user" do
+      sign_in(user)
+      create(:project, user: user, name: "Alpha")
+      create(:project, user: user, name: "Bravo")
+      create(:project, user: user, name: "Charlie")
+      create(:project, name: "Other user")
+
+      get api_projects_path, params: { sort: "name", dir: "asc", page: 2, per_page: 2 }
+
+      expect(response).to have_http_status(:ok)
+      expect(json["projects"].map { |project| project["name"] }).to eq([ "Charlie" ])
+      expect(json["meta"]).to eq(
+        "page" => 2,
+        "per_page" => 2,
+        "total" => 3
+      )
+    end
+
+    it "clamps pagination params to the supported bounds" do
+      sign_in(user)
+      create(:project, user: user, name: "Alpha")
+      create(:project, user: user, name: "Bravo")
+
+      get api_projects_path, params: { sort: "name", dir: "asc", page: -10, per_page: -5 }
+
+      expect(response).to have_http_status(:ok)
+      expect(json["projects"].map { |project| project["name"] }).to eq([ "Alpha" ])
+      expect(json["meta"]).to include("page" => 1, "per_page" => 1, "total" => 2)
+
+      get api_projects_path, params: { sort: "name", dir: "asc", page: 0, per_page: 100 }
+
+      expect(response).to have_http_status(:ok)
+      expect(json["projects"].map { |project| project["name"] }).to eq([ "Alpha", "Bravo" ])
+      expect(json["meta"]).to include("page" => 1, "per_page" => 50, "total" => 2)
+    end
+
     it "shows a single project scoped to the current user" do
       sign_in(user)
       project = create(:project, user: user)
