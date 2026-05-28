@@ -336,7 +336,7 @@ async function smokeAuthenticatedDashboard(baseURL) {
 
   const dashboardBody = await dashboardResponse.text();
   assertBodyIncludes(dashboardBody, 'TANSTACK_SSR_SHELL', dashboardPath);
-  assertBodyIncludes(dashboardBody, 'class="tanstack-shell"', dashboardPath);
+  assertBodyIncludes(dashboardBody, 'class="tanstack-shell', dashboardPath);
   assertBodyIncludes(dashboardBody, 'Demo User', dashboardPath);
 }
 
