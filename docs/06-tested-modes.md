@@ -30,8 +30,8 @@ build, rendering, or routing behavior.
 | Playwright smoke | `bin/test playwright-smoke [args...]` | CI core | Boots Rails in `RAILS_ENV=test` and checks the `/up` browser smoke. Extra arguments are forwarded to Playwright. This is not a substitute for the dashboard suite. |
 | Playwright full | `bin/test playwright [args...]` or `pnpm test:playwright` | CI | Builds test packs with Rspack, boots Rails in `RAILS_ENV=test`, and exercises dashboard hydration, direct `/projects...` loads, client navigation, profile update, and project create/edit flows. Extra arguments are forwarded to Playwright for focused runs. |
 | Live reload dev | `bin/test dev-modes` or `node script/dev-mode-smoke.mjs dev` | CI | Boots Rails, Rspack dev server, SolidQueue, Node renderer, server bundle watcher, and RSC bundle watcher. The default config uses `hmr: false` and `live_reload: true`, and the smoke verifies that a browser-open source edit is observed. |
-| Static assets dev | `bin/test dev-modes` or `node script/dev-mode-smoke.mjs static` | CI | Runs `bin/dev static`, starts Rails, Rspack watch mode, SolidQueue, and the Node renderer, then logs in and checks `/dashboard`, client navigation, and direct `/projects/new`. |
-| Production-assets dev | `bin/test dev-modes` or `node script/dev-mode-smoke.mjs prod` | CI | Runs `bin/dev prod`, precompiles optimized Rspack bundles, starts Rails, SolidQueue, and the Node renderer, then checks the same authenticated TanStack routes. |
+| Static assets dev | `bin/test dev-modes` or `node script/dev-mode-smoke.mjs static` | CI | Runs `bin/dev static`, starts Rails, Rspack watch mode, SolidQueue, and the Node renderer, then logs in and checks `/dashboard`, client navigation, and direct `/projects/new`. The browser smoke fails if static mode requests or receives Rspack dev-server clients, hot-update files, overlay code, or disabled TanStack devtools chunks. |
+| Production-assets dev | `bin/test dev-modes` or `node script/dev-mode-smoke.mjs prod` | CI | Runs `bin/dev prod`, precompiles optimized Rspack bundles, starts Rails, SolidQueue, and the Node renderer, then checks the same authenticated TanStack routes. The browser smoke uses the same negative asset assertions as static mode. |
 | HMR dev | `bin/test hmr` or `SHAKAPACKER_DEV_SERVER_HMR=true bin/dev --no-open-browser --route=dashboard` | CI | Boots the same default dev stack with `hmr: true` and `live_reload: false`, then verifies the authenticated TanStack routes hydrate, navigate, and observe a browser-open source edit. This smoke does not assert state-preserving React Fast Refresh updates. |
 | Rspack/RSC client boundary repro | `bin/test rsc-repro` or `pnpm run repro:rspack-rsc` | CI status, upstream repro | Builds Rspack bundles and verifies the generated `HelloServer` RSC example still contains a `'use client'` boundary. Today this reports `blocked` because Rspack does not emit the RSC client/server manifests used by interactive client references. Set `REQUIRE_RSC_MANIFESTS=true` only when intentionally checking whether the upstream blocker has been fixed. |
 | `/hello_server` RSC route smoke | `bin/test hello-server-rsc` or `pnpm run test:hello-server-rsc` | RSC route sentinel | Boots the static-assets dev stack against `/hello_server` and verifies the route either renders the demo shell or fails with the known Rspack/RSC manifest gap. Set `REQUIRE_RSC_MANIFESTS=true` only when intentionally requiring interactive RSC client-reference manifests. |
@@ -60,5 +60,11 @@ build, rendering, or routing behavior.
 - `script/dev-mode-smoke.mjs` records React 19 recoverable hydration/concurrent
   rendering page errors separately from fatal browser errors. The route still
   has to load, hydrate, navigate, and avoid console errors or failed requests.
+- Static and production-assets smoke runs also record browser requests,
+  websocket attempts, and script/document responses to ensure those modes do not
+  load Rspack dev-server clients, hot-update files, overlay code, or TanStack
+  devtools chunks. To intentionally smoke the optional devtools chunks, run with
+  `TANSTACK_DEVTOOLS=1`; the smoke sets the localStorage gate and allows only the
+  TanStack devtools patterns.
 - The Rspack/RSC manifest gap is tracked upstream in [shakacode/react_on_rails#1828](https://github.com/shakacode/react_on_rails/issues/1828).
 - The React on Rails Pro TanStack Router private-store compatibility issue is tracked in [shakacode/react_on_rails#3375](https://github.com/shakacode/react_on_rails/issues/3375).
