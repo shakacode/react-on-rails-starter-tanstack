@@ -406,7 +406,7 @@ function ProjectsTable({
   search: DashboardSearch;
   updateSearch: (next: Partial<DashboardSearch>) => void;
 }) {
-  // REFERENCE PATTERN: tanstack-table - see AGENTS.md section 7
+  // REFERENCE PATTERN: tanstack-table — see AGENTS.md
   const { api } = useDashboardProps();
   const status = search.status ?? '';
   const sort = search.sort ?? 'last_activity_at';
@@ -1140,7 +1140,7 @@ function DashboardClientApp(props: DashboardAppWrapperProps) {
   );
 }
 
-// REFERENCE PATTERN: tanstack-route - async server load plus hydration-state handoff.
+// REFERENCE PATTERN: tanstack-route — see AGENTS.md
 const DashboardApp: DashboardRenderFunction = (props = {}, railsContext) => {
   if (!railsContext) {
     throw new Error('DashboardApp requires railsContext from react_component.');

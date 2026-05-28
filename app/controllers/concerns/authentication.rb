@@ -1,5 +1,5 @@
 module Authentication
-  # REFERENCE PATTERN: session-authentication - see AGENTS.md section 3
+  # REFERENCE PATTERN: session-authentication — see AGENTS.md
   extend ActiveSupport::Concern
 
   included do

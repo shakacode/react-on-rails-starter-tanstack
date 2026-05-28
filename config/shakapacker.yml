@@ -49,7 +49,7 @@ default: &default
 
   # Select assets bundler to use
   # Available options: 'webpack' (default) or 'rspack'
-  # REFERENCE PATTERN: shakapacker-rspack-config - see AGENTS.md section 9
+  # REFERENCE PATTERN: shakapacker-rspack-config — see AGENTS.md
   assets_bundler: rspack
 
   # Raises an error if there is a mismatch in the shakapacker gem and npm package being used

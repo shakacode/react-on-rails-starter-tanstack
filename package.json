@@ -8,6 +8,7 @@
     "test:router-shim": "node script/test-tanstack-router-store-shim.mjs",
     "test:dev-modes": "node script/dev-mode-smoke.mjs dev && node script/dev-mode-smoke.mjs static && node script/dev-mode-smoke.mjs prod",
     "test:hmr": "node script/dev-mode-smoke.mjs hmr",
+    "test:hello-server-rsc": "node script/dev-mode-smoke.mjs static hello-server",
     "repro:rspack-rsc": "node script/rspack-rsc-client-boundary-repro.mjs",
     "test": "pnpm test:router-shim && pnpm test:playwright"
   },

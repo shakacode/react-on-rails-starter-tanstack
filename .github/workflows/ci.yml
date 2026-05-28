@@ -105,6 +105,61 @@ jobs:
       - run: pnpm exec playwright install --with-deps chromium
       - run: bin/test playwright
 
+  production-boot-smoke:
+    name: production boot smoke
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      RAILS_ENV: production
+      SECRET_KEY_BASE_DUMMY: "1"
+      RAILS_SERVE_STATIC_FILES: "true"
+      REACT_ON_RAILS_STARTER_TANSTACK_DATABASE_PASSWORD: dummy
+      DATABASE_URL: "postgres://postgres:postgres@localhost:5432/react_on_rails_starter_tanstack_production"
+      CACHE_DATABASE_URL: "postgres://postgres:postgres@localhost:5432/react_on_rails_starter_tanstack_production_cache"
+      QUEUE_DATABASE_URL: "postgres://postgres:postgres@localhost:5432/react_on_rails_starter_tanstack_production_queue"
+      CABLE_DATABASE_URL: "postgres://postgres:postgres@localhost:5432/react_on_rails_starter_tanstack_production_cable"
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Install system packages
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libpq-dev libvips
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 11.2.2
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: bin/test production-boot
+
   rspack-rsc-repro:
     runs-on: ubuntu-latest
     permissions:

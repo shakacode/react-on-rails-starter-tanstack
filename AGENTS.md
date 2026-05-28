@@ -308,3 +308,37 @@ When changing behavior:
   deployment, Sentry wiring, a dark-mode toggle, or complete RSC interactivity.
 - If you add a `REFERENCE PATTERN` marker in code, add or update the matching
   entry in this file.
+
+## 13. Reference Pattern Index
+
+This is the full canonical marker list. Each pattern name should appear in
+exactly one source comment.
+
+| Pattern | Canonical file |
+| --- | --- |
+| `signup-controller` | `app/controllers/registrations_controller.rb` |
+| `controller` | `app/controllers/projects_controller.rb` |
+| `json-api-controller` | `app/controllers/api/projects_controller.rb` |
+| `dashboard-props-controller` | `app/controllers/dashboard_controller.rb` |
+| `session-authentication` | `app/controllers/concerns/authentication.rb` |
+| `verified-authentication` | `app/controllers/concerns/verified_authentication.rb` |
+| `email-verification-controller` | `app/controllers/email_verifications_controller.rb` |
+| `password-reset-controller` | `app/controllers/passwords_controller.rb` |
+| `settings-profile-controller` | `app/controllers/settings_controller.rb` |
+| `form` | `app/views/projects/_form.html.erb` |
+| `csrf-json-fetch` | `app/javascript/lib/apiFetch.ts` |
+| `query-client-defaults` | `app/javascript/lib/queryClient.ts` |
+| `mailer` | `app/mailers/email_verification_mailer.rb` |
+| `mailer-preview` | `test/mailers/previews/email_verification_mailer_preview.rb` |
+| `tanstack-table` | `app/javascript/src/Dashboard/ror_components/DashboardApp.tsx` |
+| `tanstack-route` | `app/javascript/src/Dashboard/ror_components/DashboardApp.tsx` |
+| `shakapacker-rspack-config` | `config/shakapacker.yml` |
+| `rspack-client-config` | `config/rspack/clientWebpackConfig.js` |
+| `rspack-server-config` | `config/rspack/serverWebpackConfig.js` |
+| `rspack-rsc-config` | `config/rspack/rscWebpackConfig.js` |
+| `rspack-dev-config` | `config/rspack/development.js` |
+| `rspack-live-reload-procfile` | `Procfile.dev` |
+| `rspack-static-assets-procfile` | `Procfile.dev-static-assets` |
+| `rspack-production-assets-procfile` | `Procfile.dev-prod-assets` |
+| `dev-mode-smoke` | `script/dev-mode-smoke.mjs` |
+| `rspack-rsc-repro` | `script/rspack-rsc-client-boundary-repro.mjs` |
