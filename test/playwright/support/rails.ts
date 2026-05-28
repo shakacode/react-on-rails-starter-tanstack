@@ -1,54 +1,93 @@
 import { execFileSync } from 'node:child_process';
-import fs from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
 const railsTestEnv = { ...process.env, RAILS_ENV: 'test' };
-const manifestPath = path.resolve('public/packs-test/manifest.json');
-const lockPath = path.resolve('tmp/playwright-assets.lock');
-const lockTimeoutMs = 120_000;
+const projectRoot = process.cwd();
+const packsManifestPath = path.join(projectRoot, 'public/packs-test/manifest.json');
+const assetsStampPath = path.join(projectRoot, 'tmp/playwright-assets.stamp');
+const assetsLockPath = path.join(projectRoot, 'tmp/playwright-assets.lock');
+const assetsLockTimeoutMs = 300_000;
+const assetInputPaths = [
+  'app/javascript',
+  'app/views',
+  'config/rspack',
+  'config/shakapacker.yml',
+  'package.json',
+  'pnpm-lock.yaml',
+  'postcss.config.mjs',
+];
 
 function sleepSync(ms: number) {
   Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
 }
 
-function assetsAreReady() {
-  return fs.existsSync(manifestPath);
+function latestMtimeMs(inputPath: string): number {
+  if (!existsSync(inputPath)) return 0;
+
+  const inputStat = statSync(inputPath);
+
+  if (!inputStat.isDirectory()) return inputStat.mtimeMs;
+
+  return readdirSync(inputPath).reduce((latest, entry) => {
+    return Math.max(latest, latestMtimeMs(path.join(inputPath, entry)));
+  }, inputStat.mtimeMs);
 }
 
-function acquireAssetLock() {
+function assetsArePrepared() {
+  if (!existsSync(packsManifestPath) || !existsSync(assetsStampPath)) return false;
+
+  const stampMtime = statSync(assetsStampPath).mtimeMs;
+  const latestInputMtime = assetInputPaths.reduce((latest, inputPath) => {
+    return Math.max(latest, latestMtimeMs(path.join(projectRoot, inputPath)));
+  }, 0);
+
+  return stampMtime >= latestInputMtime;
+}
+
+function acquireAssetsLock() {
+  mkdirSync(path.dirname(assetsLockPath), { recursive: true });
+
   const startedAt = Date.now();
 
   while (true) {
     try {
-      fs.mkdirSync(lockPath, { recursive: false });
+      mkdirSync(assetsLockPath);
       return;
     } catch (error) {
-      const code = error && typeof error === 'object' && 'code' in error ? error.code : undefined;
-      if (code !== 'EEXIST') throw error;
+      if ((error as { code?: string }).code !== 'EEXIST') throw error;
 
-      if (Date.now() - startedAt > lockTimeoutMs) {
-        fs.rmSync(lockPath, { recursive: true, force: true });
+      const elapsedMs = Date.now() - startedAt;
+      const lockAgeMs = existsSync(assetsLockPath) ? Date.now() - statSync(assetsLockPath).mtimeMs : 0;
+
+      if (lockAgeMs > assetsLockTimeoutMs) {
+        rmSync(assetsLockPath, { force: true, recursive: true });
         continue;
       }
 
-      sleepSync(200);
+      if (elapsedMs > assetsLockTimeoutMs) {
+        throw new Error(`Timed out waiting for Playwright assets lock at ${assetsLockPath}`);
+      }
+
+      sleepSync(100);
     }
   }
 }
 
-function releaseAssetLock() {
-  fs.rmSync(lockPath, { recursive: true, force: true });
+function releaseAssetsLock() {
+  rmSync(assetsLockPath, { force: true, recursive: true });
 }
 
 export function preparePlaywrightAssets() {
-  if (assetsAreReady()) return;
+  if (assetsArePrepared()) return;
 
-  fs.mkdirSync(path.dirname(lockPath), { recursive: true });
-  acquireAssetLock();
+  acquireAssetsLock();
 
   try {
-    if (assetsAreReady()) return;
+    if (assetsArePrepared()) return;
 
+    // Playwright runs spec files in parallel workers; Shakapacker cannot safely
+    // clean and rebuild the same packs-test directory concurrently.
     execFileSync('bin/rails', ['react_on_rails:generate_packs'], {
       env: railsTestEnv,
       stdio: 'inherit',
@@ -57,8 +96,9 @@ export function preparePlaywrightAssets() {
       env: railsTestEnv,
       stdio: 'inherit',
     });
+    writeFileSync(assetsStampPath, `${Date.now()}\n`);
   } finally {
-    releaseAssetLock();
+    releaseAssetsLock();
   }
 }
 
