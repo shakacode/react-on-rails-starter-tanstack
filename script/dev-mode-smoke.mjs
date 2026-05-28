@@ -3,6 +3,7 @@
 
 import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
+import http2 from 'node:http2';
 import process from 'node:process';
 import { setTimeout as delay } from 'node:timers/promises';
 import { chromium } from '@playwright/test';
@@ -128,6 +129,91 @@ async function waitForStaticManifest(timeoutMs = 180_000) {
 
   assertServerRunning();
   throw new Error(`Timed out waiting for static pack manifest: ${lastError?.message || 'no response'}`);
+}
+
+function fetchHttp2Json(url, timeoutMs = 5_000) {
+  return new Promise((resolve, reject) => {
+    const endpoint = new URL(url);
+    const client = http2.connect(endpoint.origin);
+    let request = null;
+    let settled = false;
+
+    const timeout = setTimeout(() => {
+      finish(new Error(`${url} timed out after ${timeoutMs}ms`));
+    }, timeoutMs);
+
+    function finish(error, result = null) {
+      if (settled) return;
+
+      settled = true;
+      clearTimeout(timeout);
+      if (request) request.close();
+      client.close();
+
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    }
+
+    client.on('error', finish);
+    client.on('connect', () => {
+      const path = `${endpoint.pathname}${endpoint.search}`;
+      const chunks = [];
+      let status = null;
+
+      request = client.request({
+        [http2.constants.HTTP2_HEADER_METHOD]: 'GET',
+        [http2.constants.HTTP2_HEADER_PATH]: path,
+      });
+
+      request.setEncoding('utf8');
+      request.on('response', (headers) => {
+        status = Number(headers[http2.constants.HTTP2_HEADER_STATUS]);
+      });
+      request.on('data', (chunk) => chunks.push(chunk));
+      request.on('error', finish);
+      request.on('end', () => {
+        const body = chunks.join('');
+
+        if (status !== 200) {
+          finish(new Error(`${url} returned ${status || 'no status'}`));
+          return;
+        }
+
+        try {
+          finish(null, JSON.parse(body));
+        } catch (error) {
+          finish(new Error(`${url} did not return JSON: ${error.message}`));
+        }
+      });
+      request.end();
+    });
+  });
+}
+
+async function waitForRenderer(timeoutMs = 180_000) {
+  const url = `${env.REACT_RENDERER_URL}/info`;
+  const startedAt = Date.now();
+  let lastError = null;
+
+  while (Date.now() - startedAt < timeoutMs) {
+    assertServerRunning();
+
+    try {
+      const info = await fetchHttp2Json(url);
+      if (info.renderer_version || info.node_version) return info;
+      lastError = new Error(`${url} did not return renderer metadata`);
+    } catch (error) {
+      lastError = error;
+    }
+
+    await delay(1_000);
+  }
+
+  assertServerRunning();
+  throw new Error(`Timed out waiting for React on Rails Pro node renderer: ${lastError?.message || 'no response'}`);
 }
 
 function pushDiagnosticItem(items, item) {
@@ -426,6 +512,7 @@ try {
 
   await waitForUrl(`${baseURL}/session/new`);
   if (mode === 'static' || mode === 'prod') await waitForStaticManifest();
+  await waitForRenderer();
   assertServerRunning();
   if (smokeTarget === 'hello-server') {
     await whileServerRuns(smokeHelloServerRoute);
