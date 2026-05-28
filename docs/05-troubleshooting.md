@@ -127,6 +127,12 @@ Symptom: `POST /email_verifications` returns `Too many requests`.
 
 Fix: wait for the throttle window to clear. The starter limits verification sends to 5 per IP per hour and 3 per email per hour.
 
+## Password Reset Returns 429
+
+Symptom: `POST /passwords` returns `Too many requests`.
+
+Fix: wait for the throttle window to clear. The starter limits password reset emails to 5 per IP per hour and 3 per email per hour.
+
 ## RAILS_MASTER_KEY Is Missing In Production
 
 Symptom: production boot fails while reading encrypted credentials.
