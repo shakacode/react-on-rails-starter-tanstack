@@ -1,8 +1,13 @@
 # Tested Modes
 
-This starter keeps the TanStack dashboard on Rspack, the React on Rails Pro RC,
-and the latest verified Shakapacker/Rspack release line. The tables below track the local and CI coverage
-expected before changing build, rendering, or routing behavior.
+This starter keeps the TanStack dashboard on Rspack and the launch RC stack:
+React on Rails Pro `16.7.0-rc.3` with Shakapacker `10.1.0`.
+Shakapacker is intentionally not documented as `11.1.0` because public
+`11.1.0` artifacts are not visible in the registries consumed by the starter.
+Rspack is the only supported bundler in the checked-in matrix.
+
+The tables below track the local and CI coverage expected before changing
+build, rendering, or routing behavior.
 
 ## Entrypoints
 

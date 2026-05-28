@@ -2,9 +2,9 @@
 
 ## Verdict
 
-AMBER: proceed with the RC scaffold on Rspack, with one explicit fallback.
+AMBER: proceed with the RC scaffold on Rspack, with one explicit limitation.
 
-The app was bootstrapped with `create-react-on-rails-app --rsc --rspack --package-manager pnpm` and is now pinned to the `16.7.0-rc.3` React on Rails release candidate. The Rails/Rspack/React on Rails Pro setup passes `react_on_rails:doctor` with zero warnings after local adjustments.
+The app was bootstrapped with `create-react-on-rails-app --rsc --rspack --package-manager pnpm` and the launch stack targets React on Rails Pro `16.7.0-rc.3` with Shakapacker `10.1.0`. Shakapacker stays on `10.1.0` because public `11.1.0` artifacts are not visible in the registries consumed by the starter. The Rails/Rspack/React on Rails Pro setup passes `react_on_rails:doctor` with zero warnings after local adjustments.
 
 ## Validation Goals
 
@@ -16,29 +16,29 @@ The app was bootstrapped with `create-react-on-rails-app --rsc --rspack --packag
 ## What Worked
 
 - Rails 8.1 app scaffolded with PostgreSQL and SolidQueue.
-- React on Rails and React on Rails Pro pinned to `16.7.0.rc.3`.
-- Shakapacker pinned to `10.1.0`.
-- Rspack builds complete successfully after the fallback below.
+- React on Rails and React on Rails Pro launch stack: `16.7.0.rc.3`.
+- Shakapacker launch stack: `10.1.0`.
+- Rspack builds complete successfully with the limitation below.
 - The `/dashboard` TanStack Router, Query, and Table surface prerenders through React on Rails Pro's Node renderer and hydrates under the Rails shell.
 - `bundle exec rails react_on_rails:doctor` reports 50 checks passed, 0 warnings, 0 errors.
 - `bin/doctor`, `bin/setup`, RSpec, and Playwright smoke tests pass locally.
 
-## Fallback Applied
+## Rspack/RSC Limitation
 
-`react-on-rails-rsc` currently calls `contextModuleFactory.resolveDependencies` inside `RSCWebpackPlugin`. Rspack does not expose that Webpack API, so `bin/shakapacker` fails when the plugin is added to client/server bundles.
+The Rspack client, server, and server-only RSC bundles compile, but interactive client-component references inside RSC remain blocked. The Rspack build does not emit the React Server Components client/server manifests expected by the React on Rails RSC client-reference path.
 
-Fallback:
+Current stance:
 
 - Keep Rspack as the bundler.
-- Keep the React on Rails and Shakapacker RC releases.
-- Skip `RSCWebpackPlugin` only when `config.assets_bundler == "rspack"`.
+- Keep the React on Rails Pro `16.7.0-rc.3` and Shakapacker `10.1.0` launch stack.
+- Keep the Rspack/RSC client boundary repro in `pnpm run repro:rspack-rsc`.
 - Keep direct Rspack packages aligned with the Shakapacker Rspack 2 adapter: `@rspack/core` / `@rspack/cli` `2.0.4` and `@rspack/dev-server` `2.0.1`.
 
 Impact:
 
 - Rspack build is green.
 - Server-only RSC bundle compilation is green.
-- Interactive client-component references inside RSC remain blocked until `react-on-rails-rsc` supports Rspack's plugin API.
+- Interactive client-component references inside RSC remain blocked until the required RSC manifests are available from the Rspack path.
 
 ## Phase 4 Validation
 
