@@ -10,7 +10,8 @@ code first and then update the docs or this file in the same change.
 ## 1. Current App Shape
 
 - This is a Rails 8 starter using React on Rails Pro, TanStack Router, TanStack
-  Query, TanStack Table, Rspack, pnpm, TypeScript, and React 19.
+  Query, TanStack Table, Rspack, pnpm, TypeScript, React 19, Tailwind v4, and
+  shadcn/ui primitives.
 - Rspack is the active Shakapacker bundler. Use `config/shakapacker.yml` and
   `config/rspack/` as the source of truth for bundling behavior.
 - `/dashboard`, `/settings...`, and `/projects...` are Rails routes that render
@@ -217,7 +218,31 @@ Rules:
   gap is fixed upstream. Keep `pnpm run repro:rspack-rsc` available as the
   small repro.
 
-## 10. Commands
+## 10. Tailwind v4 And shadcn/ui
+
+Canonical examples:
+
+- `app/javascript/src/styles/tailwind.css` for Tailwind v4 CSS-first config,
+  theme variables, dark-mode variant, and explicit source paths.
+- `postcss.config.mjs` and `config/rspack/commonWebpackConfig.js` for the
+  PostCSS loader integration in the Rspack pipeline.
+- `components.json` for the shadcn/ui CLI setup.
+- `app/javascript/src/components/ui/*` for generated shadcn primitives.
+- `app/javascript/src/lib/utils.ts` for the shared `cn` helper.
+
+Rules:
+
+- Keep Tailwind source discovery explicit with
+  `@import "tailwindcss" source(none);` and targeted `@source` entries. Broad
+  source discovery can watch generated Rspack output and cause rebuild loops.
+- Use `bunx shadcn add ...` for new shadcn primitives, then commit the generated
+  component file and any package/lockfile updates.
+- Do not reskin dashboard, auth, or error views as part of scaffold-only work.
+  Treat those as separate UI migration changes.
+- Re-run `bin/shakapacker`, dashboard Playwright coverage, `bin/test dev-modes`,
+  and `bin/test hmr` after changing Tailwind, PostCSS, or shared UI primitives.
+
+## 11. Commands
 
 Setup and daily development:
 
@@ -254,7 +279,7 @@ RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1 REACT_ON_RAILS_STARTER_TANSTACK_DAT
 Use `docs/06-tested-modes.md` as the detailed source for dev-mode coverage and
 known limitations.
 
-## 11. Test Expectations
+## 12. Test Expectations
 
 - Rails model/request/system specs live under `spec/`.
 - Playwright browser specs live under `test/playwright/`.
@@ -273,14 +298,14 @@ When changing behavior:
 - Run the relevant dev-mode smoke when changing Rspack, React on Rails Pro
   rendering, TanStack Router hydration, Procfiles, or Node renderer setup.
 
-## 12. Documentation Discipline
+## 13. Documentation Discipline
 
 - Keep `README.md` concise and current.
 - Keep deeper operational detail in `docs/`.
 - Update `SPIKE.md` when the Rspack/RSC status changes.
 - Do not claim unfinished spec work is complete. In particular, verify before
-  claiming shadcn/Tailwind v4 coverage, a full pattern catalog, production
-  deployment, Sentry wiring, dark mode, or complete RSC interactivity.
+  claiming a full shadcn/Tailwind reskin, a full pattern catalog, production
+  deployment, Sentry wiring, a dark-mode toggle, or complete RSC interactivity.
 - If you add a `REFERENCE PATTERN` marker in code, add or update the matching
   entry in this file.
 

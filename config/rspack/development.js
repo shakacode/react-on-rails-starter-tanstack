@@ -17,6 +17,10 @@ const developmentEnvOnly = (clientWebpackConfig, serverWebpackConfig, rscWebpack
     [clientWebpackConfig, serverWebpackConfig, rscWebpackConfig].forEach((webpackConfig) => {
       delete webpackConfig.devServer;
     });
+    clientWebpackConfig.output = {
+      ...clientWebpackConfig.output,
+      clean: true,
+    };
   }
 
   // React Refresh (Fast Refresh) setup - only when dev server is running (HMR mode)

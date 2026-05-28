@@ -35,6 +35,8 @@ const rscManifestPaths = [
   'ssr-generated/react-server-client-manifest.json',
 ];
 const maxDiagnosticItems = 20;
+const updateSemanticsModes = new Set(['dev', 'hmr']);
+const updateSemanticsSourcePath = 'app/javascript/src/styles/tailwind.css';
 const recoverableReactPageErrors = [
   'There was an error during concurrent rendering but React was able to recover',
   'There was an error while hydrating but React was able to recover',
@@ -46,7 +48,8 @@ const env = {
   RAILS_ENV: 'development',
   PORT: String(basePort),
   REACT_ON_RAILS_BASE_PORT: String(basePort),
-  REACT_RENDERER_URL: `http://localhost:${rendererPort}`,
+  REACT_RENDERER_URL: `http://127.0.0.1:${rendererPort}`,
+  RENDERER_HOST: '127.0.0.1',
   RENDERER_PORT: String(rendererPort),
   RENDERER_LOG_LEVEL: process.env.RENDERER_LOG_LEVEL || 'info',
   SKIP_DATABASE_CHECK: 'true',
@@ -388,6 +391,42 @@ async function submitDemoSignIn(page, state) {
   }
 }
 
+async function assertBrowserPicksUpSourceEdit(page, state) {
+  if (!updateSemanticsModes.has(mode)) return;
+
+  const sourceBefore = fs.readFileSync(updateSemanticsSourcePath, 'utf8');
+  const marker = `dev-mode-smoke-${mode}-${Date.now()}`;
+  const sourceAfter = `${sourceBefore}
+
+/* dev-mode-smoke temporary update semantics marker */
+main.tanstack-shell::before {
+  content: "${marker}";
+  position: fixed;
+  left: -9999px;
+  top: -9999px;
+  pointer-events: none;
+}
+`;
+
+  state.lastStep = 'applying browser source update';
+  state.status.sourceUpdatePath = updateSemanticsSourcePath;
+  state.status.sourceUpdateMarker = marker;
+  fs.writeFileSync(updateSemanticsSourcePath, sourceAfter);
+
+  try {
+    state.lastStep = 'waiting for browser source update';
+    await page.waitForFunction((expectedMarker) => {
+      const shell = document.querySelector('main.tanstack-shell');
+      if (!shell) return false;
+
+      return getComputedStyle(shell, '::before').content.includes(expectedMarker);
+    }, marker, { timeout: 60_000 });
+    state.status.sourceUpdateObserved = true;
+  } finally {
+    fs.writeFileSync(updateSemanticsSourcePath, sourceBefore);
+  }
+}
+
 async function smokeBrowser() {
   const browser = await chromium.launch();
   const page = await browser.newPage({ baseURL });
@@ -442,7 +481,7 @@ async function smokeBrowser() {
     const dashboardResponse = await page.goto(ssrDashboardPath, { waitUntil: 'domcontentloaded' });
     state.status.dashboard = responseSummary(dashboardResponse);
     await assertDashboardSsrRouterContract(page, dashboardResponse, state, documentRequestsBeforeDashboard);
-
+    await assertBrowserPicksUpSourceEdit(page, state);
     state.lastStep = 'navigating to settings';
     await page.locator('nav[aria-label="Dashboard navigation"] a[href="/settings"]').click();
     await page.waitForURL('**/settings', { timeout: 20_000 });

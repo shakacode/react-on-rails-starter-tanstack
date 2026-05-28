@@ -29,10 +29,10 @@ build, rendering, or routing behavior.
 | Rails specs | `bin/test rspec [args...]` or `bundle exec rspec` | CI core | Runs model, request, and system specs, including authenticated project and verification flows. Extra arguments are forwarded to RSpec for focused runs. |
 | Playwright smoke | `bin/test playwright-smoke [args...]` | CI core | Boots Rails in `RAILS_ENV=test` and checks the `/up` browser smoke. Extra arguments are forwarded to Playwright. This is not a substitute for the dashboard suite. |
 | Playwright full | `bin/test playwright [args...]` or `pnpm test:playwright` | CI | Builds test packs with Rspack, boots Rails in `RAILS_ENV=test`, and exercises dashboard hydration, direct `/projects...` loads, client navigation, profile update, and project create/edit flows. Extra arguments are forwarded to Playwright for focused runs. |
-| Live reload dev | `bin/test dev-modes` or `node script/dev-mode-smoke.mjs dev` | CI | Boots Rails, Rspack dev server, SolidQueue, Node renderer, server bundle watcher, and RSC bundle watcher. The default config uses `hmr: false` and `live_reload: true`. |
+| Live reload dev | `bin/test dev-modes` or `node script/dev-mode-smoke.mjs dev` | CI | Boots Rails, Rspack dev server, SolidQueue, Node renderer, server bundle watcher, and RSC bundle watcher. The default config uses `hmr: false` and `live_reload: true`, and the smoke verifies that a browser-open source edit is observed. |
 | Static assets dev | `bin/test dev-modes` or `node script/dev-mode-smoke.mjs static` | CI | Runs `bin/dev static`, starts Rails, Rspack watch mode, SolidQueue, and the Node renderer, then logs in and checks `/dashboard`, client navigation, and direct `/projects/new`. |
 | Production-assets dev | `bin/test dev-modes` or `node script/dev-mode-smoke.mjs prod` | CI | Runs `bin/dev prod`, precompiles optimized Rspack bundles, starts Rails, SolidQueue, and the Node renderer, then checks the same authenticated TanStack routes. |
-| HMR dev | `bin/test hmr` or `SHAKAPACKER_DEV_SERVER_HMR=true bin/dev --no-open-browser --route=dashboard` | CI | Boots the same default dev stack with `hmr: true` and `live_reload: false`, then verifies the authenticated TanStack routes hydrate and navigate. This smoke does not assert state-preserving hot updates. |
+| HMR dev | `bin/test hmr` or `SHAKAPACKER_DEV_SERVER_HMR=true bin/dev --no-open-browser --route=dashboard` | CI | Boots the same default dev stack with `hmr: true` and `live_reload: false`, then verifies the authenticated TanStack routes hydrate, navigate, and observe a browser-open source edit. This smoke does not assert state-preserving React Fast Refresh updates. |
 | Rspack/RSC client boundary repro | `bin/test rsc-repro` or `pnpm run repro:rspack-rsc` | CI status, upstream repro | Builds Rspack bundles and verifies the generated `HelloServer` RSC example still contains a `'use client'` boundary. Today this reports `blocked` because Rspack does not emit the RSC client/server manifests used by interactive client references. Set `REQUIRE_RSC_MANIFESTS=true` only when intentionally checking whether the upstream blocker has been fixed. |
 | `/hello_server` RSC route smoke | `bin/test hello-server-rsc` or `pnpm run test:hello-server-rsc` | RSC route sentinel | Boots the static-assets dev stack against `/hello_server` and verifies the route either renders the demo shell or fails with the known Rspack/RSC manifest gap. Set `REQUIRE_RSC_MANIFESTS=true` only when intentionally requiring interactive RSC client-reference manifests. |
 | Production precompile | `bin/test production-precompile` or `RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1 REACT_ON_RAILS_STARTER_TANSTACK_DATABASE_PASSWORD=dummy bin/rails assets:precompile` | Release-impacting checks | Confirms production Rspack client, server, and RSC bundles compile. The expected Pro license warning is non-fatal. |
@@ -42,6 +42,12 @@ build, rendering, or routing behavior.
 
 - Use `demo@example.com / password` for authenticated browser checks.
 - `bin/dev`, `bin/dev static`, and `bin/dev prod` must start `client/node-renderer.js`; otherwise prerendered TanStack routes fail with a Node renderer connection error.
+- `bin/dev static` removes generated client packs before its Procfile starts,
+  then the Rspack static build cleans and rewrites `public/packs`. This keeps
+  Rails from serving stale dev-server chunks while the new static build starts.
+- Tailwind v4 is loaded with explicit CSS `@source` paths. Keep
+  `@import "tailwindcss" source(none);` unless you have re-tested live reload,
+  static assets, production-like assets, and HMR for rebuild loops.
 - The CI `core` job calls `bin/ci`, which runs quality, security, and smoke checks.
   Its displayed check name is `rspec` to match the repository's current branch
   protection context.

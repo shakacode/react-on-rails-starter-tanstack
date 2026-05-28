@@ -16,11 +16,19 @@ Use pnpm for JavaScript dependencies:
 pnpm add package-name
 ```
 
-Use Bun only for shadcn/ui commands once the shadcn setup is added:
+Tailwind v4 is wired through `app/javascript/src/styles/tailwind.css` and
+`postcss.config.mjs`. The CSS entry uses explicit `@source` paths so Rspack
+watch mode does not loop on generated build output.
+
+The shadcn/ui scaffold is initialized in `components.json`. Use Bun only for
+shadcn/ui component generation:
 
 ```sh
 bunx shadcn add card button input
 ```
+
+Shared primitives live in `app/javascript/src/components/ui`, and shared
+component helpers live in `app/javascript/src/lib`.
 
 ## Extend Dashboard Routes
 

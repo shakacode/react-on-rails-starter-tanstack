@@ -5,7 +5,7 @@ Flagship React on Rails + TanStack starter. The launch stack is Rspack-only and 
 - `react_on_rails` / `react_on_rails_pro` `16.7.0.rc.3`
 - `react-on-rails-pro` / `react-on-rails-pro-node-renderer` `16.7.0-rc.3`
 - `shakapacker` / `shakapacker-rspack` `10.1.0`
-- Rails 8.1, React 19, TypeScript, pnpm, Rspack, React Server Components
+- Rails 8.1, React 19, TypeScript, pnpm, Rspack, Tailwind v4, shadcn/ui primitives, React Server Components
 
 Shakapacker stays on `10.1.0` for this release because public `11.1.0` artifacts are not visible in the registries consumed by the starter. Treat Rspack as the supported bundler; Webpack is not part of the tested starter matrix unless a task explicitly asks to evaluate it.
 
