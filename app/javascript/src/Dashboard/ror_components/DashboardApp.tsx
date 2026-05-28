@@ -27,10 +27,11 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { ExternalLink } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -151,6 +152,36 @@ const fieldClassName = 'auth-field grid gap-2';
 const inputLikeClassName = 'border-input bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 flex min-h-9 w-full rounded-md border px-3 py-2 text-sm shadow-xs outline-none transition-[color,box-shadow] focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50';
 const dashboardLinkClassName = 'text-sm font-medium text-primary underline-offset-4 hover:underline';
 const reactOnRailsProUrl = 'https://www.shakacode.com/react-on-rails-pro/';
+const demoPortfolioCards = [
+  {
+    shortLabel: 'HN',
+    tone: 'hn',
+    title: 'Hacker News RSC demo',
+    proofPoint: 'Public-traffic perf benchmark (RSC + React 19 streaming)',
+    href: 'https://github.com/shakacode/react-on-rails-demo-hacker-news-rsc',
+  },
+  {
+    shortLabel: 'MP',
+    tone: 'marketplace',
+    title: 'Marketplace RSC demo',
+    proofPoint: 'E-commerce surface with React Server Components',
+    href: 'https://github.com/shakacode/react-on-rails-demo-marketplace-rsc',
+  },
+  {
+    shortLabel: 'GM',
+    tone: 'gumroad',
+    title: 'Gumroad demo',
+    proofPoint: 'Direct Inertia head-to-head: same product, both stacks',
+    href: 'https://github.com/shakacode/react-on-rails-demo-gumroad-rsc',
+  },
+  {
+    shortLabel: 'OC',
+    tone: 'octochangelog',
+    title: 'Octochangelog demo',
+    proofPoint: 'Migrating an existing Rails app to React on Rails Pro + RSC',
+    href: 'https://github.com/shakacode/react_on_rails-demo-octochangelog-on-rails-pro',
+  },
+] as const;
 
 type DashboardLinkProps = Omit<React.ComponentProps<typeof Link>, 'className' | 'params' | 'to'> & {
   className?: string;
@@ -416,9 +447,52 @@ function DashboardContent({
   return (
     <div className="tanstack-stack">
       <RenderingModeDrawer />
+      <DemoPortfolioCards />
       <MetricsGrid />
       <ProjectsTable search={search} updateSearch={updateSearch} />
     </div>
+  );
+}
+
+function DemoPortfolioCards() {
+  return (
+    <section className="demo-portfolio" aria-labelledby="demo-portfolio-title">
+      <div className="demo-portfolio-header">
+        <p className={eyebrowClassName}>Demo portfolio</p>
+        <h2 id="demo-portfolio-title">See React on Rails Pro in production</h2>
+        <p className={mutedTextClassName}>
+          Four sibling apps show the same Rails + React on Rails Pro foundation applied to public RSC,
+          e-commerce, Inertia comparison, and migration use cases.
+        </p>
+      </div>
+
+      <div className="demo-portfolio-grid">
+        {demoPortfolioCards.map((card) => (
+          <Card className="demo-portfolio-card" key={card.href}>
+            <CardHeader>
+              <span className={`demo-portfolio-thumbnail demo-portfolio-thumbnail-${card.tone}`}>
+                {card.shortLabel}
+              </span>
+              <div>
+                <CardTitle><h3>{card.title}</h3></CardTitle>
+                <CardDescription>{card.proofPoint}</CardDescription>
+              </div>
+            </CardHeader>
+            <CardFooter>
+              <ExternalDashboardLink
+                className="demo-portfolio-link"
+                href={card.href}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Open repo
+                <ExternalLink aria-hidden="true" size={15} strokeWidth={2.2} />
+              </ExternalDashboardLink>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+    </section>
   );
 }
 
