@@ -1,8 +1,40 @@
 require "rails_helper"
 
 RSpec.describe "Sessions", type: :request do
+  around do |example|
+    original_allow_demo_seed = ENV["ALLOW_DEMO_SEED"]
+    example.run
+  ensure
+    if original_allow_demo_seed.nil?
+      ENV.delete("ALLOW_DEMO_SEED")
+    else
+      ENV["ALLOW_DEMO_SEED"] = original_allow_demo_seed
+    end
+  end
+
   def sign_in(user, password: "password")
     post session_path, params: { email_address: user.email_address, password: password }
+  end
+
+  it "shows the demo credentials hint when demo seeds are enabled" do
+    get new_session_path
+
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include("Try it with")
+    expect(response.body).to include(DemoAccount::EMAIL_ADDRESS)
+    expect(response.body).to include("<strong>#{DemoAccount::PASSWORD}</strong>")
+  end
+
+  it "hides the demo credentials hint outside development and test without opt-in" do
+    allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
+    ENV.delete("ALLOW_DEMO_SEED")
+
+    get new_session_path
+
+    expect(response).to have_http_status(:ok)
+    expect(response.body).not_to include(DemoAccount::EMAIL_ADDRESS)
+    expect(response.body).not_to include("Try it with")
+    expect(response.body).to include("Use the account you created for this starter.")
   end
 
   it "signs in a verified user with the demo credentials contract" do
