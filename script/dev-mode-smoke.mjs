@@ -541,6 +541,8 @@ main.tanstack-shell::before {
   state.status.sourceUpdateMarker = marker;
   fs.writeFileSync(updateSemanticsSourcePath, sourceAfter);
 
+  let sourceUpdateObserved = false;
+
   try {
     state.lastStep = 'waiting for browser source update';
     await page.waitForFunction((expectedMarker) => {
@@ -549,9 +551,20 @@ main.tanstack-shell::before {
 
       return getComputedStyle(shell, '::before').content.includes(expectedMarker);
     }, marker, { timeout: 60_000 });
+    sourceUpdateObserved = true;
     state.status.sourceUpdateObserved = true;
   } finally {
     fs.writeFileSync(updateSemanticsSourcePath, sourceBefore);
+    if (sourceUpdateObserved) {
+      state.lastStep = 'waiting for browser source restore';
+      await page.waitForFunction((expectedMarker) => {
+        const shell = document.querySelector('main.tanstack-shell');
+        if (!shell) return false;
+
+        return !getComputedStyle(shell, '::before').content.includes(expectedMarker);
+      }, marker, { timeout: 60_000 });
+      state.status.sourceRestoreObserved = true;
+    }
   }
 }
 
