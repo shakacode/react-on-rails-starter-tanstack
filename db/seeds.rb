@@ -1,11 +1,11 @@
-unless Rails.env.development? || Rails.env.test?
-  Rails.logger.info("Skipping demo seeds outside development/test.")
+unless DemoAccount.seed_enabled?
+  Rails.logger.info("Skipping demo seeds outside development/test. Set ALLOW_DEMO_SEED=true to seed the public demo account.")
 else
-  demo_user = User.find_or_initialize_by(email_address: "demo@example.com")
+  demo_user = User.find_or_initialize_by(email_address: DemoAccount::EMAIL_ADDRESS)
   demo_user.assign_attributes(
     name: "Demo User",
-    password: "password",
-    password_confirmation: "password",
+    password: DemoAccount::PASSWORD,
+    password_confirmation: DemoAccount::PASSWORD,
     email_verified_at: Time.current,
     email_verification_token_digest: nil,
     verification_sent_at: 2.days.ago
@@ -25,5 +25,5 @@ else
     project.save!
   end
 
-  puts "Seeded demo@example.com / password with #{demo_user.projects.count} projects."
+  puts "Seeded #{DemoAccount::EMAIL_ADDRESS} / #{DemoAccount::PASSWORD} with #{demo_user.projects.count} projects."
 end
