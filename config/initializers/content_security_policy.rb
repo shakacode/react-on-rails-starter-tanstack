@@ -14,12 +14,12 @@ Rails.application.configure do
   ].freeze
 
   config.content_security_policy do |policy|
-    script_sources = [:self]
-    style_sources = [:self, :unsafe_inline]
-    connect_sources = [:self]
+    script_sources = [ :self ]
+    style_sources = [ :self, :unsafe_inline ]
+    connect_sources = [ :self ]
 
     if Rails.env.development?
-      script_sources += [:unsafe_eval, *localhost_http_sources]
+      script_sources += [ :unsafe_eval, *localhost_http_sources ]
       style_sources += localhost_http_sources
       connect_sources += localhost_http_sources + localhost_websocket_sources
     end
