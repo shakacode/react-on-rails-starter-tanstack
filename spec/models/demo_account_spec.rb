@@ -27,5 +27,8 @@ RSpec.describe DemoAccount do
 
     ENV["ALLOW_DEMO_SEED"] = "true"
     expect(described_class.seed_enabled?(rails_env: production_env)).to be(true)
+
+    ENV["ALLOW_DEMO_SEED"] = "no"
+    expect(described_class.seed_enabled?(rails_env: production_env)).to be(false)
   end
 end

@@ -20,8 +20,9 @@ RSpec.describe "Sessions", type: :request do
     get new_session_path
 
     expect(response).to have_http_status(:ok)
+    expect(response.body).to include("Try it with")
     expect(response.body).to include(DemoAccount::EMAIL_ADDRESS)
-    expect(response.body).to include(DemoAccount::PASSWORD)
+    expect(response.body).to include("<strong>#{DemoAccount::PASSWORD}</strong>")
   end
 
   it "hides the demo credentials hint outside development and test without opt-in" do
