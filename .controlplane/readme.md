@@ -163,6 +163,13 @@ with `NO_IMAGE_AVAILABLE` and block the workflow. Database preparation belongs
 in `.controlplane/release_script.sh`, which runs after the Docker image is
 built and before `cpflow deploy-image` updates the workloads.
 
+Public demo review/staging apps can opt into the demo account by setting
+`ALLOW_DEMO_SEED=true` on the app GVC before deploy. The release script will
+then run `bin/rails db:seed` after `db:prepare`, creating the verified
+`demo@example.com / password` user. Leave `ALLOW_DEMO_SEED` unset for normal
+production-style deploys; the default seed file is intentionally a no-op in
+production unless the flag is explicitly set.
+
 ## Control Plane App Secrets
 
 These are Control Plane app runtime secrets, not GitHub repository variables.
