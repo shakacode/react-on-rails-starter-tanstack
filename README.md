@@ -4,8 +4,9 @@ Rails 8 starter for teams that want Rails to own authentication, HTML
 entrypoints, persistence, and deployment while React on Rails Pro renders a
 TanStack Router, Query, and Table app on Rspack.
 
-**Live demo:** [rails-1w9hq69n5eeyr.cpln.app](https://rails-1w9hq69n5eeyr.cpln.app/)
-with `demo@example.com` / `password`.
+**Temporary demo:** [rails-1w9hq69n5eeyr.cpln.app](https://rails-1w9hq69n5eeyr.cpln.app/)
+serves the public pages; demo login is currently blocked pending launch
+deployment setup.
 
 ![Rendering mode drawer](docs/images/rendering-mode-drawer.png)
 
