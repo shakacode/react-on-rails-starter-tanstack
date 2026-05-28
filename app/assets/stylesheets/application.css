@@ -229,10 +229,7 @@
 .tanstack-header,
 .tanstack-panel,
 .metric-card {
-  border: 1px solid var(--auth-line);
   border-radius: 8px;
-  background: #ffffff;
-  box-shadow: 0 12px 36px rgba(17, 24, 39, 0.06);
 }
 
 .tanstack-header {
@@ -247,6 +244,18 @@
 .tanstack-panel h2,
 .metric-card strong {
   margin: 0;
+}
+
+.tanstack-header h1 {
+  font-size: 1.9rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.tanstack-panel h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 .tanstack-header p,
@@ -274,13 +283,13 @@
   align-items: center;
 }
 
-.tanstack-nav a {
+.tanstack-nav a:not([data-slot="button"]) {
   color: var(--auth-primary-hover);
   font-weight: 700;
   text-decoration: none;
 }
 
-.tanstack-nav a[aria-current="page"] {
+.tanstack-nav a[aria-current="page"]:not([data-slot="button"]) {
   color: var(--auth-ink);
 }
 
@@ -297,19 +306,16 @@
 }
 
 .metric-card {
-  padding: 18px;
+  min-height: 160px;
 }
 
-.metric-card span {
-  color: var(--auth-muted);
-  font-size: 0.85rem;
-  font-weight: 700;
+.metric-card [data-slot="card-title"] {
+  font-size: 2rem;
 }
 
 .metric-card strong {
   display: block;
-  margin-top: 8px;
-  font-size: 2rem;
+  line-height: 1;
 }
 
 .metric-card-muted {
@@ -321,16 +327,16 @@
 }
 
 .tanstack-panel {
-  padding: 22px;
+  overflow: hidden;
 }
 
 .tanstack-panel-header {
   justify-content: space-between;
-  margin-bottom: 18px;
+  margin-bottom: 0;
 }
 
 .table-controls {
-  margin: 14px 0;
+  margin: 0;
 }
 
 .table-controls label {
@@ -355,12 +361,10 @@
 
 .data-table {
   width: 100%;
-  border-collapse: collapse;
 }
 
 .data-table th,
 .data-table td {
-  padding: 12px;
   border-bottom: 1px solid var(--auth-line);
   text-align: left;
 }

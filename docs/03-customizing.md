@@ -30,6 +30,18 @@ bunx shadcn add card button input
 Shared primitives live in `app/javascript/src/components/ui`, and shared
 component helpers live in `app/javascript/src/lib`.
 
+The authenticated TanStack dashboard in
+`app/javascript/src/Dashboard/ror_components/DashboardApp.tsx` is the reference
+consumer for these primitives. It uses shadcn `Card`, `Table`, `Button`, `Input`,
+`Label`, `Dialog`, `Badge`, `Alert`, and `Sonner` components while keeping Rails
+as the owner of persistence, authentication, and API responses.
+
+Classic Rails auth and `/classic/projects` views intentionally keep the
+`auth-*` CSS conventions so the starter demonstrates a hybrid Rails UI
+coexisting with the TanStack dashboard.
+
+![Dashboard shadcn reference](images/dashboard-shadcn-1440x900.png)
+
 ## Extend Dashboard Routes
 
 Add new authenticated client routes in `app/javascript/src/Dashboard/ror_components/DashboardApp.tsx`, then back them with scoped Rails JSON endpoints under `/api/*` when they need server data. Reuse `apiFetch` for mutations so Rails CSRF protection remains active.
