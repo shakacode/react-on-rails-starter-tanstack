@@ -1,29 +1,36 @@
-<main class="auth-page">
-  <section class="auth-card auth-card-wide">
-    <header class="auth-card-header">
-      <h1>Check your email</h1>
-      <p>We sent a verification link to <strong><%= @masked_email_address %></strong>.</p>
+<main class="grid min-h-screen place-items-center bg-muted/40 px-4 py-10 text-foreground sm:px-6 lg:px-8">
+  <section class="w-full max-w-lg overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm">
+    <div class="grid h-1 grid-cols-3" aria-hidden="true">
+      <span class="bg-emerald-500"></span>
+      <span class="bg-sky-500"></span>
+      <span class="bg-amber-500"></span>
+    </div>
+
+    <header class="space-y-1.5 border-b px-6 py-5">
+      <p class="text-sm font-medium text-muted-foreground">React on Rails Starter</p>
+      <h1 class="text-2xl font-semibold leading-8">Check your email</h1>
+      <p class="text-sm leading-6 text-muted-foreground">We sent a verification link to <strong class="font-medium text-foreground"><%= @masked_email_address %></strong>.</p>
     </header>
 
-    <div class="auth-card-body">
-      <%= tag.div(flash[:alert], class: "auth-alert", aria: { live: "polite" }) if flash[:alert] %>
-      <%= tag.div(flash[:notice], class: "auth-notice", aria: { live: "polite" }) if flash[:notice] %>
+    <div class="space-y-4 px-6 py-6">
+      <%= tag.div(flash[:alert], class: "rounded-md border border-destructive/50 bg-destructive/10 px-4 py-3 text-sm text-destructive", aria: { live: "polite" }) if flash[:alert] %>
+      <%= tag.div(flash[:notice], class: "rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900", aria: { live: "polite" }) if flash[:notice] %>
 
-      <p>The link expires after 24 hours. If it is not in your inbox, check spam or filters for mail from React on Rails Starter.</p>
+      <p class="text-sm leading-6 text-muted-foreground">The link expires after 24 hours. If it is not in your inbox, check spam or filters for mail from React on Rails Starter.</p>
 
-      <%= form_with url: email_verifications_path, class: "auth-form" do |form| %>
+      <%= form_with url: email_verifications_path, class: "space-y-4" do |form| %>
         <%= form.hidden_field :email_address, value: Current.user&.email_address || session[:pending_verification_email] %>
-        <%= form.submit(@resend_cooldown_seconds.positive? ? "Resend available in #{@resend_cooldown_seconds}s" : "Resend verification link", class: "auth-button", disabled: @resend_cooldown_seconds.positive?) %>
+        <%= form.submit(@resend_cooldown_seconds.positive? ? "Resend available in #{@resend_cooldown_seconds}s" : "Resend verification link", class: "inline-flex h-10 w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 sm:w-auto", disabled: @resend_cooldown_seconds.positive?) %>
       <% end %>
 
       <% if Rails.env.development? %>
-        <p><%= link_to "Open the local mail preview", "/letter_opener", class: "auth-link" %></p>
+        <p><%= link_to "Open the local mail preview", "/letter_opener", class: "text-sm font-medium text-foreground underline-offset-4 hover:underline" %></p>
       <% end %>
     </div>
 
-    <footer class="auth-card-footer auth-actions">
-      <%= link_to "Change email", new_registration_path, class: "auth-link" %>
-      <%= link_to "Sign in", new_session_path, class: "auth-link" %>
+    <footer class="flex flex-wrap items-center gap-3 border-t px-6 py-4 text-sm">
+      <%= link_to "Change email", new_registration_path, class: "font-medium text-foreground underline-offset-4 hover:underline" %>
+      <%= link_to "Sign in", new_session_path, class: "font-medium text-foreground underline-offset-4 hover:underline" %>
     </footer>
   </section>
 </main>
