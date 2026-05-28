@@ -3,6 +3,32 @@
 require "rails_helper"
 
 RSpec.describe "Content Security Policy", type: :request do
+  def streaming_component_script_for_csp
+    helper_class = Class.new(ActionView::Base) do
+      include ReactOnRails::Helper
+      include ReactOnRails::ProHelper
+
+      def content_security_policy_nonce(*) = "streaming-test-nonce"
+    end
+    render_options = Struct.new(
+      :client_props,
+      :dom_id,
+      :react_component_name,
+      :trace,
+      :store_dependencies,
+      keyword_init: true
+    ).new(
+      client_props: { name: "React on Rails Pro" },
+      dom_id: "HelloServer-react-component-1",
+      react_component_name: "HelloServer",
+      trace: false,
+      store_dependencies: nil
+    )
+    helper = helper_class.with_empty_template_cache.new(ActionView::LookupContext.new([]), {}, nil)
+
+    helper.generate_component_script(render_options)
+  end
+
   def csp_header
     response.headers.fetch("Content-Security-Policy")
   end
@@ -43,5 +69,12 @@ RSpec.describe "Content Security Policy", type: :request do
     layout = Rails.root.join("app/views/layouts/react_on_rails_default.html.erb").read
 
     expect(layout).to include("<%= csp_meta_tag %>")
+  end
+
+  it "keeps the React on Rails Pro streaming force-load script nonce-compatible" do
+    html = streaming_component_script_for_csp
+
+    expect(html).to include('nonce="streaming-test-nonce"')
+    expect(html).to include("ReactOnRails.reactOnRailsComponentLoaded('HelloServer-react-component-1')")
   end
 end
