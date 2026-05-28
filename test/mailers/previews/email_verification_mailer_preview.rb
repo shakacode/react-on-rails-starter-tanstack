@@ -1,5 +1,5 @@
 class EmailVerificationMailerPreview < ActionMailer::Preview
-  # REFERENCE PATTERN: mailer-preview - see AGENTS.md section 6
+  # REFERENCE PATTERN: mailer-preview — see AGENTS.md
   def welcome
     EmailVerificationMailer.welcome(preview_user, "preview-token")
   end

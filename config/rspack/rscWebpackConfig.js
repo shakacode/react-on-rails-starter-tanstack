@@ -18,7 +18,7 @@ const extractLoader =
     });
   });
 
-// REFERENCE PATTERN: rspack-rsc-config - see AGENTS.md section 9
+// REFERENCE PATTERN: rspack-rsc-config — see AGENTS.md
 const configureRsc = () => {
   // Pass true to skip RSCWebpackPlugin - RSC bundle doesn't need it
   const rscConfig = serverWebpackConfig(true);
