@@ -1,25 +1,51 @@
 # React on Rails Starter TanStack
 
-Flagship React on Rails + TanStack starter. It uses the React on Rails Pro RC releases with the latest verified Shakapacker/Rspack release line:
+Rails 8 starter for teams that want Rails to own authentication, HTML
+entrypoints, persistence, and deployment while React on Rails Pro renders a
+TanStack Router, Query, and Table app on Rspack.
 
-- `react_on_rails` / `react_on_rails_pro` `16.7.0.rc.3`
-- `react-on-rails-pro` / `react-on-rails-pro-node-renderer` `16.7.0-rc.3`
-- `shakapacker` / `shakapacker-rspack` `10.1.0`
-- Rails 8.1, React 19, TypeScript, pnpm, Rspack, Tailwind v4, shadcn/ui primitives, React Server Components
+**Live demo:** [rails-1w9hq69n5eeyr.cpln.app](https://rails-1w9hq69n5eeyr.cpln.app/)
+with `demo@example.com` / `password`.
 
-## Quick Start
+![Rendering mode drawer](docs/images/rendering-mode-drawer.png)
+
+## What It Shows
+
+- Rspack is the Shakapacker bundler. Use `config/shakapacker.yml` and
+  `config/rspack/` as the source of truth.
+- `/` is the Rails landing page today.
+- `/dashboard`, `/settings...`, and `/projects...` are Rails full-page routes
+  that render the React on Rails Pro + TanStack dashboard shell.
+- TanStack Query reads and mutates Rails JSON APIs, and TanStack Table drives
+  the projects list with server-side filtering, sorting, pagination, and URL
+  state.
+- `/classic/projects` remains a classic Rails CRUD surface to show a hybrid
+  Rails UI coexisting with the TanStack surface.
+- The dashboard includes a rendering-mode drawer and links to sibling React on
+  Rails Pro demo apps.
+- `/hello_server` demonstrates streaming React Server Components. Interactive
+  RSC client references remain limited by the documented Rspack manifest gap;
+  see [SPIKE.md](SPIKE.md).
+
+Current pinned line: React on Rails / Pro `16.7.0.rc.3`, Shakapacker /
+Shakapacker Rspack `10.1.0`, React `19.0.6`, Rails `8.1.x`, TypeScript, and
+pnpm.
+
+## Setup
 
 ```sh
-git clone git@github.com:shakacode/react-on-rails-starter-tanstack.git
-cd react-on-rails-starter-tanstack
 bin/setup
 bin/dev
-open http://localhost:3000
+SHAKAPACKER_DEV_SERVER_HMR=true bin/dev --no-open-browser --route=dashboard
+bin/dev static --no-open-browser --route=dashboard
+bin/dev prod --no-open-browser --route=dashboard
 ```
 
-Run `bin/doctor` first when setup fails; it checks Ruby, Node, pnpm, Bun, and Postgres with actionable fix messages. The seed user is `demo@example.com / password`.
+`bin/dev` starts Rails, Rspack, Solid Queue, the React on Rails Pro Node
+renderer, and the RSC bundle watcher. Development defaults to live reload; use
+the HMR command only when testing HMR behavior.
 
-## Development
+## Checks
 
 ```sh
 bundle exec rspec
@@ -27,41 +53,19 @@ pnpm run test:router-shim
 pnpm test:playwright
 pnpm run test:dev-modes
 pnpm run test:hmr
+pnpm run repro:rspack-rsc
 bin/test
 ```
 
-`bin/dev` starts Rails, Rspack, SolidQueue, the Pro Node renderer, and the RSC bundle watcher through `Procfile.dev`. This starter keeps Rspack development on live reload by default; run `SHAKAPACKER_DEV_SERVER_HMR=true bin/dev --no-open-browser --route=dashboard` or `pnpm run test:hmr` when you want to test HMR-specific behavior.
-
-Use these alternate modes to smoke-test non-HMR paths:
+Release-impacting changes may also need:
 
 ```sh
-bin/dev static --no-open-browser --route=dashboard
-bin/dev prod --no-open-browser --route=dashboard
+bundle exec rails react_on_rails:doctor
+pnpm peers check
+bundle exec rubocop
+pnpm audit --audit-level moderate
+RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1 REACT_ON_RAILS_STARTER_TANSTACK_DATABASE_PASSWORD=dummy bin/rails assets:precompile
 ```
-
-Both modes start the Node renderer because the authenticated TanStack dashboard is server-rendered by React on Rails Pro.
-
-The authenticated `/dashboard` route is the TanStack surface:
-
-- TanStack Router runs under a Rails-owned HTML shell and is prerendered by React on Rails Pro's Node renderer.
-- TanStack Query loads independent metric cards and Rails JSON API data with CSRF-aware helpers.
-- TanStack Table drives the projects list with server-backed filter, sort, pagination, and URL state.
-- Project index/create/show/edit and nested settings routes stay inside the client-side dashboard experience, including direct full-page loads to `/projects...`.
-- Classic Rails CRUD remains available at `/classic/projects` to demonstrate hybrid Rails UI coexistence.
-
-TanStack Router and Query devtools are bundled but disabled by default in development. Enable them only when needed:
-
-```js
-localStorage.setItem("tanstack-devtools", "1")
-```
-
-## Current Status
-
-This repo is the public template seed. Phase 2 adds Rails 8 authentication, signup, email verification, resend throttles, development mail previews, and a verified-email dashboard gate. Phase 3 adds Projects CRUD, scoped authorization, JSON API endpoints, metrics, factories, and demo seeds.
-
-Phase 4 implements the TanStack Router/Query/Table authenticated surface described in [shakacode/react_on_rails#3364](https://github.com/shakacode/react_on_rails/pull/3364).
-
-See [SPIKE.md](SPIKE.md) for the current AMBER RSC/Rspack compatibility note: Rspack builds are green, but interactive RSC client-reference plugin support is blocked upstream.
 
 ## Docs
 
