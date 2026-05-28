@@ -27,7 +27,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Info } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -152,13 +152,16 @@ const fieldClassName = 'auth-field grid gap-2';
 const inputLikeClassName = 'border-input bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 flex min-h-9 w-full rounded-md border px-3 py-2 text-sm shadow-xs outline-none transition-[color,box-shadow] focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50';
 const dashboardLinkClassName = 'text-sm font-medium text-primary underline-offset-4 hover:underline';
 const reactOnRailsProUrl = 'https://www.shakacode.com/react-on-rails-pro/';
+const rscThesisUrl = 'https://github.com/shakacode/react-on-rails-starter-tanstack/blob/main/docs/08-why-rsc-on-rails.md';
+const hackerNewsDemoUrl = 'https://github.com/shakacode/react-on-rails-demo-hacker-news-rsc';
+const gumroadDemoUrl = 'https://github.com/shakacode/react-on-rails-demo-gumroad-rsc';
 const demoPortfolioCards = [
   {
     shortLabel: 'HN',
     tone: 'hn',
     title: 'Hacker News RSC demo',
     proofPoint: 'Public-traffic perf benchmark (RSC + React 19 streaming)',
-    href: 'https://github.com/shakacode/react-on-rails-demo-hacker-news-rsc',
+    href: hackerNewsDemoUrl,
   },
   {
     shortLabel: 'MP',
@@ -201,17 +204,18 @@ function DashboardLink({
   );
 }
 
-function ExternalDashboardLink({
+const ExternalDashboardLink = React.forwardRef<HTMLAnchorElement, React.ComponentProps<'a'>>(function ExternalDashboardLink({
   className,
   ...props
-}: React.ComponentProps<'a'>) {
+}, ref) {
   return (
     <a
+      ref={ref}
       className={cn(dashboardLinkClassName, className)}
       {...props}
     />
   );
-}
+});
 
 function ProjectStatusBadge({ status }: { status: string }) {
   const variant = status === 'active' ? 'default' : status === 'archived' ? 'outline' : 'secondary';
@@ -1120,6 +1124,7 @@ function SecuritySettings() {
 
 function RenderingModeDrawer() {
   const [open, setOpen] = useState(false);
+  const firstLinkRef = useRef<HTMLAnchorElement>(null);
 
   return (
     <Card className={panelClassName}>
@@ -1138,34 +1143,125 @@ function RenderingModeDrawer() {
               size="icon"
               aria-label="Rendering mode details"
             >
-              i
+              <Info aria-hidden="true" size={18} strokeWidth={2.3} />
             </Button>
           </DialogTrigger>
-          <DialogContent aria-label="Rendering mode details">
+          <DialogContent
+            aria-labelledby="rendering-mode-title"
+            className="rendering-mode-dialog"
+            onOpenAutoFocus={(event) => {
+              event.preventDefault();
+              firstLinkRef.current?.focus();
+            }}
+          >
             <DialogHeader>
-              <DialogTitle>Rendering mode details</DialogTitle>
+              <DialogTitle id="rendering-mode-title">Rendering on this page</DialogTitle>
               <DialogDescription>
-                The public landing is where RSC streaming pays off for cold visitors and SEO. Behind auth, URL state, cached data, and table interactivity matter more.
+                This app keeps Rails as the system of record and chooses the React rendering model that fits each surface.
               </DialogDescription>
             </DialogHeader>
-            <div className={actionRowClassName}>
-              <ExternalDashboardLink href="https://github.com/shakacode/react-on-rails-demo-hacker-news-rsc">
-                Hacker News RSC demo
-              </ExternalDashboardLink>
-              <ExternalDashboardLink href="https://github.com/shakacode/react-on-rails-demo-ssr-hmr">
-                SSR/HMR demo
-              </ExternalDashboardLink>
+
+            <div className="rendering-mode-grid">
+              <section className="rendering-mode-section">
+                <Badge>Dashboard</Badge>
+                <h3>This page (/dashboard) - classic SSR via the Pro Node renderer.</h3>
+                <p>
+                  Behind auth, type-safe routing, interactivity, URL state, and cached Rails-backed data
+                  matter more than public cold-load SEO wins.
+                </p>
+              </section>
+
+              <section className="rendering-mode-section">
+                <Badge variant="secondary">Public</Badge>
+                <h3>The public landing (/) - RSC + streaming.</h3>
+                <p>
+                  TTFB, mobile cold load, and indexable content matter before a visitor has downloaded
+                  an app shell.
+                </p>
+                <ExternalDashboardLink
+                  className="rendering-mode-inline-link"
+                  href="/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  ref={firstLinkRef}
+                >
+                  Open public landing
+                  <ExternalLink aria-hidden="true" size={14} />
+                </ExternalDashboardLink>
+              </section>
+
+              <section className="rendering-mode-section">
+                <Badge variant="outline">Classic Rails</Badge>
+                <h3>Classic Rails views - incremental React where useful.</h3>
+                <p>
+                  Rails-shaped CRUD pages can stay Rails-shaped, with React islands added only where the
+                  page earns the extra client-side surface.
+                </p>
+                <ExternalDashboardLink
+                  className="rendering-mode-inline-link"
+                  href="/classic/projects"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Open classic projects
+                  <ExternalLink aria-hidden="true" size={14} />
+                </ExternalDashboardLink>
+              </section>
             </div>
-            <div className="rounded-md border border-border/70 bg-muted/40 p-4 text-sm">
-              <p className="font-medium text-foreground">Want this in your app?</p>
+
+            <div className="rendering-mode-summary">
+              <p className="font-medium text-foreground">Surface-aware rendering - pick the right tool per surface.</p>
+              <p>
+                Use RSC where streaming and public content pay off, SSR where authenticated interaction
+                matters, and classic Rails views where full React is not the simplest path.
+              </p>
+              <div className="rendering-mode-links">
+                <ExternalDashboardLink
+                  className="rendering-mode-inline-link"
+                  href={rscThesisUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Full thesis
+                  <ExternalLink aria-hidden="true" size={14} />
+                </ExternalDashboardLink>
+                <ExternalDashboardLink
+                  className="rendering-mode-inline-link"
+                  href={hackerNewsDemoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Hacker News RSC demo
+                  <ExternalLink aria-hidden="true" size={14} />
+                </ExternalDashboardLink>
+                <ExternalDashboardLink
+                  className="rendering-mode-inline-link"
+                  href={gumroadDemoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Gumroad Inertia comparison
+                  <ExternalLink aria-hidden="true" size={14} />
+                </ExternalDashboardLink>
+              </div>
+            </div>
+
+            <div className="rendering-mode-cta">
+              <div>
+                <p className="font-medium text-foreground">Built on React on Rails Pro</p>
+                <p>Rails owns the app; Pro owns the rendering boundary.</p>
+              </div>
               <ExternalDashboardLink
+                className="rendering-mode-inline-link"
                 href={reactOnRailsProUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                React on Rails Pro -&gt;
+                Why Pro
+                <ExternalLink aria-hidden="true" size={14} />
               </ExternalDashboardLink>
             </div>
+
             <DialogFooter>
               <Button variant="secondary" type="button" onClick={() => setOpen(false)}>
                 Close
