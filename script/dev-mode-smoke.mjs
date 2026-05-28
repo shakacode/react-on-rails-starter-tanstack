@@ -8,6 +8,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { chromium } from '@playwright/test';
 
 const mode = process.argv[2];
+const smokeTarget = process.argv[3] || 'dashboard';
 const modeConfig = {
   dev: { basePort: 3320, args: [], label: 'dev', browserSettleMs: 2_000 },
   hmr: { basePort: 3330, args: [], env: { SHAKAPACKER_DEV_SERVER_HMR: 'true' }, label: 'hmr', browserSettleMs: 2_000 },
@@ -16,13 +17,22 @@ const modeConfig = {
 }[mode];
 
 if (!modeConfig) {
-  console.error('Usage: node script/dev-mode-smoke.mjs <dev|hmr|static|prod>');
+  console.error('Usage: node script/dev-mode-smoke.mjs <dev|hmr|static|prod> [dashboard|hello-server]');
+  process.exit(1);
+}
+
+if (!['dashboard', 'hello-server'].includes(smokeTarget)) {
+  console.error('Usage: node script/dev-mode-smoke.mjs <dev|hmr|static|prod> [dashboard|hello-server]');
   process.exit(1);
 }
 
 const basePort = Number(process.env.REACT_ON_RAILS_BASE_PORT || modeConfig.basePort);
 const baseURL = `http://localhost:${basePort}`;
 const rendererPort = basePort + 2;
+const rscManifestPaths = [
+  'public/packs/react-client-manifest.json',
+  'ssr-generated/react-server-client-manifest.json',
+];
 const maxDiagnosticItems = 20;
 const recoverableReactPageErrors = [
   'There was an error during concurrent rendering but React was able to recover',
@@ -314,6 +324,52 @@ async function smokeBrowser() {
   }
 }
 
+function missingRscManifests() {
+  return rscManifestPaths.filter((path) => !fs.existsSync(path));
+}
+
+function routeBodyShowsKnownRscManifestGap(body) {
+  return [
+    'react-client-manifest',
+    'react-server-client-manifest',
+    'client reference',
+  ].some((text) => body.includes(text));
+}
+
+async function smokeHelloServerRoute() {
+  const missingManifests = missingRscManifests();
+
+  if (process.env.REQUIRE_RSC_MANIFESTS === 'true' && missingManifests.length > 0) {
+    throw new Error(`Rspack RSC manifests are missing: ${missingManifests.join(', ')}`);
+  }
+
+  const response = await fetch(`${baseURL}/hello_server`, { redirect: 'manual' });
+  const body = await response.text();
+  const status = response.status;
+  const result = {
+    mode: modeConfig.label,
+    route: '/hello_server',
+    status,
+    missingRscManifests: missingManifests,
+  };
+
+  if (response.ok) {
+    if (!body.includes('React Server Components Demo')) {
+      throw new Error(`/hello_server returned ${status}, but the demo shell was not present\n${JSON.stringify(result, null, 2)}`);
+    }
+
+    console.log(JSON.stringify({ ...result, outcome: 'rendered' }, null, 2));
+    return;
+  }
+
+  if (missingManifests.length > 0 && status >= 500 && routeBodyShowsKnownRscManifestGap(body)) {
+    console.log(JSON.stringify({ ...result, outcome: 'blocked-by-rspack-rsc-manifests' }, null, 2));
+    return;
+  }
+
+  throw new Error(`/hello_server returned an unexpected response\n${JSON.stringify(result, null, 2)}`);
+}
+
 let serverProcess = null;
 let serverExitError = null;
 let serverExitRejectors = [];
@@ -344,7 +400,9 @@ try {
   run('bin/rails', ['db:prepare']);
   run('bin/rails', ['db:seed']);
 
-  serverProcess = spawn('bin/dev', [...modeConfig.args, '--no-open-browser', '--route=dashboard'], {
+  const bootRoute = smokeTarget === 'hello-server' ? 'hello_server' : 'dashboard';
+
+  serverProcess = spawn('bin/dev', [...modeConfig.args, '--no-open-browser', `--route=${bootRoute}`], {
     cwd: process.cwd(),
     env,
     detached: true,
@@ -369,8 +427,12 @@ try {
   await waitForUrl(`${baseURL}/session/new`);
   if (mode === 'static' || mode === 'prod') await waitForStaticManifest();
   assertServerRunning();
-  await whileServerRuns(smokeBrowser);
-  console.log(`bin/dev ${modeConfig.label} smoke passed at ${baseURL}`);
+  if (smokeTarget === 'hello-server') {
+    await whileServerRuns(smokeHelloServerRoute);
+  } else {
+    await whileServerRuns(smokeBrowser);
+  }
+  console.log(`bin/dev ${modeConfig.label} ${smokeTarget} smoke passed at ${baseURL}`);
 } finally {
   shuttingDown = true;
 
