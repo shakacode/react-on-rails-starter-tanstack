@@ -1,5 +1,5 @@
 class RegistrationsController < ApplicationController
-  # REFERENCE PATTERN: signup-controller — see AGENTS.md §2
+  # REFERENCE PATTERN: signup-controller - see AGENTS.md section 2
   allow_unauthenticated_access only: %i[new create]
 
   def new

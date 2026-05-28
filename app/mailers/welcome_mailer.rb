@@ -1,4 +1,5 @@
 class WelcomeMailer < ApplicationMailer
+  # REFERENCE PATTERN: mailer - see AGENTS.md section 6
   def welcome(user)
     @user = user
 
