@@ -78,6 +78,19 @@ localStorage.setItem("tanstack-devtools", "1")
 ```
 
 The devtools are off by default because optional devtools chunks can trigger noisy dev-server overlay requests in the current Rspack RC stack.
+The dashboard code only imports them when `localStorage["tanstack-devtools"]`
+is set to `"1"`, so normal development sessions should not request TanStack
+devtools chunks.
+
+Symptom: after enabling devtools, the browser reports a 404 for a Rspack
+lazy-trigger URL while loading a TanStack devtools chunk.
+
+Fix: keep `config/rspack/development.js` disabling
+`clientWebpackConfig.lazyCompilation` at the top level. Rspack 2 uses that
+top-level option for lazy dynamic-import trigger endpoints, and those endpoints
+can 404 for optional devtools chunks in this starter. The config also keeps
+`experiments.lazyCompilation = false` explicit for older compatible option
+shapes.
 
 ## Dashboard Stays In Loading State
 

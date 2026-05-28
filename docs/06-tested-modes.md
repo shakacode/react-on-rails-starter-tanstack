@@ -48,14 +48,23 @@ build, rendering, or routing behavior.
 - `script/dev-mode-smoke.mjs` records React 19 recoverable hydration/concurrent
   rendering page errors separately from fatal browser errors. The route still
   has to load, hydrate, navigate, and avoid console errors or failed requests.
+  With `TANSTACK_DEVTOOLS=1`, the localStorage-only devtools mount can produce a
+  devtools-specific hydration mismatch; the smoke records that one as
+  recoverable while keeping default mode strict.
 - Static and production-assets smoke runs also record browser requests,
   websocket attempts, and script/document responses to ensure those modes do not
   load Rspack dev-server clients, hot-update files, overlay code, or TanStack
   devtools chunks. To intentionally smoke the optional devtools chunks, run with
   `TANSTACK_DEVTOOLS=1`; the smoke sets the localStorage gate and allows only the
-  TanStack devtools patterns.
+  TanStack devtools patterns. Devtools must stay behind the
+  `localStorage["tanstack-devtools"] = "1"` gate so the default browser path does
+  not import their chunks.
 - React Fast Refresh is available only in explicit HMR mode. The static and
   production-assets modes intentionally stay dev-client-free so their asset
   requests match non-HMR development and optimized asset workflows.
+- Rspack 2 lazy compilation must stay disabled on the client config top level,
+  with `experiments.lazyCompilation = false` kept explicit for compatibility.
+  Otherwise dynamic TanStack devtools imports can route through Rspack
+  lazy-trigger URLs that return 404s in development.
 - The Rspack/RSC manifest gap is tracked upstream in [shakacode/react_on_rails#1828](https://github.com/shakacode/react_on_rails/issues/1828).
 - The React on Rails Pro TanStack Router private-store compatibility issue is tracked in [shakacode/react_on_rails#3375](https://github.com/shakacode/react_on_rails/issues/3375).

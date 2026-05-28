@@ -28,6 +28,9 @@ const recoverableReactPageErrors = [
   'There was an error during concurrent rendering but React was able to recover',
   'There was an error while hydrating but React was able to recover',
 ];
+const devtoolsRecoverableReactPageErrors = [
+  "Hydration failed because the server rendered HTML didn't match the client",
+];
 const allowTanStackDevtoolsAssets = ['1', 'true', 'yes'].includes(
   String(process.env.TANSTACK_DEVTOOLS || '').toLowerCase(),
 );
@@ -269,7 +272,10 @@ function isRelevantResponse(response) {
 }
 
 function isRecoverableReactPageError(message) {
-  return recoverableReactPageErrors.some((knownMessage) => message.includes(knownMessage));
+  if (recoverableReactPageErrors.some((knownMessage) => message.includes(knownMessage))) return true;
+
+  return allowTanStackDevtoolsAssets
+    && devtoolsRecoverableReactPageErrors.some((knownMessage) => message.includes(knownMessage));
 }
 
 async function pageFlashMessages(page) {
