@@ -283,13 +283,13 @@
   align-items: center;
 }
 
-.tanstack-nav a {
+.tanstack-nav a:not([data-slot="button"]) {
   color: var(--auth-primary-hover);
   font-weight: 700;
   text-decoration: none;
 }
 
-.tanstack-nav a[aria-current="page"] {
+.tanstack-nav a[aria-current="page"]:not([data-slot="button"]) {
   color: var(--auth-ink);
 }
 

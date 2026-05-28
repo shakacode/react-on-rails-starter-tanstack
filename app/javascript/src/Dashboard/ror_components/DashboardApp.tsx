@@ -149,6 +149,7 @@ const actionRowClassName = 'auth-actions flex flex-wrap items-center gap-2';
 const formClassName = 'auth-form settings-pane grid max-w-2xl gap-4';
 const fieldClassName = 'auth-field grid gap-2';
 const inputLikeClassName = 'border-input bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 flex min-h-9 w-full rounded-md border px-3 py-2 text-sm shadow-xs outline-none transition-[color,box-shadow] focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50';
+const dashboardLinkClassName = 'text-sm font-medium text-primary underline-offset-4 hover:underline';
 
 type DashboardLinkProps = Omit<React.ComponentProps<typeof Link>, 'className' | 'params' | 'to'> & {
   className?: string;
@@ -162,7 +163,7 @@ function DashboardLink({
 }: DashboardLinkProps) {
   return (
     <Link
-      className={cn('text-sm font-medium text-primary underline-offset-4 hover:underline', className)}
+      className={cn(dashboardLinkClassName, className)}
       {...(props as React.ComponentProps<typeof Link>)}
     />
   );
@@ -174,7 +175,7 @@ function ExternalDashboardLink({
 }: React.ComponentProps<'a'>) {
   return (
     <a
-      className={cn('text-sm font-medium text-primary underline-offset-4 hover:underline', className)}
+      className={cn(dashboardLinkClassName, className)}
       {...props}
     />
   );
@@ -311,7 +312,13 @@ function RootLayout() {
         </nav>
       </header>
 
-      <Suspense fallback={<Card className={panelClassName}>Loading route...</Card>}>
+      <Suspense
+        fallback={(
+          <Card className={panelClassName}>
+            <CardContent>Loading route...</CardContent>
+          </Card>
+        )}
+      >
         <Outlet />
       </Suspense>
 
@@ -788,7 +795,11 @@ function EditProjectPage() {
   });
 
   if (projectQuery.isPending) {
-    return <Card className={panelClassName}>Loading project...</Card>;
+    return (
+      <Card className={panelClassName}>
+        <CardContent>Loading project...</CardContent>
+      </Card>
+    );
   }
 
   if (projectQuery.isError) {
