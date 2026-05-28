@@ -1,13 +1,15 @@
 #!/usr/bin/env node
-// REFERENCE PATTERN: dev-mode-smoke - see AGENTS.md section 9
+// REFERENCE PATTERN: dev-mode-smoke — see AGENTS.md
 
 import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
+import http2 from 'node:http2';
 import process from 'node:process';
 import { setTimeout as delay } from 'node:timers/promises';
 import { chromium } from '@playwright/test';
 
 const mode = process.argv[2];
+const smokeTarget = process.argv[3] || 'dashboard';
 const modeConfig = {
   dev: { basePort: 3320, args: [], label: 'dev', browserSettleMs: 2_000 },
   hmr: { basePort: 3330, args: [], env: { SHAKAPACKER_DEV_SERVER_HMR: 'true' }, label: 'hmr', browserSettleMs: 2_000 },
@@ -16,13 +18,22 @@ const modeConfig = {
 }[mode];
 
 if (!modeConfig) {
-  console.error('Usage: node script/dev-mode-smoke.mjs <dev|hmr|static|prod>');
+  console.error('Usage: node script/dev-mode-smoke.mjs <dev|hmr|static|prod> [dashboard|hello-server]');
+  process.exit(1);
+}
+
+if (!['dashboard', 'hello-server'].includes(smokeTarget)) {
+  console.error('Usage: node script/dev-mode-smoke.mjs <dev|hmr|static|prod> [dashboard|hello-server]');
   process.exit(1);
 }
 
 const basePort = Number(process.env.REACT_ON_RAILS_BASE_PORT || modeConfig.basePort);
 const baseURL = `http://localhost:${basePort}`;
 const rendererPort = basePort + 2;
+const rscManifestPaths = [
+  'public/packs/react-client-manifest.json',
+  'ssr-generated/react-server-client-manifest.json',
+];
 const maxDiagnosticItems = 20;
 const recoverableReactPageErrors = [
   'There was an error during concurrent rendering but React was able to recover',
@@ -119,6 +130,91 @@ async function waitForStaticManifest(timeoutMs = 180_000) {
 
   assertServerRunning();
   throw new Error(`Timed out waiting for static pack manifest: ${lastError?.message || 'no response'}`);
+}
+
+function fetchHttp2Json(url, timeoutMs = 5_000) {
+  return new Promise((resolve, reject) => {
+    const endpoint = new URL(url);
+    const client = http2.connect(endpoint.origin);
+    let request = null;
+    let settled = false;
+
+    const timeout = setTimeout(() => {
+      finish(new Error(`${url} timed out after ${timeoutMs}ms`));
+    }, timeoutMs);
+
+    function finish(error, result = null) {
+      if (settled) return;
+
+      settled = true;
+      clearTimeout(timeout);
+      if (request) request.close();
+      client.close();
+
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    }
+
+    client.on('error', finish);
+    client.on('connect', () => {
+      const path = `${endpoint.pathname}${endpoint.search}`;
+      const chunks = [];
+      let status = null;
+
+      request = client.request({
+        [http2.constants.HTTP2_HEADER_METHOD]: 'GET',
+        [http2.constants.HTTP2_HEADER_PATH]: path,
+      });
+
+      request.setEncoding('utf8');
+      request.on('response', (headers) => {
+        status = Number(headers[http2.constants.HTTP2_HEADER_STATUS]);
+      });
+      request.on('data', (chunk) => chunks.push(chunk));
+      request.on('error', finish);
+      request.on('end', () => {
+        const body = chunks.join('');
+
+        if (status !== 200) {
+          finish(new Error(`${url} returned ${status || 'no status'}`));
+          return;
+        }
+
+        try {
+          finish(null, JSON.parse(body));
+        } catch (error) {
+          finish(new Error(`${url} did not return JSON: ${error.message}`));
+        }
+      });
+      request.end();
+    });
+  });
+}
+
+async function waitForRenderer(timeoutMs = 180_000) {
+  const url = `${env.REACT_RENDERER_URL}/info`;
+  const startedAt = Date.now();
+  let lastError = null;
+
+  while (Date.now() - startedAt < timeoutMs) {
+    assertServerRunning();
+
+    try {
+      const info = await fetchHttp2Json(url);
+      if (info.renderer_version || info.node_version) return info;
+      lastError = new Error(`${url} did not return renderer metadata`);
+    } catch (error) {
+      lastError = error;
+    }
+
+    await delay(1_000);
+  }
+
+  assertServerRunning();
+  throw new Error(`Timed out waiting for React on Rails Pro node renderer: ${lastError?.message || 'no response'}`);
 }
 
 function pushDiagnosticItem(items, item) {
@@ -365,6 +461,52 @@ async function smokeBrowser() {
   }
 }
 
+function missingRscManifests() {
+  return rscManifestPaths.filter((path) => !fs.existsSync(path));
+}
+
+function routeBodyShowsKnownRscManifestGap(body) {
+  return [
+    'react-client-manifest',
+    'react-server-client-manifest',
+    'client reference',
+  ].some((text) => body.includes(text));
+}
+
+async function smokeHelloServerRoute() {
+  const missingManifests = missingRscManifests();
+
+  if (process.env.REQUIRE_RSC_MANIFESTS === 'true' && missingManifests.length > 0) {
+    throw new Error(`Rspack RSC manifests are missing: ${missingManifests.join(', ')}`);
+  }
+
+  const response = await fetch(`${baseURL}/hello_server`, { redirect: 'manual' });
+  const body = await response.text();
+  const status = response.status;
+  const result = {
+    mode: modeConfig.label,
+    route: '/hello_server',
+    status,
+    missingRscManifests: missingManifests,
+  };
+
+  if (response.ok) {
+    if (!body.includes('React Server Components Demo')) {
+      throw new Error(`/hello_server returned ${status}, but the demo shell was not present\n${JSON.stringify(result, null, 2)}`);
+    }
+
+    console.log(JSON.stringify({ ...result, outcome: 'rendered' }, null, 2));
+    return;
+  }
+
+  if (missingManifests.length > 0 && status >= 500 && routeBodyShowsKnownRscManifestGap(body)) {
+    console.log(JSON.stringify({ ...result, outcome: 'blocked-by-rspack-rsc-manifests' }, null, 2));
+    return;
+  }
+
+  throw new Error(`/hello_server returned an unexpected response\n${JSON.stringify(result, null, 2)}`);
+}
+
 let serverProcess = null;
 let serverExitError = null;
 let serverExitRejectors = [];
@@ -395,7 +537,9 @@ try {
   run('bin/rails', ['db:prepare']);
   run('bin/rails', ['db:seed']);
 
-  serverProcess = spawn('bin/dev', [...modeConfig.args, '--no-open-browser', '--route=dashboard'], {
+  const bootRoute = smokeTarget === 'hello-server' ? 'hello_server' : 'dashboard';
+
+  serverProcess = spawn('bin/dev', [...modeConfig.args, '--no-open-browser', `--route=${bootRoute}`], {
     cwd: process.cwd(),
     env,
     detached: true,
@@ -419,9 +563,14 @@ try {
 
   await waitForUrl(`${baseURL}/session/new`);
   if (mode === 'static' || mode === 'prod') await waitForStaticManifest();
+  await waitForRenderer();
   assertServerRunning();
-  await whileServerRuns(smokeBrowser);
-  console.log(`bin/dev ${modeConfig.label} smoke passed at ${baseURL}`);
+  if (smokeTarget === 'hello-server') {
+    await whileServerRuns(smokeHelloServerRoute);
+  } else {
+    await whileServerRuns(smokeBrowser);
+  }
+  console.log(`bin/dev ${modeConfig.label} ${smokeTarget} smoke passed at ${baseURL}`);
 } finally {
   shuttingDown = true;
 

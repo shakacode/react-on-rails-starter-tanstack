@@ -1,5 +1,5 @@
 class EmailVerificationMailer < ApplicationMailer
-  # REFERENCE PATTERN: mailer - see AGENTS.md section 6
+  # REFERENCE PATTERN: mailer — see AGENTS.md
   def welcome(user, token)
     @user = user
     @verification_url = email_verification_url(token)

@@ -16,7 +16,7 @@ build, rendering, or routing behavior.
 | Smoke | `bin/test smoke` | React on Rails doctor, TypeScript, router shim, RSpec, and the Playwright health smoke. | Fast local pre-push check. |
 | CI core | `bin/ci` or `bin/test ci` | RuboCop, peer checks, Ruby/JS security audits, smoke tier. | Default CI core job and local confidence before opening a PR. |
 | Full | `bin/test all` | Quality checks, smoke tier, and the full Playwright browser suite. | Browser-facing app changes and dashboard data-flow changes. |
-| Release-impacting | `bin/test release` | Full tier plus security checks, dev-mode, HMR, production precompile, and Rspack/RSC repro checks. | Build, rendering, routing, Rspack, React on Rails Pro, or Node renderer changes. This is intentionally slower than the default tier. |
+| Release-impacting | `bin/test release` | Full tier plus security checks, dev-mode, HMR, production boot smoke, and Rspack/RSC repro checks. | Build, rendering, routing, Rspack, React on Rails Pro, or Node renderer changes. This is intentionally slower than the default tier. |
 
 ## Coverage Matrix
 
@@ -34,7 +34,9 @@ build, rendering, or routing behavior.
 | Production-assets dev | `bin/test dev-modes` or `node script/dev-mode-smoke.mjs prod` | CI | Runs `bin/dev prod`, precompiles optimized Rspack bundles, starts Rails, SolidQueue, and the Node renderer, then checks the same authenticated TanStack routes. |
 | HMR dev | `bin/test hmr` or `SHAKAPACKER_DEV_SERVER_HMR=true bin/dev --no-open-browser --route=dashboard` | CI | Boots the same default dev stack with `hmr: true` and `live_reload: false`, then verifies the authenticated TanStack routes hydrate and navigate. This smoke does not assert state-preserving hot updates. |
 | Rspack/RSC client boundary repro | `bin/test rsc-repro` or `pnpm run repro:rspack-rsc` | CI status, upstream repro | Builds Rspack bundles and verifies the generated `HelloServer` RSC example still contains a `'use client'` boundary. Today this reports `blocked` because Rspack does not emit the RSC client/server manifests used by interactive client references. Set `REQUIRE_RSC_MANIFESTS=true` only when intentionally checking whether the upstream blocker has been fixed. |
-| Production precompile | `bin/test release` or `RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1 REACT_ON_RAILS_STARTER_TANSTACK_DATABASE_PASSWORD=dummy bin/rails assets:precompile` | Release-impacting checks | Confirms production Rspack client, server, and RSC bundles compile. The expected Pro license warning is non-fatal. |
+| `/hello_server` RSC route smoke | `bin/test hello-server-rsc` or `pnpm run test:hello-server-rsc` | RSC route sentinel | Boots the static-assets dev stack against `/hello_server` and verifies the route either renders the demo shell or fails with the known Rspack/RSC manifest gap. Set `REQUIRE_RSC_MANIFESTS=true` only when intentionally requiring interactive RSC client-reference manifests. |
+| Production precompile | `bin/test production-precompile` or `RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1 REACT_ON_RAILS_STARTER_TANSTACK_DATABASE_PASSWORD=dummy bin/rails assets:precompile` | Release-impacting checks | Confirms production Rspack client, server, and RSC bundles compile. The expected Pro license warning is non-fatal. |
+| Production boot smoke | `bin/test production-boot` or `node script/production-boot-smoke.mjs` | CI, release-impacting checks | Precompiles production assets with dummy secrets, prepares production-mode databases, starts `client/node-renderer.js` from compiled output, boots Rails in `RAILS_ENV=production`, checks `/up`, signs in as `demo@example.com / password`, and checks `/dashboard?status=active&sort=name&dir=asc` with `X-Forwarded-Proto: https`. |
 
 ## Notes
 
@@ -43,8 +45,12 @@ build, rendering, or routing behavior.
 - The CI `core` job calls `bin/ci`, which runs quality, security, and smoke checks.
   Its displayed check name is `rspec` to match the repository's current branch
   protection context.
-  Full Playwright, dev modes, HMR, and Rspack/RSC repro checks run as separate
+  Full Playwright, production boot smoke, dev modes, HMR, and Rspack/RSC repro checks run as separate
   CI jobs so their failures are easier to read.
+- The production boot smoke is intended for local or CI databases only. In CI,
+  the job points `DATABASE_URL`, `CACHE_DATABASE_URL`, `QUEUE_DATABASE_URL`, and
+  `CABLE_DATABASE_URL` at isolated Postgres service databases so production
+  multi-database setup is exercised without requiring the app production role.
 - `script/dev-mode-smoke.mjs` records React 19 recoverable hydration/concurrent
   rendering page errors separately from fatal browser errors. The route still
   has to load, hydrate, navigate, and avoid console errors or failed requests.

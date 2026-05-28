@@ -1,6 +1,6 @@
 # Procfile for development with production assets.
 # Uses production-optimized, precompiled assets with the development Rails environment.
-# REFERENCE PATTERN: rspack-production-assets-procfile - see AGENTS.md section 9
+# REFERENCE PATTERN: rspack-production-assets-procfile — see AGENTS.md
 
 rails: bundle exec rails s -p ${PORT:-3001}
 worker: bin/jobs

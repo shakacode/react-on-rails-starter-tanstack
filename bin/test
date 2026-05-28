@@ -4,7 +4,7 @@ set -euo pipefail
 usage() {
   cat >&2 <<'USAGE'
 Usage:
-  bin/test [all|ci|smoke|quality|security|doctor|typecheck|router-shim|dev-modes|hmr|rsc-repro|release|a11y]
+  bin/test [all|ci|smoke|quality|security|doctor|typecheck|router-shim|dev-modes|hmr|hello-server-rsc|rsc-repro|production-precompile|production-boot|release|a11y]
   bin/test rspec [rspec-args...]
   bin/test playwright [playwright-args...]
   bin/test playwright-smoke [playwright-args...]
@@ -13,7 +13,7 @@ Tiers:
   smoke            Doctor, TypeScript, router shim, RSpec, and Playwright health smoke.
   ci               Quality, security, and smoke checks used by the CI core job.
   all              Quality, smoke, and the full Playwright browser suite.
-  release          All tier plus dev-mode, HMR, production precompile, and Rspack/RSC repro checks.
+  release          All tier plus dev-mode, HMR, production boot, and Rspack/RSC repro checks.
 USAGE
 }
 
@@ -85,6 +85,14 @@ run_production_precompile() {
     bin/rails assets:precompile
 }
 
+run_production_boot_smoke() {
+  run env \
+    RAILS_ENV=production \
+    SECRET_KEY_BASE_DUMMY=1 \
+    REACT_ON_RAILS_STARTER_TANSTACK_DATABASE_PASSWORD=dummy \
+    node script/production-boot-smoke.mjs "$@"
+}
+
 command="${1:-all}"
 if (($# > 0)); then
   shift
@@ -131,15 +139,24 @@ case "$command" in
   hmr)
     run pnpm run test:hmr
     ;;
+  hello-server-rsc|rsc-route|hello-server)
+    run pnpm run test:hello-server-rsc
+    ;;
   rsc-repro|rspack-rsc|repro:rspack-rsc)
     run pnpm run repro:rspack-rsc
+    ;;
+  production-precompile|prod-precompile)
+    run_production_precompile
+    ;;
+  production-boot|production-smoke|prod-boot)
+    run_production_boot_smoke "$@"
     ;;
   release)
     run_all
     run_security_checks
     run pnpm run test:dev-modes
     run pnpm run test:hmr
-    run_production_precompile
+    run_production_boot_smoke
     run pnpm run repro:rspack-rsc
     ;;
   all|full)
