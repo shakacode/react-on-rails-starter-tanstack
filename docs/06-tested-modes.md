@@ -36,6 +36,8 @@ expected before changing build, rendering, or routing behavior.
 - Use `demo@example.com / password` for authenticated browser checks.
 - `bin/dev`, `bin/dev static`, and `bin/dev prod` must start `client/node-renderer.js`; otherwise prerendered TanStack routes fail with a Node renderer connection error.
 - The CI `core` job calls `bin/ci`, which runs quality, security, and smoke checks.
+  Its displayed check name is `rspec` to match the repository's current branch
+  protection context.
   Full Playwright, dev modes, HMR, and Rspack/RSC repro checks run as separate
   CI jobs so their failures are easier to read.
 - `script/dev-mode-smoke.mjs` records React 19 recoverable hydration/concurrent

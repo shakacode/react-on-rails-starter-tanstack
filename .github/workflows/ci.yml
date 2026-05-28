@@ -7,6 +7,7 @@ on:
 
 jobs:
   core:
+    name: rspec
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -55,6 +56,7 @@ jobs:
       - run: bin/ci
 
   playwright-full:
+    name: playwright
     runs-on: ubuntu-latest
     permissions:
       contents: read

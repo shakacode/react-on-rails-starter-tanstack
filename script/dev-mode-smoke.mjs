@@ -74,6 +74,51 @@ async function waitForUrl(url, timeoutMs = 180_000) {
   throw new Error(`Timed out waiting for ${url}: ${lastError?.message || 'no response'}`);
 }
 
+function manifestAssetValues(value) {
+  if (typeof value === 'string') return [value];
+  if (Array.isArray(value)) return value.flatMap(manifestAssetValues);
+  if (value && typeof value === 'object') return Object.values(value).flatMap(manifestAssetValues);
+
+  return [];
+}
+
+function isStaticManifest(manifest) {
+  const assetValues = manifestAssetValues(manifest);
+  const applicationScripts = manifest.entrypoints?.application?.assets?.js || [];
+
+  return applicationScripts.length > 0 && assetValues.every((asset) => (
+    asset.startsWith('/packs/') || asset.startsWith('/assets/')
+  ));
+}
+
+async function waitForStaticManifest(timeoutMs = 180_000) {
+  const url = `${baseURL}/packs/manifest.json`;
+  const startedAt = Date.now();
+  let lastError = null;
+
+  while (Date.now() - startedAt < timeoutMs) {
+    assertServerRunning();
+
+    try {
+      const response = await fetch(url, { redirect: 'manual' });
+      if (response.ok) {
+        const manifest = await response.json();
+        if (isStaticManifest(manifest)) return manifest;
+        lastError = new Error(`${url} is still pointing at dev-server assets`);
+      } else {
+        lastError = new Error(`${url} returned ${response.status}`);
+      }
+    } catch (error) {
+      lastError = error;
+    }
+
+    await delay(1_000);
+  }
+
+  assertServerRunning();
+  throw new Error(`Timed out waiting for static pack manifest: ${lastError?.message || 'no response'}`);
+}
+
 function pushDiagnosticItem(items, item) {
   items.push(item);
   if (items.length > maxDiagnosticItems) items.splice(0, items.length - maxDiagnosticItems);
@@ -321,7 +366,7 @@ try {
   });
 
   await waitForUrl(`${baseURL}/session/new`);
-  if (mode === 'static') await waitForUrl(`${baseURL}/packs/manifest.json`);
+  if (mode === 'static' || mode === 'prod') await waitForStaticManifest();
   assertServerRunning();
   await whileServerRuns(smokeBrowser);
   console.log(`bin/dev ${modeConfig.label} smoke passed at ${baseURL}`);
