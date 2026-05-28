@@ -150,6 +150,7 @@ const formClassName = 'auth-form settings-pane grid max-w-2xl gap-4';
 const fieldClassName = 'auth-field grid gap-2';
 const inputLikeClassName = 'border-input bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 flex min-h-9 w-full rounded-md border px-3 py-2 text-sm shadow-xs outline-none transition-[color,box-shadow] focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50';
 const dashboardLinkClassName = 'text-sm font-medium text-primary underline-offset-4 hover:underline';
+const reactOnRailsProUrl = 'https://www.shakacode.com/react-on-rails-pro/';
 
 type DashboardLinkProps = Omit<React.ComponentProps<typeof Link>, 'className' | 'params' | 'to'> & {
   className?: string;
@@ -322,6 +323,8 @@ function RootLayout() {
         <Outlet />
       </Suspense>
 
+      <DashboardFooter />
+
       <Toaster richColors position="top-right" />
 
       {showDevtools ? (
@@ -330,6 +333,22 @@ function RootLayout() {
         </Suspense>
       ) : null}
     </main>
+  );
+}
+
+function DashboardFooter() {
+  return (
+    <footer className="flex flex-col gap-2 border-t border-border/60 pt-5 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+      <ExternalDashboardLink
+        className="text-muted-foreground hover:text-primary"
+        href={reactOnRailsProUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Powered by React on Rails Pro
+      </ExternalDashboardLink>
+      <span>Rails stays the app server; Pro handles the React rendering boundary.</span>
+    </footer>
   );
 }
 
@@ -1061,6 +1080,16 @@ function RenderingModeDrawer() {
               </ExternalDashboardLink>
               <ExternalDashboardLink href="https://github.com/shakacode/react-on-rails-demo-ssr-hmr">
                 SSR/HMR demo
+              </ExternalDashboardLink>
+            </div>
+            <div className="rounded-md border border-border/70 bg-muted/40 p-4 text-sm">
+              <p className="font-medium text-foreground">Want this in your app?</p>
+              <ExternalDashboardLink
+                href={reactOnRailsProUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                React on Rails Pro -&gt;
               </ExternalDashboardLink>
             </div>
             <DialogFooter>
