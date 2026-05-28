@@ -40,6 +40,7 @@ test('protected TanStack route returns to URL-backed table state after sign in',
 
   const shell = page.locator('main.tanstack-shell');
   await expect(shell.getByRole('heading', { name: 'Projects' })).toBeVisible();
+  await expect(page.locator('nav[aria-label="Dashboard navigation"] a[href="/projects/new"]')).not.toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
   await expect(page.getByLabel('Status')).toHaveValue('paused');
   await expect(shell.getByRole('cell', { name: 'paused' }).first()).toBeVisible();
   await expect(page.locator('body')).not.toContainText('Loading projects...');
