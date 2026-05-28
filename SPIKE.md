@@ -4,7 +4,7 @@
 
 AMBER: proceed with the RC scaffold on Rspack, with one explicit fallback.
 
-The app was bootstrapped with `create-react-on-rails-app --rsc --rspack --package-manager pnpm` and is now pinned to the `16.7.0-rc.1` React on Rails release candidate. The Rails/Rspack/React on Rails Pro setup passes `react_on_rails:doctor` with zero warnings after local adjustments.
+The app was bootstrapped with `create-react-on-rails-app --rsc --rspack --package-manager pnpm` and is now pinned to the `16.7.0-rc.3` React on Rails release candidate. The Rails/Rspack/React on Rails Pro setup passes `react_on_rails:doctor` with zero warnings after local adjustments.
 
 ## Validation Goals
 
@@ -16,8 +16,8 @@ The app was bootstrapped with `create-react-on-rails-app --rsc --rspack --packag
 ## What Worked
 
 - Rails 8.1 app scaffolded with PostgreSQL and SolidQueue.
-- React on Rails and React on Rails Pro pinned to `16.7.0.rc.1`.
-- Shakapacker pinned to `10.1.0.rc.2`.
+- React on Rails and React on Rails Pro pinned to `16.7.0.rc.3`.
+- Shakapacker pinned to `10.1.0`.
 - Rspack builds complete successfully after the fallback below.
 - The `/dashboard` TanStack Router, Query, and Table surface prerenders through React on Rails Pro's Node renderer and hydrates under the Rails shell.
 - `bundle exec rails react_on_rails:doctor` reports 50 checks passed, 0 warnings, 0 errors.

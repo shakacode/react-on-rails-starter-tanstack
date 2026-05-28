@@ -58,7 +58,7 @@ module Api
 
       def scoped_projects
         projects = Current.user.projects
-        projects = projects.public_send(params[:status]) if Project.statuses.key?(params[:status])
+        projects = projects.where(status: Project.statuses.fetch(params[:status])) if Project.statuses.key?(params[:status])
         projects.order(sort_column => sort_direction, id: :asc)
       end
 

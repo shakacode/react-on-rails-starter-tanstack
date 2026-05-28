@@ -1,6 +1,6 @@
 # Architecture
 
-This starter begins from `create-react-on-rails-app@16.7.0-rc.1 --rsc --rspack`.
+This starter began from `create-react-on-rails-app --rsc --rspack` and is currently pinned to React on Rails `16.7.0-rc.3`.
 
 - Rails owns the public routes, auth routes, API routes, and the HTML shells.
 - Shakapacker uses Rspack for client, server, and RSC bundles.

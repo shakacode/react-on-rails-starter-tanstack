@@ -6,8 +6,11 @@ on:
     branches: [main]
 
 jobs:
-  rspec:
+  core:
+    name: rspec
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     services:
       postgres:
@@ -29,6 +32,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Install system packages
         run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libpq-dev libvips
@@ -47,13 +52,14 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec tsc --noEmit
-      - run: pnpm run test:router-shim
-      - run: bin/rails db:test:prepare
-      - run: bundle exec rspec
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: bin/ci
 
-  playwright:
+  playwright-full:
+    name: playwright
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     services:
       postgres:
@@ -76,6 +82,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Install system packages
         run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libpq-dev libvips
@@ -95,11 +103,41 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
-      - run: bin/rails db:test:prepare
-      - run: pnpm test:playwright
+      - run: bin/test playwright
+
+  rspack-rsc-repro:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+
+      - name: Install system packages
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libpq-dev libvips
+
+      - uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f
+        with:
+          bundler-cache: true
+
+      - uses: pnpm/action-setup@ac6db6d3c1f721f886538a378a2d73e85697340a
+        with:
+          version: 11.2.2
+
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: bin/test rsc-repro
 
   dev-modes:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 30
 
     services:
@@ -146,5 +184,5 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm run test:dev-modes
-      - run: pnpm run test:hmr
+      - run: bin/test dev-modes
+      - run: bin/test hmr

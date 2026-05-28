@@ -24,10 +24,11 @@ function exists(path) {
   return fs.existsSync(path);
 }
 
-for (const manifestPath of [clientManifestPath, serverManifestPath]) {
-  fs.rmSync(manifestPath, { force: true });
+for (const outputPath of [clientManifestPath, serverManifestPath, rscBundlePath]) {
+  fs.rmSync(outputPath, { force: true });
 }
 
+run('bin/rails', ['react_on_rails:generate_packs']);
 run('bin/shakapacker', []);
 
 const clientBoundarySource = fs.readFileSync(clientBoundaryPath, 'utf8');

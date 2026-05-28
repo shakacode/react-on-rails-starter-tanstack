@@ -23,6 +23,11 @@ protocol errors. The renderer binds to `0.0.0.0` automatically when
 to it. Local development keeps the safer `localhost` binding. Override
 `RENDERER_HOST` only if your hosting platform requires a different bind address.
 
+Rails production config forces SSL and assumes traffic reaches Rails through a
+trusted TLS-terminating reverse proxy. Keep public HTTP-to-HTTPS redirects or
+blocking at that proxy/load balancer instead of exposing cleartext Rails traffic
+directly.
+
 Before deploying, run:
 
 ```sh

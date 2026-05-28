@@ -1,22 +1,152 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-case "${1:-all}" in
+usage() {
+  cat >&2 <<'USAGE'
+Usage:
+  bin/test [all|ci|smoke|quality|security|doctor|typecheck|router-shim|dev-modes|hmr|rsc-repro|release|a11y]
+  bin/test rspec [rspec-args...]
+  bin/test playwright [playwright-args...]
+  bin/test playwright-smoke [playwright-args...]
+
+Tiers:
+  smoke            Doctor, TypeScript, router shim, RSpec, and Playwright health smoke.
+  ci               Quality, security, and smoke checks used by the CI core job.
+  all              Quality, smoke, and the full Playwright browser suite.
+  release          All tier plus dev-mode, HMR, production precompile, and Rspack/RSC repro checks.
+USAGE
+}
+
+run() {
+  printf '\n==> %s\n' "$*"
+  "$@"
+}
+
+prepare_test_database() {
+  run env RAILS_ENV=test bin/rails db:test:prepare
+}
+
+run_static_checks() {
+  run bundle exec rails react_on_rails:doctor
+  run pnpm exec tsc --noEmit
+  run pnpm run test:router-shim
+}
+
+run_quality_checks() {
+  run env RUBOCOP_CACHE_ROOT=tmp/cache/rubocop bundle exec rubocop
+  run pnpm peers check
+}
+
+run_security_checks() {
+  run bin/bundler-audit
+  run bin/brakeman --quiet --no-pager --exit-on-warn --exit-on-error
+  run pnpm audit --audit-level moderate
+}
+
+run_rspec() {
+  prepare_test_database
+  run bundle exec rspec "$@"
+}
+
+run_playwright_smoke() {
+  prepare_test_database
+  run pnpm exec playwright test test/playwright/root.spec.ts "$@"
+}
+
+run_playwright_full() {
+  prepare_test_database
+  run pnpm exec playwright test "$@"
+}
+
+run_smoke() {
+  run_static_checks
+  run_rspec
+  run_playwright_smoke
+}
+
+run_ci() {
+  run_quality_checks
+  run_security_checks
+  run_smoke
+}
+
+run_all() {
+  run_quality_checks
+  run_static_checks
+  run_rspec
+  run_playwright_full
+}
+
+run_production_precompile() {
+  run env \
+    RAILS_ENV=production \
+    SECRET_KEY_BASE_DUMMY=1 \
+    REACT_ON_RAILS_STARTER_TANSTACK_DATABASE_PASSWORD=dummy \
+    bin/rails assets:precompile
+}
+
+command="${1:-all}"
+if (($# > 0)); then
+  shift
+fi
+
+case "$command" in
   --smoke|smoke)
-    pnpm test:playwright
+    run_smoke
+    ;;
+  ci)
+    run_ci
     ;;
   --a11y|a11y)
-    pnpm exec playwright test --grep @a11y
+    prepare_test_database
+    run pnpm exec playwright test --grep @a11y
+    ;;
+  quality)
+    run_quality_checks
+    ;;
+  security)
+    run_security_checks
+    ;;
+  doctor)
+    run bundle exec rails react_on_rails:doctor
+    ;;
+  typecheck)
+    run pnpm exec tsc --noEmit
+    ;;
+  router-shim)
+    run pnpm run test:router-shim
     ;;
   rspec)
-    bundle exec rspec
+    run_rspec "$@"
     ;;
-  all)
-    bundle exec rspec
-    pnpm test:playwright
+  playwright-smoke)
+    run_playwright_smoke "$@"
+    ;;
+  playwright|playwright-full)
+    run_playwright_full "$@"
+    ;;
+  dev-modes)
+    run pnpm run test:dev-modes
+    ;;
+  hmr)
+    run pnpm run test:hmr
+    ;;
+  rsc-repro|rspack-rsc|repro:rspack-rsc)
+    run pnpm run repro:rspack-rsc
+    ;;
+  release)
+    run_all
+    run_security_checks
+    run pnpm run test:dev-modes
+    run pnpm run test:hmr
+    run_production_precompile
+    run pnpm run repro:rspack-rsc
+    ;;
+  all|full)
+    run_all
     ;;
   *)
-    echo "Usage: bin/test [all|rspec|smoke|--smoke|a11y|--a11y]" >&2
+    usage
     exit 1
     ;;
 esac

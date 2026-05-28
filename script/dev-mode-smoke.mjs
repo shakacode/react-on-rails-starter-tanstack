@@ -22,6 +22,11 @@ if (!modeConfig) {
 const basePort = Number(process.env.REACT_ON_RAILS_BASE_PORT || modeConfig.basePort);
 const baseURL = `http://localhost:${basePort}`;
 const rendererPort = basePort + 2;
+const maxDiagnosticItems = 20;
+const recoverableReactPageErrors = [
+  'There was an error during concurrent rendering but React was able to recover',
+  'There was an error while hydrating but React was able to recover',
+];
 const env = {
   ...process.env,
   ...modeConfig.env,
@@ -69,47 +74,240 @@ async function waitForUrl(url, timeoutMs = 180_000) {
   throw new Error(`Timed out waiting for ${url}: ${lastError?.message || 'no response'}`);
 }
 
+function manifestAssetValues(value) {
+  if (typeof value === 'string') return [value];
+  if (Array.isArray(value)) return value.flatMap(manifestAssetValues);
+  if (value && typeof value === 'object') return Object.values(value).flatMap(manifestAssetValues);
+
+  return [];
+}
+
+function isStaticManifest(manifest) {
+  const assetValues = manifestAssetValues(manifest);
+  const applicationScripts = manifest.entrypoints?.application?.assets?.js || [];
+
+  return applicationScripts.length > 0 && assetValues.every((asset) => (
+    asset.startsWith('/packs/') || asset.startsWith('/assets/')
+  ));
+}
+
+async function waitForStaticManifest(timeoutMs = 180_000) {
+  const url = `${baseURL}/packs/manifest.json`;
+  const startedAt = Date.now();
+  let lastError = null;
+
+  while (Date.now() - startedAt < timeoutMs) {
+    assertServerRunning();
+
+    try {
+      const response = await fetch(url, { redirect: 'manual' });
+      if (response.ok) {
+        const manifest = await response.json();
+        if (isStaticManifest(manifest)) return manifest;
+        lastError = new Error(`${url} is still pointing at dev-server assets`);
+      } else {
+        lastError = new Error(`${url} returned ${response.status}`);
+      }
+    } catch (error) {
+      lastError = error;
+    }
+
+    await delay(1_000);
+  }
+
+  assertServerRunning();
+  throw new Error(`Timed out waiting for static pack manifest: ${lastError?.message || 'no response'}`);
+}
+
+function pushDiagnosticItem(items, item) {
+  items.push(item);
+  if (items.length > maxDiagnosticItems) items.splice(0, items.length - maxDiagnosticItems);
+}
+
+function compactText(text) {
+  return text.replace(/\s+/g, ' ').trim();
+}
+
+function responseSummary(response) {
+  if (!response) return null;
+
+  const headers = response.headers();
+  return {
+    method: response.request().method(),
+    status: response.status(),
+    statusText: response.statusText(),
+    url: response.url(),
+    location: headers.location || null,
+  };
+}
+
+function isRelevantResponse(response) {
+  if (response.request().resourceType() === 'document') return true;
+
+  let url;
+  try {
+    url = new URL(response.url());
+  } catch {
+    return false;
+  }
+
+  if (url.origin !== baseURL) return false;
+
+  return [
+    '/',
+    '/session',
+    '/session/new',
+    '/dashboard',
+    '/settings',
+    '/projects',
+    '/projects/new',
+    '/packs/manifest.json',
+  ].includes(url.pathname) || url.pathname.startsWith('/api/projects');
+}
+
+function isRecoverableReactPageError(message) {
+  return recoverableReactPageErrors.some((knownMessage) => message.includes(knownMessage));
+}
+
+async function pageFlashMessages(page) {
+  try {
+    const messages = await page.locator('.auth-alert, .auth-notice, [role="alert"]').evaluateAll((elements) => (
+      elements.map((element) => element.textContent || '')
+    ));
+
+    return messages.map(compactText).filter(Boolean);
+  } catch (error) {
+    return [`Unable to read flash messages: ${error.message}`];
+  }
+}
+
+async function browserDiagnosticsSnapshot(page, diagnostics, state = {}) {
+  return {
+    mode: modeConfig.label,
+    baseURL,
+    lastStep: state.lastStep || null,
+    currentURL: page.url(),
+    flashMessages: await pageFlashMessages(page),
+    status: state.status || {},
+    recentResponses: diagnostics.recentResponses,
+    consoleErrors: diagnostics.consoleErrors,
+    pageErrors: diagnostics.pageErrors,
+    recoverablePageErrors: diagnostics.recoverablePageErrors,
+    failedRequests: diagnostics.failedRequests,
+  };
+}
+
+async function browserSmokeError(page, diagnostics, state, message) {
+  const snapshot = await browserDiagnosticsSnapshot(page, diagnostics, state);
+  return new Error(`${message}\n${JSON.stringify(snapshot, null, 2)}`);
+}
+
+async function submitDemoSignIn(page, state) {
+  state.lastStep = 'submitting sign-in form';
+
+  const [signInResponse] = await Promise.all([
+    page.waitForResponse((response) => {
+      let url;
+      try {
+        url = new URL(response.url());
+      } catch {
+        return false;
+      }
+
+      return url.origin === baseURL && url.pathname === '/session' && response.request().method() === 'POST';
+    }, { timeout: 30_000 }),
+    page.getByRole('button', { name: 'Sign in' }).click({ noWaitAfter: true }),
+  ]);
+
+  state.status.signInPost = responseSummary(signInResponse);
+
+  await page.waitForLoadState('domcontentloaded', { timeout: 10_000 }).catch(() => {
+    state.status.signInDocumentLoad = 'not observed within 10000ms';
+  });
+
+  const leftSignInPage = await page.waitForURL((url) => url.pathname !== '/session/new', { timeout: 5_000 })
+    .then(() => true)
+    .catch(() => false);
+
+  state.status.signInRedirectSettled = leftSignInPage;
+  state.status.postSignInURL = page.url();
+
+  if (signInResponse.status() < 300 || signInResponse.status() >= 400) {
+    throw new Error(`Sign-in POST returned ${signInResponse.status()} instead of a redirect`);
+  }
+
+  const redirectLocation = state.status.signInPost.location;
+  if (redirectLocation) {
+    const redirectPath = new URL(redirectLocation, baseURL).pathname;
+    state.status.signInRedirectPath = redirectPath;
+
+    if (redirectPath !== '/') {
+      throw new Error(`Sign-in POST redirected to ${redirectLocation} instead of /`);
+    }
+  }
+}
+
 async function smokeBrowser() {
   const browser = await chromium.launch();
   const page = await browser.newPage({ baseURL });
-  const consoleErrors = [];
-  const failedRequests = [];
+  const diagnostics = {
+    consoleErrors: [],
+    pageErrors: [],
+    recoverablePageErrors: [],
+    failedRequests: [],
+    recentResponses: [],
+  };
+  const state = { lastStep: 'launching browser', status: {} };
 
   page.on('console', (message) => {
-    if (message.type() === 'error') consoleErrors.push(message.text());
+    if (message.type() === 'error') pushDiagnosticItem(diagnostics.consoleErrors, message.text());
+  });
+
+  page.on('pageerror', (error) => {
+    const target = isRecoverableReactPageError(error.message) ? diagnostics.recoverablePageErrors : diagnostics.pageErrors;
+    pushDiagnosticItem(target, error.message);
   });
 
   page.on('requestfailed', (request) => {
     const failure = request.failure();
     const errorText = failure?.errorText || '';
     if (!errorText.includes('net::ERR_ABORTED')) {
-      failedRequests.push(`${request.url()} ${errorText}`.trim());
+      pushDiagnosticItem(diagnostics.failedRequests, `${request.method()} ${request.url()} ${errorText}`.trim());
+    }
+  });
+
+  page.on('response', (response) => {
+    if (isRelevantResponse(response)) {
+      pushDiagnosticItem(diagnostics.recentResponses, responseSummary(response));
     }
   });
 
   try {
-    await page.goto('/session/new', { waitUntil: 'domcontentloaded' });
+    state.lastStep = 'opening sign-in form';
+    state.status.signInForm = responseSummary(await page.goto('/session/new', { waitUntil: 'domcontentloaded' }));
     if (modeConfig.browserSettleMs) await delay(modeConfig.browserSettleMs);
     await page.getByLabel('Email').fill('demo@example.com');
     await page.getByLabel('Password').fill('password');
-    await Promise.all([
-      page.waitForURL('**/', { timeout: 20_000 }),
-      page.getByRole('button', { name: 'Sign in' }).click(),
-    ]);
+    await submitDemoSignIn(page, state);
 
-    await page.goto('/dashboard?status=active&sort=name&dir=asc', { waitUntil: 'domcontentloaded' });
+    state.lastStep = 'opening dashboard';
+    state.status.dashboard = responseSummary(await page.goto('/dashboard?status=active&sort=name&dir=asc', { waitUntil: 'domcontentloaded' }));
     await page.locator('main.tanstack-shell').waitFor({ timeout: 30_000 });
     await page.getByRole('heading', { name: 'Dashboard' }).waitFor({ timeout: 30_000 });
     await page.locator('.metric-card').first().waitFor({ timeout: 30_000 });
+    state.lastStep = 'navigating to settings';
     await page.locator('nav[aria-label="Dashboard navigation"] a[href="/settings"]').click();
     await page.waitForURL('**/settings', { timeout: 20_000 });
 
-    await page.goto('/projects/new', { waitUntil: 'domcontentloaded' });
+    state.lastStep = 'opening new project route';
+    state.status.newProject = responseSummary(await page.goto('/projects/new', { waitUntil: 'domcontentloaded' }));
     await page.locator('main.tanstack-shell').getByRole('heading', { name: 'New project' }).waitFor({ timeout: 30_000 });
 
-    if (consoleErrors.length > 0 || failedRequests.length > 0) {
-      throw new Error(`Browser smoke reported errors: ${JSON.stringify({ consoleErrors, failedRequests }, null, 2)}`);
+    if (diagnostics.consoleErrors.length > 0 || diagnostics.pageErrors.length > 0 || diagnostics.failedRequests.length > 0) {
+      throw new Error('Browser smoke reported errors');
     }
+  } catch (error) {
+    throw await browserSmokeError(page, diagnostics, state, `Browser smoke failed: ${error.message}`);
   } finally {
     await browser.close();
   }
@@ -168,7 +366,7 @@ try {
   });
 
   await waitForUrl(`${baseURL}/session/new`);
-  if (mode === 'static') await waitForUrl(`${baseURL}/packs/manifest.json`);
+  if (mode === 'static' || mode === 'prod') await waitForStaticManifest();
   assertServerRunning();
   await whileServerRuns(smokeBrowser);
   console.log(`bin/dev ${modeConfig.label} smoke passed at ${baseURL}`);

@@ -65,10 +65,10 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "react_on_rails", "16.7.0.rc.1"
+gem "react_on_rails", "16.7.0.rc.3"
 
-gem "react_on_rails_pro", "16.7.0.rc.1"
+gem "react_on_rails_pro", "16.7.0.rc.3"
 
-gem "shakapacker", "10.1.0.rc.2"
+gem "shakapacker", "10.1.0"
 
 gem "rspec-rails", "~> 8.0", groups: [ :development, :test ]
