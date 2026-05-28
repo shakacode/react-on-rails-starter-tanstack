@@ -11,8 +11,8 @@ const mode = process.argv[2];
 const modeConfig = {
   dev: { basePort: 3320, args: [], label: 'dev', browserSettleMs: 2_000 },
   hmr: { basePort: 3330, args: [], env: { SHAKAPACKER_DEV_SERVER_HMR: 'true' }, label: 'hmr', browserSettleMs: 2_000 },
-  static: { basePort: 3300, args: ['static'], label: 'static' },
-  prod: { basePort: 3310, args: ['prod'], label: 'prod' },
+  static: { basePort: 3300, args: ['static'], label: 'static', rejectDevClientAssets: true },
+  prod: { basePort: 3310, args: ['prod'], label: 'prod', rejectDevClientAssets: true },
 }[mode];
 
 if (!modeConfig) {
@@ -27,6 +27,19 @@ const maxDiagnosticItems = 20;
 const recoverableReactPageErrors = [
   'There was an error during concurrent rendering but React was able to recover',
   'There was an error while hydrating but React was able to recover',
+];
+const forbiddenDevClientUrlPatterns = [
+  { reason: 'Rspack dev-server client', pattern: /(?:rspack|webpack)(?:[_-]|%2f)?dev-server|dev-server(?:[_-]|%2f)?client|hot[_-]dev-server/i },
+  { reason: 'hot-update asset', pattern: /hot-update/i },
+  { reason: 'dev-server overlay asset', pattern: /(?:rspack|webpack)-dev-server(?:[_-]|%2f)client(?:[_-]|%2f)overlay|(?:^|[/_-])overlay(?:[/_.-]|$)/i },
+  { reason: 'TanStack devtools chunk', pattern: /tanstack.*devtools|react-query-devtools|react-router-devtools|query-devtools|router-devtools/i },
+];
+const forbiddenDevClientBodyPatterns = [
+  { reason: 'Rspack dev-server client code', pattern: /@rspack[+/]dev-server|__rspack_dev_server_client__|webpack-dev-server\/client|__webpack_dev_server_client__/i },
+  { reason: 'hot-update runtime code', pattern: /webpackHotUpdate|hot-update/i },
+  { reason: 'dev-server overlay code', pattern: /(?:rspack|webpack)-dev-server#overlay|(?:rspack|webpack)-dev-server-client-overlay|client\/overlay\.js/i },
+  { reason: 'TanStack Query devtools code', pattern: /ReactQueryDevtoolsPanel|TanstackQueryDevtoolsPanel|@tanstack[+/]query-devtools/i },
+  { reason: 'TanStack Router devtools code', pattern: /TanStackRouterDevtoolsCore|TanStackRouterDevtoolsPanel|@tanstack[+/]router-devtools-core/i },
 ];
 const env = {
   ...process.env,
@@ -129,6 +142,89 @@ function compactText(text) {
   return text.replace(/\s+/g, ' ').trim();
 }
 
+function forbiddenDevClientUrlReasons(rawUrl) {
+  let decodedUrl = rawUrl;
+  try {
+    decodedUrl = decodeURIComponent(rawUrl);
+  } catch {
+    // Keep the raw URL when it contains malformed escapes.
+  }
+
+  return forbiddenDevClientUrlPatterns
+    .filter(({ pattern }) => pattern.test(decodedUrl))
+    .map(({ reason }) => reason);
+}
+
+function sourceExcerpt(text, pattern) {
+  const match = text.match(pattern);
+  if (!match || typeof match.index !== 'number') return null;
+
+  const start = Math.max(0, match.index - 80);
+  const end = Math.min(text.length, match.index + match[0].length + 80);
+  return compactText(text.slice(start, end));
+}
+
+function recordForbiddenDevClientAsset(diagnostics, item) {
+  pushDiagnosticItem(diagnostics.forbiddenDevClientAssets, item);
+}
+
+function recordForbiddenDevClientUrl(diagnostics, kind, rawUrl) {
+  for (const reason of forbiddenDevClientUrlReasons(rawUrl)) {
+    recordForbiddenDevClientAsset(diagnostics, { kind, reason, url: rawUrl });
+  }
+}
+
+function shouldInspectResponseBody(response) {
+  if (!modeConfig.rejectDevClientAssets) return false;
+
+  const status = response.status();
+  if (status < 200 || status >= 300) return false;
+
+  const resourceType = response.request().resourceType();
+  if (!['document', 'script', 'stylesheet', 'fetch', 'xhr'].includes(resourceType)) return false;
+
+  const contentType = response.headers()['content-type'] || '';
+  return /javascript|ecmascript|html|css|json|text\//i.test(contentType);
+}
+
+async function inspectResponseBodyForDevClientAssets(response, diagnostics) {
+  if (!shouldInspectResponseBody(response)) return;
+
+  let body;
+  try {
+    body = await response.text();
+  } catch {
+    return;
+  }
+
+  const pattern = forbiddenDevClientBodyPatterns.find(({ pattern: bodyPattern }) => bodyPattern.test(body));
+  if (!pattern) return;
+
+  recordForbiddenDevClientAsset(diagnostics, {
+    kind: 'response body',
+    reason: pattern.reason,
+    url: response.url(),
+    excerpt: sourceExcerpt(body, pattern.pattern),
+  });
+}
+
+async function finishDevClientAssetInspections(diagnostics) {
+  let inspectedCount = 0;
+
+  while (inspectedCount < diagnostics.responseInspectionPromises.length) {
+    const pendingInspections = diagnostics.responseInspectionPromises.slice(inspectedCount);
+    inspectedCount = diagnostics.responseInspectionPromises.length;
+    await Promise.allSettled(pendingInspections);
+  }
+}
+
+function assertNoForbiddenDevClientAssets(diagnostics) {
+  if (!modeConfig.rejectDevClientAssets) return;
+  if (diagnostics.forbiddenDevClientAssets.length === 0) return;
+
+  throw new Error('Static/prod browser loaded dev-server, HMR, overlay, or disabled TanStack devtools assets');
+}
+
 function responseSummary(response) {
   if (!response) return null;
 
@@ -195,6 +291,7 @@ async function browserDiagnosticsSnapshot(page, diagnostics, state = {}) {
     pageErrors: diagnostics.pageErrors,
     recoverablePageErrors: diagnostics.recoverablePageErrors,
     failedRequests: diagnostics.failedRequests,
+    forbiddenDevClientAssets: diagnostics.forbiddenDevClientAssets,
   };
 }
 
@@ -257,6 +354,8 @@ async function smokeBrowser() {
     recoverablePageErrors: [],
     failedRequests: [],
     recentResponses: [],
+    forbiddenDevClientAssets: [],
+    responseInspectionPromises: [],
   };
   const state = { lastStep: 'launching browser', status: {} };
 
@@ -277,7 +376,20 @@ async function smokeBrowser() {
     }
   });
 
+  page.on('request', (request) => {
+    if (modeConfig.rejectDevClientAssets) recordForbiddenDevClientUrl(diagnostics, 'request', request.url());
+  });
+
+  page.on('websocket', (websocket) => {
+    if (modeConfig.rejectDevClientAssets) recordForbiddenDevClientUrl(diagnostics, 'websocket', websocket.url());
+  });
+
   page.on('response', (response) => {
+    if (modeConfig.rejectDevClientAssets) {
+      recordForbiddenDevClientUrl(diagnostics, 'response', response.url());
+      diagnostics.responseInspectionPromises.push(inspectResponseBodyForDevClientAssets(response, diagnostics));
+    }
+
     if (isRelevantResponse(response)) {
       pushDiagnosticItem(diagnostics.recentResponses, responseSummary(response));
     }
@@ -303,6 +415,8 @@ async function smokeBrowser() {
     state.lastStep = 'opening new project route';
     state.status.newProject = responseSummary(await page.goto('/projects/new', { waitUntil: 'domcontentloaded' }));
     await page.locator('main.tanstack-shell').getByRole('heading', { name: 'New project' }).waitFor({ timeout: 30_000 });
+    await finishDevClientAssetInspections(diagnostics);
+    assertNoForbiddenDevClientAssets(diagnostics);
 
     if (diagnostics.consoleErrors.length > 0 || diagnostics.pageErrors.length > 0 || diagnostics.failedRequests.length > 0) {
       throw new Error('Browser smoke reported errors');
