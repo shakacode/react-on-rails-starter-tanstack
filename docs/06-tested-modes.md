@@ -38,5 +38,8 @@ expected before changing build, rendering, or routing behavior.
 - The CI `core` job calls `bin/ci`, which runs quality, security, and smoke checks.
   Full Playwright, dev modes, HMR, and Rspack/RSC repro checks run as separate
   CI jobs so their failures are easier to read.
+- `script/dev-mode-smoke.mjs` records React 19 recoverable hydration/concurrent
+  rendering page errors separately from fatal browser errors. The route still
+  has to load, hydrate, navigate, and avoid console errors or failed requests.
 - The Rspack/RSC manifest gap is tracked upstream in [shakacode/react_on_rails#1828](https://github.com/shakacode/react_on_rails/issues/1828).
 - The React on Rails Pro TanStack Router private-store compatibility issue is tracked in [shakacode/react_on_rails#3375](https://github.com/shakacode/react_on_rails/issues/3375).

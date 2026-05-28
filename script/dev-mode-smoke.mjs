@@ -23,6 +23,10 @@ const basePort = Number(process.env.REACT_ON_RAILS_BASE_PORT || modeConfig.baseP
 const baseURL = `http://localhost:${basePort}`;
 const rendererPort = basePort + 2;
 const maxDiagnosticItems = 20;
+const recoverableReactPageErrors = [
+  'There was an error during concurrent rendering but React was able to recover',
+  'There was an error while hydrating but React was able to recover',
+];
 const env = {
   ...process.env,
   ...modeConfig.env,
@@ -116,6 +120,10 @@ function isRelevantResponse(response) {
   ].includes(url.pathname) || url.pathname.startsWith('/api/projects');
 }
 
+function isRecoverableReactPageError(message) {
+  return recoverableReactPageErrors.some((knownMessage) => message.includes(knownMessage));
+}
+
 async function pageFlashMessages(page) {
   try {
     const messages = await page.locator('.auth-alert, .auth-notice, [role="alert"]').evaluateAll((elements) => (
@@ -139,6 +147,7 @@ async function browserDiagnosticsSnapshot(page, diagnostics, state = {}) {
     recentResponses: diagnostics.recentResponses,
     consoleErrors: diagnostics.consoleErrors,
     pageErrors: diagnostics.pageErrors,
+    recoverablePageErrors: diagnostics.recoverablePageErrors,
     failedRequests: diagnostics.failedRequests,
   };
 }
@@ -199,6 +208,7 @@ async function smokeBrowser() {
   const diagnostics = {
     consoleErrors: [],
     pageErrors: [],
+    recoverablePageErrors: [],
     failedRequests: [],
     recentResponses: [],
   };
@@ -209,7 +219,8 @@ async function smokeBrowser() {
   });
 
   page.on('pageerror', (error) => {
-    pushDiagnosticItem(diagnostics.pageErrors, error.message);
+    const target = isRecoverableReactPageError(error.message) ? diagnostics.recoverablePageErrors : diagnostics.pageErrors;
+    pushDiagnosticItem(target, error.message);
   });
 
   page.on('requestfailed', (request) => {
