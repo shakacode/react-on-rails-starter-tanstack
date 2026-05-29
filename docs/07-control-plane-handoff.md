@@ -1,10 +1,45 @@
 # Control Plane Handoff
 
-Last updated: 2026-05-26 UTC.
+Last updated: 2026-05-28 UTC.
 
 This handoff summarizes the Control Plane Flow rollout for this repo after
 [PR #11](https://github.com/shakacode/react-on-rails-starter-tanstack/pull/11)
 merged.
+
+## ShakaCode Staff — Operations
+
+Internal quick reference for ShakaCode staff who run this demo. These links
+require Control Plane login; access is gated by Control Plane, not by this
+public doc. There is no separate staff login on the demo site itself — the
+`demo@example.com` account printed in the README is public, so a "logged-in"
+page on the demo would not be staff-private.
+
+- **Control Plane console:** <https://console.cpln.io> — sign in, then select the
+  org and GVC below.
+- **Org (where the public demo runs):** `shakacode-open-source-examples-staging`
+- **GVC / app:** `react-on-rails-starter-tanstack-staging` (alias `1w9hq69n5eeyr`)
+- **Workloads:** `rails`, `renderer`, `worker`, `postgres`, `rails-runner`
+- **Public demo URL:** <https://starter.reactonrails.com> (temporary host until
+  the custom domain's DNS is live: <https://rails-1w9hq69n5eeyr.cpln.app>)
+
+Common operations (the console mirrors these CLI commands):
+
+```sh
+# App + workload status
+cpln gvc get react-on-rails-starter-tanstack-staging --org shakacode-open-source-examples-staging
+cpln workload get --gvc react-on-rails-starter-tanstack-staging --org shakacode-open-source-examples-staging
+
+# Tail Rails logs
+cpln logs '{gvc="react-on-rails-starter-tanstack-staging", workload="rails"}' --org shakacode-open-source-examples-staging --since 15m --limit 160 --output raw
+
+# Redeploy: push to `main` (triggers cpflow-deploy-staging) or run it manually
+gh workflow run cpflow-deploy-staging.yml
+```
+
+The public demo account (`demo@example.com / password`) is seeded only when
+`ALLOW_DEMO_SEED=true` is set on the staging GVC; see
+[04-deploying.md](04-deploying.md). The production org
+(`shakacode-open-source-examples-production`) does not run this starter.
 
 ## Current State
 
