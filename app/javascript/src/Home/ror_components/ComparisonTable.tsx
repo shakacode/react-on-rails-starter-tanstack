@@ -1,6 +1,6 @@
 'use client';
 
-// REFERENCE PATTERN: home-comparison-island
+// REFERENCE PATTERN: home-comparison-island — see AGENTS.md
 // A self-contained TanStack Table client island used on the public landing page.
 // It renders the SAME demo dataset that the server-rendered "classic Rails" panel
 // renders, but every interaction (filter, sort, paginate) happens instantly in the
@@ -70,14 +70,15 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
+const MONTH_ABBR = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+// Format a YYYY-MM-DD string deterministically (no Date/locale/timezone). This
+// matches the server-rendered Rails panel's strftime("%b %-d, %Y") exactly and
+// avoids both the UTC-vs-local off-by-one and any SSR hydration mismatch.
 function formatDate(iso: string): string {
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return iso;
-  return date.toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
+  const [year, month, day] = iso.split('-').map(Number);
+  if (!year || !month || !day) return iso;
+  return `${MONTH_ABBR[month - 1]} ${day}, ${year}`;
 }
 
 export default function ComparisonTable({ projects = [], pageSize = 5 }: ComparisonTableProps) {
