@@ -20,7 +20,6 @@ import {
   type SortingState,
 } from '@tanstack/react-table';
 import { ArrowDown, ArrowUp, ChevronsUpDown, Zap } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -88,6 +87,7 @@ export default function ComparisonTable({ projects = [], pageSize = 5 }: Compari
   const [sorting, setSorting] = useState<SortingState>([{ id: 'lastActivityAt', desc: true }]);
   const [interactions, setInteractions] = useState(0);
   const [hydrated, setHydrated] = useState(false);
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize });
 
   const columns = useMemo<ColumnDef<DemoProject>[]>(
     () => [
@@ -122,9 +122,10 @@ export default function ComparisonTable({ projects = [], pageSize = 5 }: Compari
   const table = useReactTable({
     data: projects,
     columns,
-    state: { globalFilter: filter, sorting },
+    state: { globalFilter: filter, sorting, pagination },
     onSortingChange: setSorting,
     onGlobalFilterChange: setFilter,
+    onPaginationChange: setPagination,
     globalFilterFn: (row, _columnId, value) => {
       const needle = String(value).toLowerCase();
       const { name, owner, status } = row.original;
@@ -138,7 +139,6 @@ export default function ComparisonTable({ projects = [], pageSize = 5 }: Compari
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    initialState: { pagination: { pageSize } },
   });
 
   // Read shareable view state from the URL once, on the client only.
@@ -148,8 +148,10 @@ export default function ComparisonTable({ projects = [], pageSize = 5 }: Compari
     const q = params.get('rq');
     const sort = params.get('rsort');
     const dir = params.get('rdir');
+    const page = Number(params.get('rpage'));
     if (q) setFilter(q);
     if (sort) setSorting([{ id: sort, desc: dir !== 'asc' }]);
+    if (page > 1) setPagination((prev) => ({ ...prev, pageIndex: page - 1 }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -163,10 +165,15 @@ export default function ComparisonTable({ projects = [], pageSize = 5 }: Compari
     if (sort) {
       params.set('rsort', sort.id);
       params.set('rdir', sort.desc ? 'desc' : 'asc');
+    } else {
+      params.delete('rsort');
+      params.delete('rdir');
     }
+    if (pagination.pageIndex > 0) params.set('rpage', String(pagination.pageIndex + 1));
+    else params.delete('rpage');
     const query = params.toString();
     window.history.replaceState(null, '', query ? `?${query}${window.location.hash}` : window.location.pathname);
-  }, [filter, sorting, hydrated]);
+  }, [filter, sorting, pagination, hydrated]);
 
   const rows = table.getRowModel().rows;
   const totalRows = table.getFilteredRowModel().rows.length;
