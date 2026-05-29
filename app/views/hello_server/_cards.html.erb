@@ -1,0 +1,60 @@
+<%# Shared explainer cards for the React Server Components demo (streaming and fallback views). %>
+<section class="grid">
+  <article class="card">
+    <h2>What this page shows</h2>
+    <ul>
+      <li>
+        <strong>Async on the server.</strong>
+        HelloServer can await data directly during render without pushing that fetch to the client.
+      </li>
+      <li>
+        <strong>Small client footprint.</strong>
+        Only the interactive LikeButton island needs browser JavaScript.
+      </li>
+      <li>
+        <strong>Streaming output.</strong>
+        stream_react_component streams HTML as the server component tree resolves.
+      </li>
+    </ul>
+  </article>
+
+  <article class="card">
+    <h2>Inspect these files next</h2>
+    <ul>
+      <li>
+        <code>app/javascript/src/HelloServer/</code><br>
+        Source for the generated server component example and client island.
+      </li>
+      <li>
+        <code>app/controllers/hello_server_controller.rb</code><br>
+        Rails controller that sets props and streams the RSC view.
+      </li>
+      <li>
+        <code>app/views/hello_server/index.html.erb</code><br>
+        Rails view that calls stream_react_component.
+      </li>
+      <li>
+        <code>client/node-renderer.js</code><br>
+        Node renderer entrypoint used by the Pro SSR and RSC stack.
+      </li>
+    </ul>
+  </article>
+
+  <article class="card">
+    <h2>Learn more</h2>
+    <ul>
+      <li>
+        <a href="https://reactonrails.com/docs/pro/react-server-components/" target="_blank" rel="noreferrer">RSC guide</a>
+      </li>
+      <li>
+        <a href="https://reactonrails.com/docs/pro/react-server-components/tutorial/" target="_blank" rel="noreferrer">RSC tutorial</a>
+      </li>
+      <li>
+        <a href="https://reactonrails.com/pro/" target="_blank" rel="noreferrer">Pro overview</a>
+      </li>
+      <li>
+        <a href="https://github.com/shakacode/react-on-rails-demo-marketplace-rsc" target="_blank" rel="noreferrer">Marketplace RSC demo</a>
+      </li>
+    </ul>
+  </article>
+</section>
