@@ -22,19 +22,18 @@ test.describe('accessibility smoke', () => {
     await page.goto('/');
 
     const main = page.locator('main');
-    const hero = main.locator('.hero');
 
     await expect(main).toBeVisible();
     await expect(
       main.getByRole('heading', {
         level: 1,
-        name: 'react_on_rails_starter_tanstack is ready.',
+        name: 'Feel the difference between Rails and React. In the same app.',
       }),
     ).toBeVisible();
-    await expect(hero.getByRole('link', { name: 'Open RSC demo' })).toHaveAttribute('href', '/hello_server');
-    await expect(hero.getByRole('link', { name: 'Open the docs' })).toHaveAttribute(
+    await expect(main.getByRole('link', { name: 'Open the live dashboard' })).toHaveAttribute('href', '/dashboard');
+    await expect(main.getByRole('link', { name: 'Read source' }).first()).toHaveAttribute(
       'href',
-      'https://reactonrails.com/docs/pro/react-server-components/',
+      /github\.com\/shakacode\/react-on-rails-starter-tanstack\/blob\/main/,
     );
   });
 
