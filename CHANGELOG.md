@@ -5,6 +5,14 @@ releases are tagged by quarter (`2026.Q2`, etc.).
 
 ## Unreleased
 
+- Rebuilt the public landing page (`/`) as a live "same data, two front-ends"
+  comparison: a server-rendered Rails projects panel beside an instant,
+  URL-synced TanStack Table island over one demo dataset. Adds a runnable
+  example map that links to source on GitHub, copy-paste AI prompts for
+  extending the starter with an agent, a dark-mode toggle, a "measure it
+  yourself" PageSpeed link, and a footer linking the source repo and ShakaCode,
+  in [#98](https://github.com/shakacode/react-on-rails-starter-tanstack/pull/98).
+
 ## 2026-06-03 - Public launch
 
 - Initial public release for the `2026.Q2` starter tag.
