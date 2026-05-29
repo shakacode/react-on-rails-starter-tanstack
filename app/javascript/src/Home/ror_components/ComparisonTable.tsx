@@ -179,7 +179,7 @@ export default function ComparisonTable({ projects = [], pageSize = 5 }: Compari
   const totalRows = table.getFilteredRowModel().rows.length;
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3" data-testid="comparison-island">
       <div className="flex items-center gap-2">
         <Input
           value={filter}
