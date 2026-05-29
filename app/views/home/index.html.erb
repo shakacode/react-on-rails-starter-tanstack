@@ -1,520 +1,399 @@
-
-<style>
-  :root {
-    color-scheme: light;
-    --page-bg: #f5efe5;
-    --hero-bg: linear-gradient(135deg, #0d3b66 0%, #165a72 48%, #ef8354 100%);
-    --panel-bg: rgba(255, 252, 246, 0.92);
-    --ink: #112031;
-    --muted: #4d5b6a;
-    --accent: #c25b2f;
-    --accent-dark: #8f3f1d;
-    --line: rgba(17, 32, 49, 0.12);
-    --shadow: 0 24px 60px rgba(17, 32, 49, 0.16);
+<% content_for(:title) { "React on Rails × TanStack Starter" } %>
+<% content_for :head do %>
+  <% social_image = "#{github_repo_url}/raw/#{ApplicationHelper::GITHUB_DEFAULT_BRANCH}/docs/images/landing-comparison.png" %>
+  <meta name="description" content="A Rails 8 + React on Rails Pro starter that shows the Rails-vs-React difference live: server-rendered Rails CRUD beside an instant, URL-synced TanStack Router, Query, and Table dashboard. Agent-native, with copy-paste AI prompts.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="React on Rails × TanStack Starter">
+  <meta property="og:description" content="The same app, two front-ends, side by side: server-rendered Rails next to an instant TanStack Table island. Plus copy-paste AI prompts to extend it with your agent.">
+  <meta property="og:image" content="<%= social_image %>">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="React on Rails × TanStack Starter">
+  <meta name="twitter:description" content="The same app, two front-ends, side by side. An agent-native Rails + TanStack starter with copy-paste AI prompts.">
+  <meta name="twitter:image" content="<%= social_image %>">
+<% end %>
+<%
+  comparison_props = {
+    projects: @demo_projects.map do |project|
+      {
+        id: project[:id],
+        name: project[:name],
+        owner: project[:owner],
+        status: project[:status],
+        lastActivityAt: project[:last_activity_at]
+      }
+    end,
+    pageSize: 5
   }
 
-  body {
-    margin: 0;
-    background:
-      radial-gradient(circle at top left, rgba(239, 131, 84, 0.24), transparent 36%),
-      radial-gradient(circle at bottom right, rgba(13, 59, 102, 0.18), transparent 30%),
-      var(--page-bg);
-    color: var(--ink);
-    font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+  status_badge_classes = {
+    "Active" => "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
+    "Paused" => "bg-amber-500/15 text-amber-700 dark:text-amber-300",
+    "Completed" => "bg-violet-500/15 text-violet-700 dark:text-violet-300",
+    "Archived" => "bg-muted text-muted-foreground"
   }
 
-  a {
-    color: inherit;
-  }
-
-  .ror-home {
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 32px 20px 64px;
-  }
-
-  .hero {
-    padding: 32px;
-    border-radius: 28px;
-    background: var(--hero-bg);
-    color: #fff9f1;
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    position: relative;
-  }
-
-  .hero::after {
-    content: "";
-    position: absolute;
-    inset: auto -64px -72px auto;
-    width: 220px;
-    height: 220px;
-    border-radius: 999px;
-    background: rgba(255, 249, 241, 0.18);
-    filter: blur(8px);
-  }
-
-  .eyebrow {
-    margin: 0 0 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    font-size: 12px;
-    font-weight: 700;
-    opacity: 0.78;
-  }
-
-  .hero h1 {
-    margin: 0;
-    font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
-    font-size: clamp(2.6rem, 6vw, 4.6rem);
-    line-height: 0.96;
-    max-width: 10ch;
-  }
-
-  .lead {
-    max-width: 760px;
-    margin: 18px 0 0;
-    font-size: 1.05rem;
-    line-height: 1.7;
-    color: rgba(255, 249, 241, 0.9);
-  }
-
-  .stack {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 22px 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .stack li {
-    padding: 8px 12px;
-    border-radius: 999px;
-    background: rgba(255, 249, 241, 0.14);
-    border: 1px solid rgba(255, 249, 241, 0.18);
-    font-size: 0.92rem;
-  }
-
-  .cta-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 26px;
-  }
-
-  .cta-row-compact {
-    margin-top: 18px;
-  }
-
-  .button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 12px 18px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 249, 241, 0.24);
-    text-decoration: none;
-    font-weight: 700;
-    transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
-  }
-
-  .button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 10px 30px rgba(17, 32, 49, 0.16);
-  }
-
-  .button-primary {
-    background: #fff9f1;
-    color: var(--accent-dark);
-  }
-
-  .button-secondary {
-    background: rgba(255, 249, 241, 0.14);
-    color: #fff9f1;
-  }
-
-  .button-ghost {
-    background: rgba(255, 249, 241, 0.14);
-    color: #fff9f1;
-  }
-
-  .button-muted {
-    background: rgba(17, 32, 49, 0.08);
-    color: var(--ink);
-    border-color: rgba(17, 32, 49, 0.1);
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 20px;
-    margin-top: 20px;
-    align-items: start;
-  }
-
-  .card {
-    padding: 24px;
-    border-radius: 24px;
-    background: var(--panel-bg);
-    border: 1px solid var(--line);
-    box-shadow: 0 18px 40px rgba(17, 32, 49, 0.08);
-    backdrop-filter: blur(10px);
-  }
-
-  .card-eyebrow {
-    margin: 0 0 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--accent-dark);
-  }
-
-  .card h2 {
-    margin: 0 0 14px;
-    font-size: 1.05rem;
-    letter-spacing: 0.02em;
-  }
-
-  .card p,
-  .card li {
-    color: var(--muted);
-    line-height: 1.65;
-  }
-
-  .example-list,
-  .hint-list,
-  .command-list,
-  .decision-list,
-  .resource-list,
-  .bullet-list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .bullet-list {
-    list-style: disc;
-    padding-left: 20px;
-  }
-
-  .example-list li + li,
-  .hint-list li + li,
-  .command-list li + li,
-  .decision-list li + li,
-  .resource-list li + li {
-    margin-top: 14px;
-    padding-top: 14px;
-    border-top: 1px solid var(--line);
-  }
-
-  .bullet-list li + li {
-    margin-top: 10px;
-  }
-
-  .example-link,
-  .decision-link,
-  .resource-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 700;
-    text-decoration: none;
-  }
-
-  .decision-link {
-    color: var(--accent-dark);
-  }
-
-  .resource-link {
-    color: var(--ink);
-  }
-
-  .decision-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    font-weight: 700;
-    color: var(--ink);
-  }
-
-  .example-link {
-    color: var(--ink);
-  }
-
-  .example-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 44px;
-    padding: 4px 8px;
-    border-radius: 999px;
-    background: rgba(194, 91, 47, 0.12);
-    color: var(--accent-dark);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-
-  .command-list code,
-  .hint-list code {
-    padding: 2px 6px;
-    border-radius: 8px;
-    background: rgba(17, 32, 49, 0.06);
-    color: var(--ink);
-    font-size: 0.95em;
-  }
-
-  .footer-note {
-    margin-top: 18px;
-    font-size: 0.92rem;
-  }
-
-  @media (max-width: 900px) {
-    .grid {
-      grid-template-columns: 1fr;
+  examples = [
+    {
+      eyebrow: "The showcase", title: "TanStack dashboard",
+      body: "TanStack Router, Query, and Table on one authenticated surface, server-rendered by React on Rails Pro and hydrated in the browser.",
+      live: dashboard_path, live_label: "Open dashboard",
+      source: github_source_url("app/javascript/src/Dashboard/ror_components/DashboardApp.tsx"), auth: true
+    },
+    {
+      eyebrow: "The baseline", title: "Classic Rails CRUD",
+      body: "Server-rendered create, read, update, and destroy. Full page reloads, Rails forms, and validation errors. The honest baseline.",
+      live: classic_projects_path, live_label: "Open CRUD",
+      source: github_source_url("app/controllers/projects_controller.rb"), auth: true
+    },
+    {
+      eyebrow: "Streaming", title: "React Server Components",
+      body: "Async server components streamed from Rails, shipping JavaScript only for the interactive islands.",
+      live: hello_server_path, live_label: "Open RSC demo",
+      source: github_source_url("app/javascript/src/HelloServer/"), auth: false
+    },
+    {
+      eyebrow: "Accounts", title: "Auth + email verification",
+      body: "Session auth, signup with email verification gating, and password reset. Mailer previews included.",
+      live: new_session_path, live_label: "Open sign in",
+      source: github_source_url("app/controllers/registrations_controller.rb"), auth: false
+    },
+    {
+      eyebrow: "Data layer", title: "JSON API + TanStack Query",
+      body: "CSRF-aware JSON endpoints with server-side filtering, sorting, and pagination, consumed by TanStack Query.",
+      live: nil, live_label: nil,
+      source: github_source_url("app/controllers/api/projects_controller.rb"), auth: true
+    },
+    {
+      eyebrow: "Profile", title: "Settings",
+      body: "Profile updates from the TanStack dashboard, including the unverified-on-email-change gate.",
+      live: settings_path, live_label: "Open settings",
+      source: github_source_url("app/controllers/settings_controller.rb"), auth: true
     }
+  ]
 
-    .hero {
-      padding: 26px;
+  prompts = [
+    {
+      title: "Get oriented",
+      body: "Clone shakacode/react-on-rails-starter-tanstack and read AGENTS.md. Then explain how a full-page TanStack route is wired by tracing DashboardController#show to app/views/dashboard/show.html.erb to app/javascript/src/Dashboard/ror_components/DashboardApp.tsx, including the SSR and hydration handoff."
+    },
+    {
+      title: "Add a feature",
+      body: "In this repo, add a priority column to Project (enum: low, medium, high). Surface it as a sortable, URL-synced column in the TanStack table in DashboardApp.tsx, add server-side sorting in app/controllers/api/projects_controller.rb, and write request and Playwright specs following the existing patterns."
+    },
+    {
+      title: "Add a new route",
+      body: "Add an authenticated TanStack route at /reports following the dashboard-props-controller and tanstack-route reference patterns in AGENTS.md. Pass Rails-owned props through DashboardController and render a summary built with TanStack Query."
+    },
+    {
+      title: "Learn the rendering model",
+      body: "Walk me through the React Server Components flow in this repo, from app/controllers/hello_server_controller.rb through app/javascript/src/HelloServer, and explain the documented Rspack client-reference limitation in SPIKE.md and what it means for interactivity."
     }
-  }
-</style>
+  ]
 
-<main class="ror-home">
-  <section class="hero">
-    <p class="eyebrow">React on Rails</p>
-    <h1>react_on_rails_starter_tanstack is ready.</h1>
-    <p class="lead">
-      Open the generated demo pages, inspect the Rails and React files, and use the links below to
-      decide whether you want the base SSR workflow or the Pro stack for React Server Components and
-      the Node renderer.
-    </p>
+  learn_links = [
+    { label: "SSR tutorial", desc: "Render on the server, hydrate in the browser.", href: "https://www.reactonrails.com/docs/getting-started/tutorial/" },
+    { label: "React Server Components", desc: "Architecture, rendering flow, and migration guidance.", href: "https://www.reactonrails.com/docs/pro/react-server-components/" },
+    { label: "OSS vs Pro", desc: "What stays in OSS and what moves into the Pro track.", href: "https://www.reactonrails.com/docs/getting-started/oss-vs-pro/" },
+    { label: "TanStack", desc: "Router, Query, and Table reference docs.", href: "https://tanstack.com/" },
+    { label: "React on Rails Pro", desc: "Node renderer, RSC, and support paths.", href: "https://www.reactonrails.com/pro/" },
+    { label: "Marketplace RSC demo", desc: "A larger app comparing SSR, client boundaries, and RSC.", href: "https://github.com/shakacode/react-on-rails-demo-marketplace-rsc" }
+  ]
+%>
 
-    <ul class="stack">
-      
-        <li>TypeScript</li>
-      
-        <li>Rspack</li>
-      
-        <li>React Server Components</li>
-      
-        <li>Rails + PostgreSQL</li>
-      
-        <li>React on Rails Pro</li>
-      
-    </ul>
+<div class="min-h-screen bg-background text-foreground antialiased">
+  <%= render "shared/site_header" %>
 
-    <div class="cta-row">
-      
-        <a class="button button-primary" href="/hello_server">
-          Open RSC demo
-        </a>
-      
-      <a class="button button-ghost" href="https://reactonrails.com/docs/pro/react-server-components/" target="_blank" rel="noreferrer">Open the docs</a>
-      <a class="button button-ghost" href="https://reactonrails.com/docs/pro/react-server-components/tutorial/" target="_blank" rel="noreferrer">
-        RSC tutorial
-      </a>
-    </div>
-  </section>
+  <main>
+    <%# ===================== HERO ===================== %>
+    <section class="relative overflow-hidden border-b border-border">
+      <div class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_50%_0%,rgba(16,185,129,0.10),transparent)]"></div>
+      <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
+        <div class="mx-auto max-w-3xl text-center">
+          <span class="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
+            <span class="inline-block size-1.5 rounded-full bg-emerald-500"></span>
+            Rails 8 · React 19 · React on Rails Pro starter
+          </span>
+          <h1 class="mt-6 text-balance text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+            Feel the difference between Rails and React. In the same app.
+          </h1>
+          <p class="mx-auto mt-6 max-w-2xl text-pretty text-lg text-muted-foreground">
+            One Rails 8 codebase, two front-ends side by side: classic server-rendered CRUD next to a
+            TanStack Router, Query, and Table dashboard, server-rendered and streamed by React on Rails Pro.
+            Scroll down and try them both.
+          </p>
 
-  <section class="grid">
-    <article class="card">
-      <p class="card-eyebrow">Inside this app</p>
-      <h2>Try the examples</h2>
-      <ul class="example-list">
-        
-          <li>
-            <a class="example-link" href="/hello_server">
-              <span class="example-badge">RSC</span>
-              <span>HelloServer</span>
+          <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <a href="<%= dashboard_path %>" class="inline-flex h-11 items-center justify-center rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90">
+              Open the live dashboard
             </a>
-            <p>Async React Server Components streamed from Rails with only client islands shipping JavaScript.</p>
-          </li>
-        
-      </ul>
-    </article>
-
-    <article class="card">
-      <p class="card-eyebrow">Rendering choices</p>
-      <h2>Choose the path to learn next</h2>
-      <ul class="decision-list">
-        
-          <li>
-            <div class="decision-title">
-              <span class="example-badge">SSR</span>
-              <span>Server render + hydrate</span>
-            </div>
-            <p>The OSS baseline: render HTML on the server, then hydrate React in the browser.</p>
-            <a class="decision-link" href="https://reactonrails.com/docs/getting-started/tutorial/" target="_blank" rel="noreferrer">
-              Read the SSR tutorial
+            <a href="#comparison" class="inline-flex h-11 items-center justify-center rounded-md border border-border bg-card px-6 text-sm font-medium shadow-sm transition-colors hover:bg-muted">
+              See the comparison
             </a>
-          </li>
-        
-          <li>
-            <div class="decision-title">
-              <span class="example-badge">RSC</span>
-              <span>Async server components</span>
-            </div>
-            <p>This app already streams React Server Components from Rails with small client islands.</p>
-            <a class="decision-link" href="/hello_server">
-              Open RSC demo
+            <a href="<%= github_repo_url %>" target="_blank" rel="noreferrer noopener" class="inline-flex h-11 items-center justify-center rounded-md px-4 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+              Browse the source →
             </a>
-          </li>
-        
-          <li>
-            <div class="decision-title">
-              <span class="example-badge">PRO</span>
-              <span>Node renderer + upgrade docs</span>
-            </div>
-            <p>Pro keeps the Rails integration story but adds the Node renderer, RSC docs, and support paths.</p>
-            <a class="decision-link" href="https://reactonrails.com/pro/" target="_blank" rel="noreferrer">
-              Open Pro overview
-            </a>
-          </li>
-        
-      </ul>
-    </article>
+          </div>
 
-    <article class="card">
-      <p class="card-eyebrow">Developer flow</p>
-      <h2>Development workflow</h2>
-      <ul class="command-list">
-        <li>
-          <code>bin/dev</code>
-          <p>Run Rails and the watcher together. Fresh apps try to open this page automatically on first boot.</p>
-        </li>
-        <li>
-          <code>bin/dev static</code>
-          <p>Use watch mode without HMR when you want extracted CSS and more predictable asset output.</p>
-        </li>
-        <li>
-          <code>bin/dev prod</code>
-          <p>Smoke-test production-like bundles locally with optimized assets.</p>
-        </li>
-      </ul>
-      <p class="footer-note">
-        Database readying still happens separately with <code>bin/rails db:prepare</code>.
-      </p>
-    </article>
+          <% if demo_credentials_hint_enabled? %>
+            <p class="mt-4 text-sm text-muted-foreground">
+              Demo login: <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-foreground"><%= demo_account_email %></code>
+              / <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-foreground"><%= demo_account_password %></code>
+            </p>
+          <% end %>
 
-    <article class="card">
-      <p class="card-eyebrow">Generated files</p>
-      <h2>Files to inspect next</h2>
-      <ul class="hint-list">
-        
-          <li>
-            <code>app/views/home/index.html.erb</code>
-            <p>Generated landing page. Replace this once your product has a real root route.</p>
-          </li>
-        
-          <li>
-            <code>app/javascript/src/HelloServer/</code>
-            <p>React source for the generated example components.</p>
-          </li>
-        
-          <li>
-            <code>app/views/hello_server/index.html.erb</code>
-            <p>Rails view that mounts the generated example.</p>
-          </li>
-        
-          <li>
-            <code>config/rspack/</code>
-            <p>Bundler configuration generated for this app.</p>
-          </li>
-        
-          <li>
-            <code>bin/dev</code>
-            <p>Launch Rails and the asset watcher together from one command.</p>
-          </li>
-        
-          <li>
-            <code>client/node-renderer.js</code>
-            <p>Node renderer entrypoint used for Pro SSR and RSC.</p>
-          </li>
-        
-      </ul>
-    </article>
-
-    <article class="card">
-      <p class="card-eyebrow">Included in this app</p>
-      <h2>React on Rails Pro is already wired in</h2>
-      <p>This fresh app already includes the Pro RSC stack. Use the links below to go deeper on the generated HelloServer route, the Node renderer, and larger example apps.</p>
-      <ul class="bullet-list">
-        
-          <li>
-            <strong>React Server Components.</strong>
-            Stream async server components from Rails and keep JavaScript on the client only where it adds value.
-          </li>
-        
-          <li>
-            <strong>Node renderer.</strong>
-            Use a Node-based rendering path when you need higher-throughput SSR or richer runtime support.
-          </li>
-        
-          <li>
-            <strong>Upgrade path.</strong>
-            Compare OSS and Pro, follow the quick start, and study the marketplace demo before rolling changes into a real app.
-          </li>
-        
-      </ul>
-      <p class="footer-note">React on Rails Pro can be enabled route by route, so validate the flows that matter before expanding the footprint.</p>
-      <div class="cta-row cta-row-compact">
-        
-          <a class="button button-muted" href="https://reactonrails.com/docs/pro/react-server-components/" target="_blank" rel="noreferrer">
-            RSC guide
-          </a>
-        
-          <a class="button button-muted" href="https://reactonrails.com/pro/" target="_blank" rel="noreferrer">
-            React on Rails Pro
-          </a>
-        
-          <a class="button button-muted" href="https://github.com/shakacode/react-on-rails-demo-marketplace-rsc" target="_blank" rel="noreferrer">
-            Marketplace demo
-          </a>
-        
+          <ul class="mt-10 flex flex-wrap items-center justify-center gap-2">
+            <% [
+                 { label: "TanStack Router", accent: true },
+                 { label: "TanStack Query", accent: true },
+                 { label: "TanStack Table", accent: true },
+                 { label: "Rails 8" }, { label: "PostgreSQL" }, { label: "React 19" },
+                 { label: "TypeScript" }, { label: "Tailwind v4" }, { label: "shadcn/ui" },
+                 { label: "Rspack" }, { label: "React on Rails Pro" }
+               ].each do |chip| %>
+              <li class="inline-flex items-center rounded-full border px-3 py-1 text-sm <%= chip[:accent] ? 'border-emerald-500/40 bg-emerald-500/10 font-medium text-emerald-700 dark:text-emerald-300' : 'border-border bg-card text-muted-foreground' %>">
+                <%= chip[:label] %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
       </div>
-    </article>
+    </section>
 
-    <article class="card">
-      <p class="card-eyebrow">Keep learning</p>
-      <h2>Links worth opening</h2>
-      <ul class="resource-list">
-        
-          <li>
-            <a class="resource-link" href="https://reactonrails.com/docs/pro/react-server-components/" target="_blank" rel="noreferrer">React Server Components guide</a>
-            <p>Read the architecture, rendering flow, and migration guidance for the Pro RSC stack.</p>
-          </li>
-        
-          <li>
-            <a class="resource-link" href="https://reactonrails.com/docs/pro/react-server-components/tutorial/" target="_blank" rel="noreferrer">RSC tutorial</a>
-            <p>Walk through the generated HelloServer example end to end.</p>
-          </li>
-        
-          <li>
-            <a class="resource-link" href="https://reactonrails.com/docs/" target="_blank" rel="noreferrer">Documentation guide</a>
-            <p>Core install, generator, and API docs for the OSS stack.</p>
-          </li>
-        
-          <li>
-            <a class="resource-link" href="https://reactonrails.com/docs/getting-started/oss-vs-pro/" target="_blank" rel="noreferrer">Compare OSS and Pro</a>
-            <p>See which capabilities stay in OSS and which move into the Pro track.</p>
-          </li>
-        
-          <li>
-            <a class="resource-link" href="https://reactonrails.com/docs/getting-started/pro-quick-start/" target="_blank" rel="noreferrer">Pro quick start</a>
-            <p>Add the Pro gem and package changes when you are ready for the upgrade.</p>
-          </li>
-        
-          <li>
-            <a class="resource-link" href="https://github.com/shakacode/react-on-rails-demo-marketplace-rsc" target="_blank" rel="noreferrer">Marketplace RSC demo</a>
-            <p>Study a larger app comparing traditional SSR, client boundaries, and streamed RSC.</p>
-          </li>
-        
-      </ul>
-    </article>
-  </section>
-</main>
+    <%# ===================== COMPARISON ===================== %>
+    <section id="comparison" class="scroll-mt-16 border-b border-border">
+      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+        <div class="max-w-2xl">
+          <h2 class="text-3xl font-bold tracking-tight">Same data. Two front-ends.</h2>
+          <p class="mt-3 text-muted-foreground">
+            Both panels list the same projects. The left panel is server-rendered Rails: every filter,
+            sort, and page is a real request with a full page reload. The right panel is a TanStack Table
+            client island: every interaction is instant, with the view state kept in the URL. No round trip.
+          </p>
+        </div>
+
+        <div class="mt-10 grid gap-6 lg:grid-cols-2">
+          <%# ---- LEFT: server-rendered Rails panel ---- %>
+          <div class="flex flex-col rounded-xl border border-border bg-card shadow-sm">
+            <div class="flex items-center justify-between gap-2 border-b border-border px-5 py-3">
+              <div class="flex items-center gap-2 font-semibold">
+                <svg viewBox="0 0 24 24" class="size-4 text-rose-500" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12a9 3 0 1 0 18 0a9 3 0 1 0-18 0M3 12v6a9 3 0 0 0 18 0v-6"/></svg>
+                Classic Rails
+              </div>
+              <span class="inline-flex items-center gap-1 rounded-full bg-rose-500/10 px-2.5 py-0.5 text-xs font-medium text-rose-700 dark:text-rose-300">
+                Server round trip · full reload
+              </span>
+            </div>
+
+            <div class="flex flex-1 flex-col gap-3 p-5">
+              <%= form_with url: root_path(anchor: "comparison"), method: :get, data: { turbo: false } do %>
+                <input type="hidden" name="sort" value="<%= @rails_sort %>">
+                <input type="hidden" name="dir" value="<%= @rails_dir %>">
+                <div class="flex gap-2">
+                  <input type="text" name="q" value="<%= @rails_query %>"
+                         placeholder="Filter projects (submits to the server)…"
+                         class="h-9 flex-1 rounded-md border border-input bg-background px-3 text-sm shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                  <button type="submit" class="inline-flex h-9 items-center rounded-md bg-secondary px-3 text-sm font-medium text-secondary-foreground transition-colors hover:bg-secondary/80">
+                    Filter
+                  </button>
+                </div>
+              <% end %>
+
+              <div class="overflow-hidden rounded-lg border border-border">
+                <table class="w-full text-sm" data-testid="rails-panel-table">
+                  <thead>
+                    <tr class="border-b border-border bg-muted/40 text-left text-muted-foreground">
+                      <th class="px-3 py-2"><%= home_sort_link("Project", "name") %></th>
+                      <th class="px-3 py-2"><%= home_sort_link("Owner", "owner") %></th>
+                      <th class="px-3 py-2"><%= home_sort_link("Status", "status") %></th>
+                      <th class="px-3 py-2"><%= home_sort_link("Last activity", "activity") %></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% if @rails_rows.empty? %>
+                      <tr><td colspan="4" class="px-3 py-8 text-center text-muted-foreground">No projects match “<%= @rails_query %>”.</td></tr>
+                    <% else %>
+                      <% @rails_rows.each do |project| %>
+                        <tr class="border-b border-border last:border-0">
+                          <td class="px-3 py-2 font-medium"><%= project[:name] %></td>
+                          <td class="px-3 py-2 text-muted-foreground"><%= project[:owner] %></td>
+                          <td class="px-3 py-2">
+                            <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium <%= status_badge_classes[project[:status]] %>">
+                              <%= project[:status] %>
+                            </span>
+                          </td>
+                          <td class="px-3 py-2 tabular-nums text-muted-foreground">
+                            <%= Date.parse(project[:last_activity_at]).strftime("%b %-d, %Y") %>
+                          </td>
+                        </tr>
+                      <% end %>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="mt-auto flex items-center justify-between pt-1 text-sm text-muted-foreground">
+                <span>Page <%= @rails_page %> of <%= @rails_page_count %> (<%= @rails_total %>)</span>
+                <div class="flex gap-2">
+                  <%= home_rails_page_link("Prev", @rails_page - 1, disabled: @rails_page <= 1) %>
+                  <%= home_rails_page_link("Next", @rails_page + 1, disabled: @rails_page >= @rails_page_count) %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <%# ---- RIGHT: TanStack React island ---- %>
+          <div class="flex flex-col rounded-xl border border-emerald-500/40 bg-card shadow-sm ring-1 ring-emerald-500/10">
+            <div class="flex items-center justify-between gap-2 border-b border-border px-5 py-3">
+              <div class="flex items-center gap-2 font-semibold">
+                <svg viewBox="0 0 24 24" class="size-4 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                TanStack table <span class="font-normal text-muted-foreground">(React island)</span>
+              </div>
+              <span class="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                Instant · URL-synced
+              </span>
+            </div>
+            <div class="p-5">
+              <%= react_component("ComparisonTable", props: comparison_props, prerender: !Rails.env.test?) %>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 flex flex-col items-start justify-between gap-4 rounded-xl border border-border bg-muted/30 p-5 sm:flex-row sm:items-center">
+          <div>
+            <p class="font-medium">You feel the difference in two seconds. Don't take our word for it.</p>
+            <p class="mt-1 text-sm text-muted-foreground">Run Google PageSpeed Insights against this very page, or open the real surfaces.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <a href="<%= pagespeed_url(root_url) %>" target="_blank" rel="noreferrer noopener" class="inline-flex h-9 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90">
+              Measure it on PageSpeed
+            </a>
+            <a href="<%= classic_projects_path %>" class="inline-flex h-9 items-center rounded-md border border-border bg-card px-4 text-sm font-medium shadow-sm transition-colors hover:bg-muted">
+              Real Rails CRUD
+            </a>
+            <a href="<%= dashboard_path %>" class="inline-flex h-9 items-center rounded-md border border-border bg-card px-4 text-sm font-medium shadow-sm transition-colors hover:bg-muted">
+              Real dashboard
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <%# ===================== EXAMPLE MAP ===================== %>
+    <section id="examples" class="scroll-mt-16 border-b border-border">
+      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+        <div class="max-w-2xl">
+          <h2 class="text-3xl font-bold tracking-tight">Explore every surface</h2>
+          <p class="mt-3 text-muted-foreground">
+            Each surface this starter ships is one click away, with a direct link to its source on GitHub.
+            Authenticated routes open the sign-in page first.
+          </p>
+        </div>
+
+        <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <% examples.each do |example| %>
+            <article class="flex flex-col rounded-xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md">
+              <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground"><%= example[:eyebrow] %></p>
+              <h3 class="mt-2 text-lg font-semibold">
+                <%= example[:title] %>
+                <% if example[:auth] %><span class="ml-1 align-middle text-xs font-normal text-muted-foreground">(sign in)</span><% end %>
+              </h3>
+              <p class="mt-2 flex-1 text-sm text-muted-foreground"><%= example[:body] %></p>
+              <div class="mt-4 flex items-center gap-3 text-sm font-medium">
+                <% if example[:live] %>
+                  <a href="<%= example[:live] %>" class="inline-flex items-center gap-1 text-foreground hover:underline">
+                    <%= example[:live_label] %> →
+                  </a>
+                <% end %>
+                <a href="<%= example[:source] %>" target="_blank" rel="noreferrer noopener" class="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground">
+                  Read source
+                </a>
+              </div>
+            </article>
+          <% end %>
+        </div>
+      </div>
+    </section>
+
+    <%# ===================== AI AGENTS ===================== %>
+    <section id="agents" class="scroll-mt-16 border-b border-border bg-muted/20">
+      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+        <div class="max-w-2xl">
+          <h2 class="text-3xl font-bold tracking-tight">Made for your AI agent</h2>
+          <p class="mt-3 text-muted-foreground">
+            The repo ships an <a href="<%= github_source_url('AGENTS.md') %>" target="_blank" rel="noreferrer noopener" class="font-medium text-foreground underline-offset-4 hover:underline">AGENTS.md</a>
+            playbook with reference patterns. Point Claude, Cursor, or Codex at the repo and paste one of these
+            to learn, extend, or experiment. Copy, tweak, ship.
+          </p>
+        </div>
+
+        <div class="mt-10 grid gap-5 md:grid-cols-2">
+          <% prompts.each do |prompt| %>
+            <div data-prompt-card class="flex flex-col rounded-xl border border-border bg-card shadow-sm">
+              <div class="flex items-center justify-between gap-2 border-b border-border px-5 py-3">
+                <h3 class="font-semibold"><%= prompt[:title] %></h3>
+                <button type="button" data-copy
+                        class="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground data-[copied]:border-emerald-500/40 data-[copied]:text-emerald-600">
+                  <svg viewBox="0 0 24 24" class="size-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  <span data-copy-label>Copy</span>
+                </button>
+              </div>
+              <pre data-prompt class="flex-1 whitespace-pre-wrap px-5 py-4 font-mono text-sm leading-relaxed text-muted-foreground"><%= prompt[:body] %></pre>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </section>
+
+    <%# ===================== LEARN ===================== %>
+    <section id="learn" class="scroll-mt-16">
+      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+        <div class="max-w-2xl">
+          <h2 class="text-3xl font-bold tracking-tight">Choose what to learn next</h2>
+          <p class="mt-3 text-muted-foreground">One link each. No detours.</p>
+        </div>
+
+        <div class="mt-10 grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+          <% learn_links.each do |link| %>
+            <a href="<%= link[:href] %>" target="_blank" rel="noreferrer noopener" class="group flex flex-col bg-card p-5 transition-colors hover:bg-muted/50">
+              <span class="flex items-center justify-between font-medium">
+                <%= link[:label] %>
+                <span class="text-muted-foreground transition-transform group-hover:translate-x-0.5">→</span>
+              </span>
+              <span class="mt-1 text-sm text-muted-foreground"><%= link[:desc] %></span>
+            </a>
+          <% end %>
+        </div>
+
+        <p class="mt-8 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-800 dark:text-amber-200">
+          <strong>Honest status:</strong> interactive RSC client references have a documented Rspack
+          manifest limitation. It is intentionally tracked, not hidden — see
+          <a href="<%= github_source_url('SPIKE.md') %>" target="_blank" rel="noreferrer noopener" class="font-medium underline underline-offset-4">SPIKE.md</a>.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <%= render "shared/site_footer" %>
+</div>
+
+<%= javascript_tag nonce: true do %>
+  // Copy-to-clipboard for the AI prompt cards.
+  document.addEventListener('click', function (event) {
+    var button = event.target.closest('[data-copy]');
+    if (!button) return;
+    var card = button.closest('[data-prompt-card]');
+    var pre = card && card.querySelector('[data-prompt]');
+    if (!pre || !navigator.clipboard) return;
+    navigator.clipboard.writeText(pre.textContent.trim()).then(function () {
+      var label = button.querySelector('[data-copy-label]');
+      if (!label) return;
+      var previous = label.textContent;
+      label.textContent = 'Copied!';
+      button.setAttribute('data-copied', '');
+      setTimeout(function () {
+        label.textContent = previous;
+        button.removeAttribute('data-copied');
+      }, 1600);
+    });
+  });
+<% end %>
