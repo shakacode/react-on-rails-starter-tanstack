@@ -1,0 +1,65 @@
+<%# Shared site footer: source repo, ShakaCode, docs, license. %>
+<footer class="border-t border-border bg-muted/30">
+  <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="space-y-3">
+        <div class="flex items-center gap-2 font-semibold tracking-tight">
+          <span class="inline-block size-2.5 rounded-full bg-emerald-500"></span>
+          <span>RoR <span class="text-muted-foreground">&times;</span> TanStack</span>
+        </div>
+        <p class="text-sm text-muted-foreground">
+          A Rails 8 starter pairing server-rendered Rails with a TanStack Router, Query, and
+          Table dashboard, SSR'd and streamed by React on Rails Pro.
+        </p>
+        <p class="text-sm text-muted-foreground">
+          Built by
+          <a href="<%= shakacode_url %>" target="_blank" rel="noreferrer noopener" class="font-medium text-foreground underline-offset-4 hover:underline">ShakaCode</a>.
+        </p>
+      </div>
+
+      <div class="space-y-3">
+        <h3 class="text-sm font-semibold">Source</h3>
+        <ul class="space-y-2 text-sm text-muted-foreground">
+          <li><a href="<%= github_repo_url %>" target="_blank" rel="noreferrer noopener" class="hover:text-foreground">GitHub repository</a></li>
+          <li><a href="<%= github_source_url('AGENTS.md') %>" target="_blank" rel="noreferrer noopener" class="hover:text-foreground">AGENTS.md (agent playbook)</a></li>
+          <li><a href="<%= github_source_url('README.md') %>" target="_blank" rel="noreferrer noopener" class="hover:text-foreground">README</a></li>
+          <li><a href="<%= github_source_url('SPIKE.md') %>" target="_blank" rel="noreferrer noopener" class="hover:text-foreground">SPIKE.md (RSC status)</a></li>
+        </ul>
+      </div>
+
+      <div class="space-y-3">
+        <h3 class="text-sm font-semibold">Docs</h3>
+        <ul class="space-y-2 text-sm text-muted-foreground">
+          <li><a href="https://www.reactonrails.com/docs/" target="_blank" rel="noreferrer noopener" class="hover:text-foreground">React on Rails docs</a></li>
+          <li><a href="https://www.reactonrails.com/docs/pro/react-server-components/" target="_blank" rel="noreferrer noopener" class="hover:text-foreground">React Server Components</a></li>
+          <li><a href="https://www.reactonrails.com/docs/getting-started/oss-vs-pro/" target="_blank" rel="noreferrer noopener" class="hover:text-foreground">OSS vs Pro</a></li>
+          <li><a href="https://tanstack.com/" target="_blank" rel="noreferrer noopener" class="hover:text-foreground">TanStack</a></li>
+        </ul>
+      </div>
+
+      <div class="space-y-3">
+        <h3 class="text-sm font-semibold">Community</h3>
+        <ul class="space-y-2 text-sm text-muted-foreground">
+          <li><a href="<%= shakacode_url %>" target="_blank" rel="noreferrer noopener" class="hover:text-foreground">ShakaCode</a></li>
+          <li><a href="https://www.reactonrails.com/pro/" target="_blank" rel="noreferrer noopener" class="hover:text-foreground">React on Rails Pro</a></li>
+          <li><a href="https://github.com/shakacode/react_on_rails" target="_blank" rel="noreferrer noopener" class="hover:text-foreground">react_on_rails (OSS)</a></li>
+          <li><a href="https://github.com/shakacode/react-on-rails-demo-marketplace-rsc" target="_blank" rel="noreferrer noopener" class="hover:text-foreground">Marketplace RSC demo</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-10 flex flex-col items-center justify-between gap-4 border-t border-border pt-6 text-sm text-muted-foreground sm:flex-row">
+      <p>
+        <a href="<%= github_source_url('LICENSE') %>" target="_blank" rel="noreferrer noopener" class="hover:text-foreground">MIT licensed</a>
+        &middot; Open the source on
+        <a href="<%= github_repo_url %>" target="_blank" rel="noreferrer noopener" class="hover:text-foreground">GitHub</a>
+      </p>
+      <button type="button" data-theme-toggle
+              class="inline-flex items-center gap-2 rounded-md border border-border bg-card px-3 py-1.5 text-foreground shadow-sm transition-colors hover:bg-muted">
+        <svg class="block size-4 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+        <svg class="hidden size-4 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <span>Theme</span>
+      </button>
+    </div>
+  </div>
+</footer>

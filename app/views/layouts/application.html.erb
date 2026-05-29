@@ -1,11 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
   <head>
     <title><%= content_for(:title) || "React On Rails Starter Tanstack" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="React On Rails Starter Tanstack">
     <meta name="mobile-web-app-capable" content="yes">
+
+    <%# Apply the saved (or system) color scheme before paint to avoid a flash, and
+        wire the dark-mode toggle buttons. Inline script carries the CSP nonce. %>
+    <%= javascript_tag nonce: true do %>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var dark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.classList.toggle('dark', dark);
+        } catch (error) { /* localStorage unavailable */ }
+        document.addEventListener('click', function (event) {
+          if (!event.target.closest('[data-theme-toggle]')) return;
+          var isDark = document.documentElement.classList.toggle('dark');
+          try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (error) { /* ignore */ }
+        });
+      })();
+    <% end %>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
