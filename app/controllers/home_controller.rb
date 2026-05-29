@@ -25,7 +25,9 @@ class HomeController < ApplicationController
   ].freeze
 
   SORTABLE_COLUMNS = %w[name owner status activity].freeze
-  RAILS_PANEL_PAGE_SIZE = 7
+  # Match the TanStack island's page size so both panels show the same rows per
+  # page, reinforcing the "same data, two front-ends" comparison.
+  RAILS_PANEL_PAGE_SIZE = 5
 
   def index
     @demo_projects = DEMO_PROJECTS
