@@ -22,6 +22,22 @@
 }
 
 .auth-page {
+  /* Align the classic Rails surfaces (auth + classic CRUD) with the shadcn/Tailwind
+     design system and dark mode. These variable aliases are scoped to .auth-page, so
+     the React dashboard's shared .tanstack-* styles keep the :root defaults untouched.
+     Dark mode persists from the landing-page toggle via localStorage, so these pages
+     follow the user's theme even without their own toggle. */
+  --auth-bg: var(--background);
+  --auth-card: var(--card);
+  --auth-ink: var(--foreground);
+  --auth-muted: var(--muted-foreground);
+  --auth-line: var(--border);
+  --auth-primary: var(--primary);
+  --auth-primary-hover: var(--primary);
+  --auth-primary-fg: var(--primary-foreground);
+  --auth-danger: var(--destructive);
+  --auth-success: oklch(0.59 0.13 160);
+
   min-height: 100vh;
   margin: 0;
   display: grid;
@@ -30,6 +46,10 @@
   background: var(--auth-bg);
   color: var(--auth-ink);
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.dark .auth-page {
+  --auth-success: oklch(0.72 0.15 162);
 }
 
 .auth-card {
@@ -92,13 +112,14 @@
   border-radius: 8px;
   padding: 11px 12px;
   color: var(--auth-ink);
-  background: #ffffff;
+  background: var(--auth-card);
   font: inherit;
 }
 
 .auth-input:focus {
-  outline: 3px solid rgba(15, 118, 110, 0.18);
-  border-color: var(--auth-primary);
+  outline: 2px solid color-mix(in oklab, var(--ring) 55%, transparent);
+  outline-offset: 1px;
+  border-color: var(--ring);
 }
 
 .auth-button {
@@ -110,7 +131,7 @@
   border-radius: 8px;
   padding: 10px 14px;
   background: var(--auth-primary);
-  color: #ffffff;
+  color: var(--auth-primary-fg);
   font: inherit;
   font-weight: 700;
   text-decoration: none;
@@ -119,16 +140,17 @@
 
 .auth-button:hover {
   background: var(--auth-primary-hover);
+  opacity: 0.9;
 }
 
 .auth-button-secondary {
-  background: #ffffff;
+  background: var(--auth-card);
   border-color: var(--auth-line);
   color: var(--auth-ink);
 }
 
 .auth-button-secondary:hover {
-  background: #f3f4f6;
+  background: var(--accent);
 }
 
 .auth-link {
