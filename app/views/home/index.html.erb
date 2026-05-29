@@ -1,4 +1,16 @@
 <% content_for(:title) { "React on Rails × TanStack Starter" } %>
+<% content_for :head do %>
+  <% social_image = "#{github_repo_url}/raw/#{ApplicationHelper::GITHUB_DEFAULT_BRANCH}/docs/images/landing-comparison.png" %>
+  <meta name="description" content="A Rails 8 + React on Rails Pro starter that shows the Rails-vs-React difference live: server-rendered Rails CRUD beside an instant, URL-synced TanStack Router, Query, and Table dashboard. Agent-native, with copy-paste AI prompts.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="React on Rails × TanStack Starter">
+  <meta property="og:description" content="The same app, two front-ends, side by side: server-rendered Rails next to an instant TanStack Table island. Plus copy-paste AI prompts to extend it with your agent.">
+  <meta property="og:image" content="<%= social_image %>">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="React on Rails × TanStack Starter">
+  <meta name="twitter:description" content="The same app, two front-ends, side by side. An agent-native Rails + TanStack starter with copy-paste AI prompts.">
+  <meta name="twitter:image" content="<%= social_image %>">
+<% end %>
 <%
   comparison_props = {
     projects: @demo_projects.map do |project|
