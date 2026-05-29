@@ -16,6 +16,12 @@ if [ -x ./bin/rails ]; then
   log "Run DB migrations"
   SECRET_KEY_BASE="${SECRET_KEY_BASE:-precompile_placeholder}" ./bin/rails db:prepare || \
     error_exit "Failed to run DB migrations"
+
+  if [ "${ALLOW_DEMO_SEED:-}" = "true" ]; then
+    log "Seed demo account because ALLOW_DEMO_SEED=true"
+    SECRET_KEY_BASE="${SECRET_KEY_BASE:-precompile_placeholder}" ./bin/rails db:seed || \
+      error_exit "Failed to seed demo account"
+  fi
 else
   error_exit "./bin/rails does not exist or is not executable"
 fi

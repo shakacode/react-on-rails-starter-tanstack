@@ -57,6 +57,11 @@ Review apps are temporary and are created by the `+review-app-deploy` workflow,
 but staging and production are persistent apps and should be bootstrapped
 explicitly.
 
+For an intentional public demo app, set `ALLOW_DEMO_SEED=true` on the app GVC.
+The release script will then run `bin/rails db:seed` after migrations and create
+the verified `demo@example.com / password` account. Leave the flag unset for
+private staging and real production apps.
+
 Production promotion is part of the generated flow, but keep it protected:
 
 | Name | Where | Notes |

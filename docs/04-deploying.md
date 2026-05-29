@@ -44,7 +44,12 @@ This precompiles optimized bundles and starts Rails plus the Node renderer on lo
 
 For the full build/run matrix, including static assets, HMR, and the current Rspack/RSC repro fixture, see [Tested Modes](06-tested-modes.md).
 
-Do not run development seeds in production. This template keeps `config/master.key` out of git; generate and store production secrets in your deployment environment.
+Do not run development seeds in normal production environments. For an
+intentional public demo app, set `ALLOW_DEMO_SEED=true` and run
+`bin/rails db:seed` once after migrations; the Control Plane release script does
+that automatically when the flag is present. Leave the flag unset for private
+staging and real production apps. This template keeps `config/master.key` out of
+git; generate and store production secrets in your deployment environment.
 
 ## Control Plane
 
