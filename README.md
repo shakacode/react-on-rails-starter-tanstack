@@ -4,6 +4,12 @@ Rails 8 starter for teams that want Rails to own authentication, HTML
 entrypoints, persistence, and deployment while React on Rails Pro renders a
 TanStack Router, Query, and Table app on Rspack.
 
+The landing page makes the point without a pitch: the same projects rendered
+by a server-rendered Rails panel (full page reloads) next to an instant,
+URL-synced TanStack Table island.
+
+![The landing page comparison: the same projects rendered by a server-rendered Rails panel and an instant, URL-synced TanStack Table island](docs/images/landing-comparison.png)
+
 **Temporary demo:** [rails-1w9hq69n5eeyr.cpln.app](https://rails-1w9hq69n5eeyr.cpln.app/)
 serves the public pages; demo login is currently blocked pending launch
 deployment setup.
@@ -16,7 +22,11 @@ deployment setup.
   `config/rspack/` as the source of truth.
   Shakapacker stays on `10.1.0` for this release because public `11.1.0`
   artifacts are not visible in the registries consumed by the starter.
-- `/` is the Rails landing page today.
+- `/` is the public landing page: a live "same data, two front-ends" comparison
+  (server-rendered Rails panel beside an instant, URL-synced TanStack Table
+  island), a map of every example surface that links to its source on GitHub,
+  and copy-paste AI prompts for extending the starter with an agent. It shares
+  the shadcn/Tailwind design system and dark mode with the rest of the app.
 - `/dashboard`, `/settings...`, and `/projects...` are Rails full-page routes
   that render the React on Rails Pro + TanStack dashboard shell.
 - TanStack Query reads and mutates Rails JSON APIs, and TanStack Table drives
