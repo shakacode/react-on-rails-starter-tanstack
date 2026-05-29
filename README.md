@@ -1,48 +1,88 @@
 # React on Rails Starter TanStack
 
-Rails 8 starter for teams that want Rails to own authentication, HTML
-entrypoints, persistence, and deployment while React on Rails Pro renders a
-TanStack Router, Query, and Table app on Rspack.
+**React Server Components on Rails — without leaving Rails.**
 
-The landing page makes the point without a pitch: the same projects rendered
-by a server-rendered Rails panel (full page reloads) next to an instant,
+Rails teams eyeing modern React in 2026 usually run into the same fork in the
+road: keep classic Rails views, or migrate the React surface to Next.js. This
+starter is the third option. Keep Rails as the application server — auth,
+sessions, CSRF, validations, background jobs, mailers, and ActiveRecord — and
+use [React on Rails Pro](https://reactonrails.com/pro/) for the React rendering
+paths that need Node. You choose the right rendering model **per surface**
+instead of moving the whole app to a JavaScript server framework.
+
+**Live demo: [starter.reactonrails.com](https://starter.reactonrails.com)** —
+sign in with `demo@example.com` / `password`.
+
+The landing page makes the argument without a pitch: the same projects rendered
+by a server-rendered Rails panel (full page reloads) beside an instant,
 URL-synced TanStack Table island.
 
 ![The landing page comparison: the same projects rendered by a server-rendered Rails panel and an instant, URL-synced TanStack Table island](docs/images/landing-comparison.png)
 
-**Temporary demo:** [rails-1w9hq69n5eeyr.cpln.app](https://rails-1w9hq69n5eeyr.cpln.app/)
-serves the public pages; demo login is currently blocked pending launch
-deployment setup.
-
 ![Rendering mode drawer](docs/images/rendering-mode-drawer.png)
+
+## Why This Starter
+
+Rails apps in 2026 already have Active Record models, sessions, mailers,
+background jobs, admin workflows, and years of product behavior. The question
+is not "Rails or React" in the abstract — it is whether you can add modern
+React capabilities (RSC, streaming, type-safe routing, URL-owned table state,
+client interactivity) without rebuilding the rest of the application around a
+JavaScript server framework.
+
+This starter's answer is **surface-aware rendering**: keep Rails at the center,
+and pick the rendering model that fits each surface. Public, content-heavy
+pages can use React Server Components and streaming. Authenticated app surfaces
+can use classic React on Rails Pro SSR plus TanStack Router, Query, and Table.
+Classic Rails CRUD still has a place and coexists in the same app.
+
+The deeper argument is in [Why RSC on Rails](docs/08-why-rsc-on-rails.md), and
+the head-to-head with Inertia is in
+[React on Rails + TanStack vs Inertia](docs/02-vs-inertia.md).
 
 ## What It Shows
 
-- Rspack is the Shakapacker bundler. Use `config/shakapacker.yml` and
-  `config/rspack/` as the source of truth.
-  Shakapacker stays on `10.1.0` for this release because public `11.1.0`
-  artifacts are not visible in the registries consumed by the starter.
-- `/` is the public landing page: a live "same data, two front-ends" comparison
-  (server-rendered Rails panel beside an instant, URL-synced TanStack Table
-  island), a map of every example surface that links to its source on GitHub,
-  and copy-paste AI prompts for extending the starter with an agent. It shares
-  the shadcn/Tailwind design system and dark mode with the rest of the app.
-- `/dashboard`, `/settings...`, and `/projects...` are Rails full-page routes
-  that render the React on Rails Pro + TanStack dashboard shell.
-- TanStack Query reads and mutates Rails JSON APIs, and TanStack Table drives
-  the projects list with server-side filtering, sorting, pagination, and URL
-  state.
-- `/classic/projects` remains a classic Rails CRUD surface to show a hybrid
-  Rails UI coexisting with the TanStack surface.
-- The dashboard includes a rendering-mode drawer and links to sibling React on
-  Rails Pro demo apps.
-- `/hello_server` demonstrates streaming React Server Components. Interactive
-  RSC client references remain limited by the documented Rspack manifest gap;
-  see [SPIKE.md](SPIKE.md).
+Each route demonstrates a deliberate rendering choice, not a fallback:
 
-Current pinned line: React on Rails / Pro `16.7.0.rc.3`, Shakapacker /
-Shakapacker Rspack `10.1.0`, React `19.0.6`, Rails `8.1.x`, TypeScript, and
-pnpm.
+- **`/`** is the public landing page: a live "same data, two front-ends"
+  comparison (a server-rendered Rails projects panel beside an instant,
+  URL-synced TanStack Table island over one demo dataset), a map of every
+  example surface linking to its source on GitHub, and copy-paste AI prompts for
+  extending the starter with an agent. It shares the shadcn/Tailwind design
+  system and dark mode with the rest of the app.
+- **`/hello_server`** demonstrates streaming React Server Components. The demo
+  keeps an interactive `LikeButton` client island inside a server-rendered
+  tree. Interactive RSC client references remain limited by the documented
+  Rspack manifest gap, so this is the RSC streaming reference route rather than
+  full interactive RSC coverage on Rspack. See [SPIKE.md](SPIKE.md).
+- **`/dashboard`, `/settings...`, and `/projects...`** are Rails full-page
+  routes that render the React on Rails Pro + TanStack Router, Query, and Table
+  dashboard shell using classic SSR through the Node renderer.
+- **TanStack Query** reads and mutates Rails JSON APIs, and **TanStack Table**
+  drives the projects list with server-side filtering, sorting, pagination, and
+  URL state.
+- **`/classic/projects`** remains a classic Rails CRUD surface, showing a
+  hybrid Rails UI coexisting with the TanStack surface.
+
+The dashboard includes a rendering-mode drawer (pictured above) that explains,
+in the product UI, why public RSC, authenticated SSR, TanStack state, and
+classic Rails CRUD coexist in one app.
+
+## Stack and Pinned Versions
+
+Rspack is the Shakapacker bundler. Use `config/shakapacker.yml` and
+`config/rspack/` as the source of truth.
+
+| Component | Version |
+| --- | --- |
+| React on Rails / Pro | `16.7.0.rc.3` |
+| Shakapacker / Shakapacker Rspack | `10.1.0` |
+| React | `19.0.6` |
+| Rails | `8.1.x` |
+| Language / tooling | TypeScript, pnpm |
+
+Shakapacker stays on `10.1.0` for this release because public `11.1.0`
+artifacts are not yet visible in the registries consumed by the starter.
 
 ## Setup
 
@@ -57,6 +97,11 @@ bin/dev prod --no-open-browser --route=dashboard
 `bin/dev` starts Rails, Rspack, Solid Queue, the React on Rails Pro Node
 renderer, and the RSC bundle watcher. Development defaults to live reload; use
 the HMR command only when testing HMR behavior.
+
+Sign in with `demo@example.com` / `password`. Visit `/dashboard` for the
+TanStack surface, `/projects` for a full-page load into the TanStack project
+routes, `/classic/projects` for the Rails CRUD surface, and `/hello_server` for
+the RSC streaming demo.
 
 ## Checks
 
@@ -107,7 +152,18 @@ It includes Rails authentication, email verification, password reset, Projects
 CRUD, scoped JSON APIs, demo seeds, development mail previews, and the
 authenticated TanStack Router/Query/Table dashboard.
 
-See [SPIKE.md](SPIKE.md) for the current AMBER RSC/Rspack compatibility note: Rspack builds and server-only RSC bundling are green, but interactive RSC client references are blocked until Rspack emits the React Server Components client/server manifests expected by the React on Rails RSC path.
+See [SPIKE.md](SPIKE.md) for the current AMBER RSC/Rspack compatibility note:
+Rspack builds and server-only RSC bundling are green, but interactive RSC
+client references are blocked until Rspack emits the React Server Components
+client/server manifests expected by the React on Rails RSC path.
+
+## Links
+
+- [Why RSC on Rails](docs/08-why-rsc-on-rails.md) — the launch thesis.
+- [React on Rails + TanStack vs Inertia](docs/02-vs-inertia.md) — the
+  head-to-head comparison.
+- [React on Rails Pro](https://reactonrails.com/pro/) — the commercial Node
+  renderer, TanStack SSR, and RSC integration point.
 
 ## Docs
 
