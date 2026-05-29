@@ -324,6 +324,48 @@ const routeTree = rootRoute.addChildren([
   projectEditRoute,
 ]);
 
+// Reuses the landing page's dark-mode mechanism: the layout's nonce theme script
+// (app/views/layouts/application.html.erb) attaches a document-level click listener to
+// any [data-theme-toggle] element, toggles `.dark` on <html>, and persists the choice
+// under the same localStorage `theme` key. This button just opts into that listener —
+// no second mechanism, matching app/views/shared/_site_header.html.erb.
+function ThemeToggleButton() {
+  return (
+    <button
+      type="button"
+      data-theme-toggle
+      aria-label="Toggle dark mode"
+      className="inline-flex size-9 shrink-0 items-center justify-center rounded-md border border-border bg-card text-muted-foreground shadow-sm transition-colors hover:bg-muted hover:text-foreground"
+    >
+      <svg
+        className="block size-4 dark:hidden"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+      </svg>
+      <svg
+        className="hidden size-4 dark:block"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+      </svg>
+    </button>
+  );
+}
+
 function RootLayout() {
   const { user, links } = useDashboardProps();
   const router = useRouter();
@@ -345,6 +387,7 @@ function RootLayout() {
           <Button asChild size="sm" className="shrink-0">
             <Link to="/projects/new">Create project</Link>
           </Button>
+          <ThemeToggleButton />
         </nav>
       </header>
 

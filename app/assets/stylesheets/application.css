@@ -241,9 +241,24 @@
 }
 
 .tanstack-shell {
+  /* Align the React dashboard chrome with the shadcn/Tailwind design system and dark
+     mode. These --auth-* aliases are scoped to the dashboard shell (mirroring the
+     .auth-page scope used by the classic Rails surfaces), so the :root defaults stay
+     untouched as shared fallbacks. The dashboard shell ships its own [data-theme-toggle]
+     button that reuses the landing page's localStorage `theme` key + `.dark` class. */
+  --auth-bg: var(--background);
+  --auth-card: var(--card);
+  --auth-ink: var(--foreground);
+  --auth-muted: var(--muted-foreground);
+  --auth-line: var(--border);
+  --auth-primary: var(--primary);
+  --auth-primary-hover: var(--primary);
+  --auth-primary-fg: var(--primary-foreground);
+  --auth-danger: var(--destructive);
+
   min-height: 100vh;
   padding: 28px;
-  background: #f7f8fb;
+  background: var(--auth-bg);
   color: var(--auth-ink);
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -350,7 +365,7 @@
   min-height: 230px;
   justify-content: space-between;
   border-radius: 8px;
-  border-color: rgba(216, 222, 232, 0.95);
+  border-color: var(--auth-line);
 }
 
 .demo-portfolio-card [data-slot="card-header"] {
@@ -370,39 +385,36 @@
 }
 
 .demo-portfolio-thumbnail {
+  /* Each tone sets a single --thumb-accent brand hue; the background, border, and
+     label text are derived from it and mixed against the theme tokens so the brand
+     identity survives in both light and dark mode. */
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 44px;
   height: 44px;
-  border: 1px solid;
+  border: 1px solid color-mix(in oklab, var(--thumb-accent) 45%, var(--border));
   border-radius: 8px;
+  background: color-mix(in oklab, var(--thumb-accent) 14%, var(--card));
+  color: color-mix(in oklab, var(--thumb-accent) 72%, var(--foreground));
   font-size: 0.78rem;
   font-weight: 800;
 }
 
 .demo-portfolio-thumbnail-hn {
-  border-color: #f59e0b;
-  background: #fff7ed;
-  color: #9a3412;
+  --thumb-accent: #f59e0b;
 }
 
 .demo-portfolio-thumbnail-marketplace {
-  border-color: #2563eb;
-  background: #eff6ff;
-  color: #1d4ed8;
+  --thumb-accent: #2563eb;
 }
 
 .demo-portfolio-thumbnail-gumroad {
-  border-color: #059669;
-  background: #ecfdf5;
-  color: #047857;
+  --thumb-accent: #059669;
 }
 
 .demo-portfolio-thumbnail-octochangelog {
-  border-color: #7c3aed;
-  background: #f5f3ff;
-  color: #6d28d9;
+  --thumb-accent: #7c3aed;
 }
 
 .demo-portfolio-link {
@@ -413,10 +425,13 @@
 }
 
 [data-slot="dialog-overlay"] {
+  /* Radix portals the dialog to document.body, outside .tanstack-shell, so these
+     selectors must use the shadcn tokens directly rather than the shell-scoped
+     --auth-* aliases. */
   position: fixed;
   inset: 0;
   z-index: 50;
-  background: rgba(17, 24, 39, 0.58);
+  background: color-mix(in oklab, var(--foreground) 55%, transparent);
 }
 
 [data-slot="dialog-content"] {
@@ -434,10 +449,10 @@
   padding: 24px;
   translate: none !important;
   transform: translateX(-50%) !important;
-  border: 1px solid var(--auth-line);
+  border: 1px solid var(--border);
   border-radius: 8px;
-  background: #ffffff;
-  color: var(--auth-ink);
+  background: var(--popover);
+  color: var(--popover-foreground);
 }
 
 [data-slot="dialog-close"] {
@@ -452,24 +467,25 @@
   border: 0;
   border-radius: 8px;
   background: transparent;
-  color: var(--auth-muted);
+  color: var(--muted-foreground);
   cursor: pointer;
 }
 
 [data-slot="dialog-close"]:hover,
 [data-slot="dialog-close"]:focus-visible {
-  background: #f3f4f6;
-  color: var(--auth-ink);
+  background: var(--accent);
+  color: var(--accent-foreground);
   outline: none;
 }
 
 .rendering-mode-dialog {
+  /* Lives in the portaled dialog (outside .tanstack-shell), so use tokens directly. */
   width: min(920px, calc(100vw - 64px)) !important;
   max-height: calc(100vh - 56px) !important;
   max-width: min(920px, calc(100vw - 64px)) !important;
   overflow-y: auto;
-  border-color: var(--auth-line);
-  box-shadow: 0 24px 80px rgba(17, 24, 39, 0.24);
+  border-color: var(--border);
+  box-shadow: 0 24px 80px color-mix(in oklab, var(--foreground) 24%, transparent);
 }
 
 .rendering-mode-dialog [data-slot="dialog-title"] {
@@ -486,9 +502,9 @@
 .rendering-mode-section,
 .rendering-mode-summary,
 .rendering-mode-cta {
-  border: 1px solid var(--auth-line);
+  border: 1px solid var(--border);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--card);
 }
 
 .rendering-mode-section {
@@ -513,7 +529,7 @@
 .rendering-mode-section p,
 .rendering-mode-summary p,
 .rendering-mode-cta p {
-  color: var(--auth-muted);
+  color: var(--muted-foreground);
   line-height: 1.55;
 }
 
@@ -525,7 +541,7 @@
 
 .rendering-mode-summary .font-medium,
 .rendering-mode-cta .font-medium {
-  color: var(--auth-ink);
+  color: var(--foreground);
 }
 
 .rendering-mode-links,
@@ -539,7 +555,7 @@
 .rendering-mode-cta {
   justify-content: space-between;
   padding: 16px;
-  background: #f8fafc;
+  background: var(--muted);
 }
 
 .rendering-mode-inline-link {
@@ -572,7 +588,7 @@
 }
 
 .metric-card-error {
-  border-color: rgba(180, 35, 24, 0.36);
+  border-color: color-mix(in oklab, var(--destructive) 50%, transparent);
 }
 
 .tanstack-panel {
@@ -601,7 +617,8 @@
   border: 1px solid var(--auth-line);
   border-radius: 8px;
   padding: 8px 10px;
-  background: #ffffff;
+  background: var(--auth-card);
+  color: var(--auth-ink);
 }
 
 .table-wrap {
