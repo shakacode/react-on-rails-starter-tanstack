@@ -194,7 +194,7 @@ export default function ComparisonTable({ projects = [], pageSize = 5 }: Compari
       </div>
 
       <div className="overflow-hidden rounded-lg border">
-        <Table>
+        <Table data-testid="island-table">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="bg-muted/40 hover:bg-muted/40">
