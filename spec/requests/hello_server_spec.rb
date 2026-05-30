@@ -13,7 +13,6 @@ RSpec.describe "HelloServer RSC route", type: :request do
   end
 
   describe "manifest availability checks" do
-    let(:controller) { HelloServerController.new }
     let(:client_manifest_url) { "http://localhost:3035/packs/react-client-manifest.json" }
     let(:server_manifest_path) { Rails.root.join("tmp/test-react-server-client-manifest.json").to_s }
 
@@ -34,31 +33,48 @@ RSpec.describe "HelloServer RSC route", type: :request do
       end
     end
 
+    def stub_rsc_stream_response(body = "streamed rsc")
+      allow_any_instance_of(HelloServerController) # rubocop:disable RSpec/AnyInstance
+        .to receive(:stream_view_containing_react_components) do |controller, **_options|
+          controller.render(plain: body)
+        end
+    end
+
     it "accepts dev-server manifest URLs that return successfully" do
       http = instance_double(Net::HTTP)
-      response = http_response(Net::HTTPOK, "200", "OK", "{}")
+      manifest_response = http_response(Net::HTTPOK, "200", "OK", "{}")
       allow(Net::HTTP).to receive(:start) { |_host, _port, **_options, &block| block.call(http) }
-      allow(http).to receive(:request).with(instance_of(Net::HTTP::Get)).and_return(response)
+      allow(http).to receive(:request).with(instance_of(Net::HTTP::Get)).and_return(manifest_response)
+      stub_rsc_stream_response
 
-      expect(controller.send(:rsc_client_references_available?)).to be(true)
+      get hello_server_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to eq("streamed rsc")
     end
 
     it "rejects successful dev-server fallback responses that are not JSON" do
       http = instance_double(Net::HTTP)
-      response = http_response(Net::HTTPOK, "200", "OK", "<!doctype html>")
+      manifest_response = http_response(Net::HTTPOK, "200", "OK", "<!doctype html>")
       allow(Net::HTTP).to receive(:start) { |_host, _port, **_options, &block| block.call(http) }
-      allow(http).to receive(:request).with(instance_of(Net::HTTP::Get)).and_return(response)
+      allow(http).to receive(:request).with(instance_of(Net::HTTP::Get)).and_return(manifest_response)
 
-      expect(controller.send(:rsc_client_references_available?)).to be(false)
+      get hello_server_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Known Rspack limitation")
     end
 
     it "treats missing dev-server manifest URLs as unavailable" do
       http = instance_double(Net::HTTP)
-      response = http_response(Net::HTTPNotFound, "404", "Not Found", "")
+      manifest_response = http_response(Net::HTTPNotFound, "404", "Not Found", "")
       allow(Net::HTTP).to receive(:start) { |_host, _port, **_options, &block| block.call(http) }
-      allow(http).to receive(:request).with(instance_of(Net::HTTP::Get)).and_return(response)
+      allow(http).to receive(:request).with(instance_of(Net::HTTP::Get)).and_return(manifest_response)
 
-      expect(controller.send(:rsc_client_references_available?)).to be(false)
+      get hello_server_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Known Rspack limitation")
     end
   end
 

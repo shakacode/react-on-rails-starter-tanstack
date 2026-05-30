@@ -79,7 +79,7 @@ class HelloServerController < ApplicationController
       uri.port,
       use_ssl: uri.scheme == "https",
       open_timeout: 1,
-      read_timeout: 15
+      read_timeout: 1
     ) do |http|
       http.request(Net::HTTP::Get.new(uri))
     end
