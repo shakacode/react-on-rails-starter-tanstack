@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require "net/http"
+require "uri"
+require "json"
+
 # HelloServer Controller - React Server Components
 # This controller demonstrates how to render RSC pages with streaming SSR.
 # It's the RSC counterpart to HelloWorldController.
@@ -49,7 +53,7 @@ class HelloServerController < ApplicationController
   # action can degrade to a static, honest fallback instead of streaming into a 500.
   def rsc_client_references_available?
     rsc_manifest_paths.all? do |path|
-      path.present? && File.exist?(path)
+      manifest_available?(path)
     end
   rescue StandardError
     # Any resolution failure (for example a missing manifest entry) means the
@@ -62,5 +66,33 @@ class HelloServerController < ApplicationController
       ReactOnRailsPro::Utils.react_client_manifest_file_path,
       ReactOnRailsPro::Utils.react_server_client_manifest_file_path
     ]
+  end
+
+  def manifest_available?(path)
+    return false if path.blank?
+
+    uri = URI.parse(path)
+    return File.exist?(path) unless uri.is_a?(URI::HTTP)
+
+    response = Net::HTTP.start(
+      uri.hostname,
+      uri.port,
+      use_ssl: uri.scheme == "https",
+      open_timeout: 1,
+      read_timeout: 1
+    ) do |http|
+      http.request(Net::HTTP::Get.new(uri))
+    end
+
+    response.is_a?(Net::HTTPSuccess) && json_response_body?(response.body)
+  rescue URI::InvalidURIError
+    File.exist?(path)
+  end
+
+  def json_response_body?(body)
+    JSON.parse(body.to_s)
+    true
+  rescue JSON::ParserError
+    false
   end
 end

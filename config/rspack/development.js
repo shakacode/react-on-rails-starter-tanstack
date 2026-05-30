@@ -1,12 +1,15 @@
 // The source code including full typescript support is available at: 
 // https://github.com/shakacode/react-on-rails-demo-ssr-hmr/blob/master/config/webpack/development.js
 
-const { devServer, inliningCss, config } = require('shakapacker');
+const { config } = require('shakapacker');
 
+const { normalizeDevServerMode } = require('../devServerMode');
 const serverClientOrBoth = require('./ServerClientOrBoth');
 
 // REFERENCE PATTERN: rspack-dev-config — see AGENTS.md
 const developmentEnvOnly = (clientWebpackConfig, serverWebpackConfig, rscWebpackConfig) => {
+  normalizeDevServerMode(clientWebpackConfig);
+
   // Rspack 2 reads lazyCompilation at the client config top level. Keeping it
   // off avoids lazy-trigger 404s for optional browser-only devtools chunks.
   clientWebpackConfig.lazyCompilation = false;
