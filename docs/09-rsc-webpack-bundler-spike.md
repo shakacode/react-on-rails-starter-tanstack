@@ -46,6 +46,10 @@ manifest:
   renderer logs `Copied assets ["react-client-manifest.json",
   "react-server-client-manifest.json"]`; `/hello_server` returns HTTP 200 with
   `"missingRscManifests": []`, `"outcome": "rendered"`.
+- `SHAKAPACKER_ASSETS_BUNDLER=webpack REQUIRE_RSC_MANIFESTS=true node
+  script/dev-mode-smoke.mjs hmr hello-server` → Webpack dev-server + HMR boots,
+  writes the client manifest to disk for Pro, and `/hello_server` streams the
+  RSC view instead of rendering the fallback.
 - The Rspack track is unchanged: the default-bundler repro still reports
   `"status": "blocked"` with both manifests absent.
 
@@ -107,12 +111,12 @@ plugin/loader and resolves the TanStack `exports` maps without the fall-through.
 | Interactive RSC      | ❌ manifests not emitted | ✅ manifests emitted, island renders |
 | Clean prod build     | ~2.8 s                   | ~8.3 s (≈3× slower)                 |
 | Client JS total      | ~2.6 MB                  | ~2.6 MB (comparable)                |
-| Dev server / HMR     | `@rspack/plugin-react-refresh` | `@pmmmwh/react-refresh-webpack-plugin` (HMR not exercised in this spike) |
+| Dev server / HMR     | `@rspack/plugin-react-refresh` | `@pmmmwh/react-refresh-webpack-plugin`; dashboard and `/hello_server` HMR smokes pass |
 | Extra deps           | —                        | `webpack`, `webpack-cli`, `webpack-dev-server`, `webpack-assets-manifest`, `@pmmmwh/react-refresh-webpack-plugin` |
 
 Build time is the main regression (~3×). Bundle size is comparable. Webpack dev
-server / HMR with this RSC config was not exercised in this spike (the manifest
-evidence and the `static` full-stack smoke were the priority).
+server / HMR is now covered by targeted bridge smokes; Rspack remains the local
+default.
 
 ## Caveats / follow-ups
 
@@ -171,6 +175,8 @@ All run with `SHAKAPACKER_ASSETS_BUNDLER=webpack` on a clean production build
 | Classic Rails CRUD (`/classic/projects` index/new/show) | authed `curl` on prod server | ✅ HTTP 200 on all three |
 | Auth (sign-in, signup, reset, verify) | dashboard smoke + `auth.spec.ts` | ✅ sign-in POST → 302 `/`; all auth Playwright specs pass |
 | `/hello_server` interactive RSC | `REQUIRE_RSC_MANIFESTS=true node script/dev-mode-smoke.mjs static hello-server` | ✅ `"missingRscManifests": []`, `"outcome": "rendered"` |
+| Webpack HMR dashboard | `SHAKAPACKER_ASSETS_BUNDLER=webpack node script/dev-mode-smoke.mjs hmr dashboard` | ✅ Webpack dev-server starts with HMR, dashboard hydrates/navigates, and the browser observes a source edit via hot-update assets |
+| Webpack HMR `/hello_server` RSC | `SHAKAPACKER_ASSETS_BUNDLER=webpack REQUIRE_RSC_MANIFESTS=true node script/dev-mode-smoke.mjs hmr hello-server` | ✅ both RSC manifests present, `/hello_server` streams the RSC view instead of the fallback |
 | LikeButton client island hydration | Playwright click (CSP bypassed) | ✅ `0 likes` → `1 like` — island hydrates and is interactive |
 | RSpec | `SHAKAPACKER_ASSETS_BUNDLER=webpack bundle exec rspec` | ✅ 96 examples, 0 failures |
 | Playwright (full) | `SHAKAPACKER_ASSETS_BUNDLER=webpack pnpm exec playwright test` | ✅ 13 passed (landing, auth, dashboard, route matrix, CSP, a11y) |
@@ -205,6 +211,12 @@ ENV SHAKAPACKER_ASSETS_BUNDLER=${SHAKAPACKER_ASSETS_BUNDLER}
   removing any of them reintroduces "Module parse failed" or invalid
   `export const type` proxies. Specific to this dependency set; the clean
   long-term fix is upstream (see Caveats). Inert on Rspack.
+- **`config/devServerMode.js` + Webpack dev-server write-to-disk** —
+  load-bearing for Webpack HMR. Shakapacker's JS bundler config loader reads
+  `config/shakapacker.yml` without ERB evaluation, so `hmr`/`live_reload` must be
+  normalized in JS. Webpack dev-server also has to persist non-hot-update assets
+  so React on Rails Pro can read `react-client-manifest.json` during RSC payload
+  generation.
 - **`pnpm-workspace.yaml` `'core-js-pure': false`** — cosmetic (suppresses a
   funding-message postinstall); not behavioral.
 

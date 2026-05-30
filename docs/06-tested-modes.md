@@ -4,7 +4,8 @@ This starter keeps the TanStack dashboard on Rspack and the launch RC stack:
 React on Rails Pro `16.7.0-rc.3` with Shakapacker `10.1.0`.
 Shakapacker is intentionally not documented as `11.1.0` because public
 `11.1.0` artifacts are not visible in the registries consumed by the starter.
-Rspack is the only supported bundler in the checked-in matrix.
+Rspack is the default local bundler in the checked-in matrix. Webpack is the
+targeted RSC/deploy bridge and has explicit bridge smokes below.
 
 The tables below track the local and CI coverage expected before changing
 build, rendering, or routing behavior.
@@ -34,6 +35,8 @@ build, rendering, or routing behavior.
 | Static assets dev | `bin/test dev-modes` or `node script/dev-mode-smoke.mjs static` | CI | Runs `bin/dev static`, starts Rails, Rspack watch mode, SolidQueue, and the Node renderer, then logs in and checks `/dashboard`, client navigation, and direct `/projects/new`. The browser smoke fails if static mode requests or receives Rspack dev-server clients, hot-update files, overlay code, or disabled TanStack devtools chunks. |
 | Production-assets dev | `bin/test dev-modes` or `node script/dev-mode-smoke.mjs prod` | CI | Runs `bin/dev prod`, precompiles optimized Rspack bundles, starts Rails, SolidQueue, and the Node renderer, then checks the same authenticated TanStack routes. The browser smoke uses the same negative asset assertions as static mode. |
 | HMR dev | `bin/test hmr` or `SHAKAPACKER_DEV_SERVER_HMR=true bin/dev --no-open-browser --route=dashboard` | CI | Boots the same default dev stack with `hmr: true`, `live_reload: false`, and React Fast Refresh enabled by Shakapacker's Rspack integration, then verifies the authenticated TanStack routes hydrate, navigate, and observe a browser-open source edit. This smoke does not assert state-preserving React Fast Refresh updates. |
+| Webpack HMR bridge | `bin/test webpack-hmr` or `SHAKAPACKER_ASSETS_BUNDLER=webpack node script/dev-mode-smoke.mjs hmr` | Webpack bridge sentinel | Boots Rails, Webpack dev-server, SolidQueue, the Node renderer, and the server/RSC bundle watchers with HMR enabled, then verifies the authenticated TanStack routes hydrate, navigate, and observe a browser-open source edit. This catches Webpack dev-server schema drift and Fast Refresh wiring regressions without changing the Rspack default. |
+| Webpack HMR RSC bridge | `bin/test webpack-hmr-rsc` or `SHAKAPACKER_ASSETS_BUNDLER=webpack REQUIRE_RSC_MANIFESTS=true node script/dev-mode-smoke.mjs hmr hello-server` | Webpack RSC/HMR sentinel | Boots the Webpack HMR stack against `/hello_server`, waits for both RSC client-reference manifests, and fails if the route falls back to the Rspack limitation page. This verifies the Webpack dev-server writes the client manifest where React on Rails Pro can consume it while still excluding hot-update artifacts from disk. |
 | Rspack/RSC client boundary repro | `bin/test rsc-repro` or `pnpm run repro:rspack-rsc` | CI status, upstream repro | Builds Rspack bundles and verifies the generated `HelloServer` RSC example still contains a `'use client'` boundary. Today this reports `blocked` because Rspack does not emit the RSC client/server manifests used by interactive client references. Set `REQUIRE_RSC_MANIFESTS=true` only when intentionally checking whether the upstream blocker has been fixed. |
 | `/hello_server` RSC route smoke | `bin/test hello-server-rsc` or `pnpm run test:hello-server-rsc` | RSC route sentinel | Boots the static-assets dev stack against `/hello_server` and verifies the route either renders the demo shell or fails with the known Rspack/RSC manifest gap. Set `REQUIRE_RSC_MANIFESTS=true` only when intentionally requiring interactive RSC client-reference manifests. |
 | Production precompile | `bin/test production-precompile` or `RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1 REACT_ON_RAILS_STARTER_TANSTACK_DATABASE_PASSWORD=dummy bin/rails assets:precompile` | Release-impacting checks | Confirms production Rspack client, server, and RSC bundles compile. The expected Pro license warning is non-fatal. |
@@ -75,6 +78,10 @@ build, rendering, or routing behavior.
 - React Fast Refresh is available only in explicit HMR mode. The static and
   production-assets modes intentionally stay dev-client-free so their asset
   requests match non-HMR development and optimized asset workflows.
+- Keep `hmr` and `live_reload` in `config/shakapacker.yml` as literal YAML
+  booleans. Shakapacker's JS bundler config loader reads that file without ERB
+  evaluation; `config/devServerMode.js` applies the environment-driven
+  `SHAKAPACKER_DEV_SERVER_HMR=true` inversion for both Rspack and Webpack.
 - Rspack 2 lazy compilation must stay disabled on the client config top level,
   with `experiments.lazyCompilation = false` kept explicit for compatibility.
   Otherwise dynamic TanStack devtools imports can route through Rspack

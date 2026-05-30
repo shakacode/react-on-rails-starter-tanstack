@@ -12,6 +12,56 @@ RSpec.describe "HelloServer RSC route", type: :request do
     Nokogiri::HTML(response.body)
   end
 
+  describe "manifest availability checks" do
+    let(:controller) { HelloServerController.new }
+    let(:client_manifest_url) { "http://localhost:3035/packs/react-client-manifest.json" }
+    let(:server_manifest_path) { Rails.root.join("tmp/test-react-server-client-manifest.json").to_s }
+
+    before do
+      File.write(server_manifest_path, "{}")
+      allow(ReactOnRailsPro::Utils).to receive(:react_client_manifest_file_path).and_return(client_manifest_url)
+      allow(ReactOnRailsPro::Utils).to receive(:react_server_client_manifest_file_path).and_return(server_manifest_path)
+    end
+
+    after do
+      FileUtils.rm_f(server_manifest_path)
+    end
+
+    def http_response(response_class, code, message, body)
+      response_class.new("1.1", code, message).tap do |response|
+        response.instance_variable_set(:@body, body)
+        response.instance_variable_set(:@read, true)
+      end
+    end
+
+    it "accepts dev-server manifest URLs that return successfully" do
+      http = instance_double(Net::HTTP)
+      response = http_response(Net::HTTPOK, "200", "OK", "{}")
+      allow(Net::HTTP).to receive(:start) { |_host, _port, **_options, &block| block.call(http) }
+      allow(http).to receive(:request).with(instance_of(Net::HTTP::Get)).and_return(response)
+
+      expect(controller.send(:rsc_client_references_available?)).to be(true)
+    end
+
+    it "rejects successful dev-server fallback responses that are not JSON" do
+      http = instance_double(Net::HTTP)
+      response = http_response(Net::HTTPOK, "200", "OK", "<!doctype html>")
+      allow(Net::HTTP).to receive(:start) { |_host, _port, **_options, &block| block.call(http) }
+      allow(http).to receive(:request).with(instance_of(Net::HTTP::Get)).and_return(response)
+
+      expect(controller.send(:rsc_client_references_available?)).to be(false)
+    end
+
+    it "treats missing dev-server manifest URLs as unavailable" do
+      http = instance_double(Net::HTTP)
+      response = http_response(Net::HTTPNotFound, "404", "Not Found", "")
+      allow(Net::HTTP).to receive(:start) { |_host, _port, **_options, &block| block.call(http) }
+      allow(http).to receive(:request).with(instance_of(Net::HTTP::Get)).and_return(response)
+
+      expect(controller.send(:rsc_client_references_available?)).to be(false)
+    end
+  end
+
   context "when the RSC client-reference manifests are missing (Rspack limitation)" do
     before do
       allow_any_instance_of(HelloServerController) # rubocop:disable RSpec/AnyInstance

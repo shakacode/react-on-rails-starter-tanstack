@@ -665,6 +665,20 @@ function missingRscManifests() {
   return rscManifestPaths.filter((path) => !fs.existsSync(path));
 }
 
+async function waitForRscManifests(timeoutMs = 180_000) {
+  const startedAt = Date.now();
+  let missingManifests = missingRscManifests();
+
+  while (missingManifests.length > 0 && Date.now() - startedAt < timeoutMs) {
+    assertServerRunning();
+    await delay(1_000);
+    missingManifests = missingRscManifests();
+  }
+
+  assertServerRunning();
+  return missingManifests;
+}
+
 function routeBodyShowsKnownRscManifestGap(body) {
   return [
     'react-client-manifest',
@@ -674,10 +688,14 @@ function routeBodyShowsKnownRscManifestGap(body) {
 }
 
 async function smokeHelloServerRoute() {
-  const missingManifests = missingRscManifests();
+  let missingManifests = missingRscManifests();
+
+  if (process.env.REQUIRE_RSC_MANIFESTS === 'true') {
+    missingManifests = await waitForRscManifests();
+  }
 
   if (process.env.REQUIRE_RSC_MANIFESTS === 'true' && missingManifests.length > 0) {
-    throw new Error(`Rspack RSC manifests are missing: ${missingManifests.join(', ')}`);
+    throw new Error(`RSC manifests are missing: ${missingManifests.join(', ')}`);
   }
 
   const response = await fetch(`${baseURL}/hello_server`, { redirect: 'manual' });
@@ -693,6 +711,10 @@ async function smokeHelloServerRoute() {
   if (response.ok) {
     if (!body.includes('React Server Components Demo')) {
       throw new Error(`/hello_server returned ${status}, but the demo shell was not present\n${JSON.stringify(result, null, 2)}`);
+    }
+
+    if (process.env.REQUIRE_RSC_MANIFESTS === 'true' && body.includes('data-rsc-fallback')) {
+      throw new Error(`/hello_server rendered the RSC fallback even though manifests were required\n${JSON.stringify(result, null, 2)}`);
     }
 
     console.log(JSON.stringify({ ...result, outcome: 'rendered' }, null, 2));
