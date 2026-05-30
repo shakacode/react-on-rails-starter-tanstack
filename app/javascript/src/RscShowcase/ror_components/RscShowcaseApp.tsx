@@ -51,6 +51,17 @@ function findByte(bytes: Uint8Array, byte: number, start: number) {
   return -1;
 }
 
+function contentFingerprint(bytes: Uint8Array) {
+  let hash = 0x811c9dc5;
+
+  for (const byte of bytes) {
+    hash ^= byte;
+    hash = Math.imul(hash, 0x01000193);
+  }
+
+  return (hash >>> 0).toString(16).padStart(8, '0');
+}
+
 function decodeLengthPrefixedPayload(arrayBuffer: ArrayBuffer, requestPath: string, componentName: string): RscPayloadData {
   const bytes = new Uint8Array(arrayBuffer);
   const decoder = new TextDecoder();
@@ -84,7 +95,7 @@ function decodeLengthPrefixedPayload(arrayBuffer: ArrayBuffer, requestPath: stri
 
   return {
     byteCount: bytes.length,
-    cacheKey: `${componentName}:${requestPath}:${bytes.length}:${chunks.length}`,
+    cacheKey: `${componentName}:${requestPath}:${bytes.length}:${chunks.length}:${contentFingerprint(bytes)}`,
     chunks,
     componentName,
     fetchedAt: new Date().toISOString(),
