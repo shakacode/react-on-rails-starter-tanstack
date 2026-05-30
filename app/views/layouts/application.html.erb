@@ -43,6 +43,18 @@
   </head>
 
   <body>
-    <%= yield %>
+    <%# Render the shared site header and footer app-wide so the repo, ShakaCode, docs,
+        and MIT license are reachable from every Rails surface. Pages that ship their own
+        chrome (the landing page, the TanStack dashboard, and the RSC demo) set
+        content_for(:no_site_chrome) to opt out and avoid a duplicate header/footer. %>
+    <% if content_for?(:no_site_chrome) %>
+      <%= yield %>
+    <% else %>
+      <div class="flex min-h-screen flex-col bg-background text-foreground antialiased">
+        <%= render "shared/site_header" %>
+        <div class="flex-1"><%= yield %></div>
+        <%= render "shared/site_footer" %>
+      </div>
+    <% end %>
   </body>
 </html>

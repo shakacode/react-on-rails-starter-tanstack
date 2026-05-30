@@ -1,4 +1,7 @@
 <% content_for(:title) { "React on Rails × TanStack Starter" } %>
+<%# The landing renders its own header (with in-page section nav) and footer inline,
+    so opt out of the global site chrome to avoid duplicate header/footer. %>
+<% content_for(:no_site_chrome, true) %>
 <% content_for :head do %>
   <% social_image = "#{github_repo_url}/raw/#{ApplicationHelper::GITHUB_DEFAULT_BRANCH}/docs/images/landing-comparison.png" %>
   <meta name="description" content="A Rails 8 + React on Rails Pro starter that shows the Rails-vs-React difference live: server-rendered Rails CRUD beside an instant, URL-synced TanStack Router, Query, and Table dashboard. Agent-native, with copy-paste AI prompts.">
@@ -101,7 +104,7 @@
 %>
 
 <div class="min-h-screen bg-background text-foreground antialiased">
-  <%= render "shared/site_header" %>
+  <%= render "shared/site_header", show_section_nav: true %>
 
   <main>
     <%# ===================== HERO ===================== %>
