@@ -236,8 +236,9 @@ bundler or Webpack-adoption issue:
 - `/` and `/dashboard` have **no** CSP errors on Webpack (`csp.spec.ts` passes),
   because they use classic React on Rails Pro SSR (nonce'd scripts), not RSC
   streaming.
-- Fix belongs upstream in react-on-rails-pro (streaming scripts must inherit the
-  per-request nonce). Tracked as a follow-up; do not modify the pro repo here.
+- Fix belongs upstream in react-on-rails-pro (React's streaming bootstrap must
+  receive the per-request nonce). See `docs/11-rsc-csp-nonce-spike.md` for the
+  reproduction, rejected in-app workarounds, and safe interim.
 
 ## Go / No-Go for flipping the staging deploy to Webpack
 
