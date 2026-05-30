@@ -4,7 +4,7 @@
 
 AMBER: proceed with the RC scaffold on Rspack, with one explicit limitation.
 
-The app was bootstrapped with `create-react-on-rails-app --rsc --rspack --package-manager pnpm` and the launch stack targets React on Rails Pro `16.7.0-rc.3` with Shakapacker `10.1.0`. Shakapacker stays on `10.1.0` because public `11.1.0` artifacts are not visible in the registries consumed by the starter. The Rails/Rspack/React on Rails Pro setup passes `react_on_rails:doctor` with zero warnings after local adjustments.
+The app was bootstrapped with `create-react-on-rails-app --rsc --rspack --package-manager pnpm` and the launch stack targets React on Rails Pro `17.0.0-rc.0` with Shakapacker `10.1.0`. Shakapacker stays on `10.1.0` because public `11.1.0` artifacts are not visible in the registries consumed by the starter. The Rails/Rspack/React on Rails Pro setup passes `react_on_rails:doctor` with the expected warning that both Rspack and Webpack configs are present.
 
 ## Validation Goals
 
@@ -16,11 +16,11 @@ The app was bootstrapped with `create-react-on-rails-app --rsc --rspack --packag
 ## What Worked
 
 - Rails 8.1 app scaffolded with PostgreSQL and SolidQueue.
-- React on Rails and React on Rails Pro launch stack: `16.7.0.rc.3`.
+- React on Rails and React on Rails Pro launch stack: `17.0.0.rc.0`.
 - Shakapacker launch stack: `10.1.0`.
 - Rspack builds complete successfully with the limitation below.
 - The `/dashboard` TanStack Router, Query, and Table surface prerenders through React on Rails Pro's Node renderer and hydrates under the Rails shell.
-- `bundle exec rails react_on_rails:doctor` reports 50 checks passed, 0 warnings, 0 errors.
+- `bundle exec rails react_on_rails:doctor` reports 50 checks passed, 1 warning, 0 errors.
 - `bin/doctor`, `bin/setup`, RSpec, and Playwright smoke tests pass locally.
 
 ## Rspack/RSC Limitation
@@ -30,7 +30,7 @@ The Rspack client, server, and server-only RSC bundles compile, but interactive 
 Current stance:
 
 - Keep Rspack as the bundler.
-- Keep the React on Rails Pro `16.7.0-rc.3` and Shakapacker `10.1.0` launch stack.
+- Keep the React on Rails Pro `17.0.0-rc.0` and Shakapacker `10.1.0` launch stack.
 - Keep the Rspack/RSC client boundary repro in `pnpm run repro:rspack-rsc`.
 - Keep direct Rspack packages aligned with the Shakapacker Rspack 2 adapter: `@rspack/core` / `@rspack/cli` `2.0.4` and `@rspack/dev-server` `2.0.1`.
 

@@ -1,6 +1,6 @@
 # Architecture
 
-This starter begins from `create-react-on-rails-app --rsc --rspack` and is launched on the React on Rails Pro `16.7.0-rc.3` RC stack with Shakapacker `10.1.0`.
+This starter begins from `create-react-on-rails-app --rsc --rspack` and is launched on the React on Rails Pro `17.0.0-rc.0` RC stack with Shakapacker `10.1.0`.
 
 Shakapacker remains on `10.1.0` because public `11.1.0` artifacts are not visible in the registries this starter consumes. Rspack remains the checked-in local default, while Webpack is the deploy/RSC bridge until upstream Rspack RSC manifest support lands.
 

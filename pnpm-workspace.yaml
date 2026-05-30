@@ -9,8 +9,8 @@ overrides:
 
 # Fresh RC/stable packages are intentional for this starter.
 minimumReleaseAgeExclude:
-  - react-on-rails-pro-node-renderer@16.7.0-rc.3
-  - react-on-rails-pro@16.7.0-rc.3
-  - react-on-rails@16.7.0-rc.3
   - shakapacker-rspack@10.1.0
   - shakapacker@10.1.0
+  - react-on-rails-pro-node-renderer@17.0.0-rc.0
+  - react-on-rails-pro@17.0.0-rc.0
+  - react-on-rails@17.0.0-rc.0
