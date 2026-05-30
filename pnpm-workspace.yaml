@@ -1,6 +1,11 @@
 allowBuilds:
   '@parcel/watcher': true
   '@swc/core': true
+  # core-js-pure only ships a postinstall funding/ad message, no real build step.
+  'core-js-pure': false
+
+overrides:
+  sockjs>uuid: 11.1.1
 
 # Fresh RC/stable packages are intentional for this starter.
 minimumReleaseAgeExclude:
