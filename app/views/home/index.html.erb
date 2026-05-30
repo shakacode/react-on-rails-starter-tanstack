@@ -17,12 +17,12 @@
 <%
   examples = [
     {
-      eyebrow: "RSC",
-      title: "React Server Components",
-      body: "Rails routes the request and React on Rails Pro streams an async React Server Component tree. Only the client island ships browser JavaScript.",
-      live: hello_server_path,
-      live_label: "Open RSC demo",
-      source: github_source_url("app/javascript/src/HelloServer/"),
+      eyebrow: "RSC + TanStack",
+      title: "RSC showcase",
+      body: "A bare TanStack Router loader fetches a React on Rails Pro RSC payload from Rails and composes it beside client islands.",
+      live: rsc_showcase_path,
+      live_label: "Open RSC showcase",
+      source: github_source_url("app/javascript/src/RscShowcase/ror_components/RscShowcaseApp.tsx"),
       auth: false
     },
     {
@@ -79,7 +79,7 @@
     },
     {
       title: "Trace the RSC path",
-      body: "Walk me through the React Server Components flow in this repo, from app/controllers/hello_server_controller.rb through app/views/hello_server/index.html.erb and app/javascript/src/HelloServer. Include the Webpack bridge status and the documented Rspack manifest limitation in SPIKE.md."
+      body: "Walk me through the /rsc-showcase flow in this repo: app/controllers/rsc_showcase_controller.rb, app/views/rsc_showcase/show.html.erb, app/javascript/src/RscShowcase/ror_components/RscShowcaseApp.tsx, and the React on Rails Pro RSC payload route. Include how /hello_server remains the lower-level streaming reference."
     },
     {
       title: "Add a feature",
@@ -101,7 +101,7 @@
   ]
 %>
 
-<div class="min-h-screen bg-background text-foreground antialiased">
+<div class="min-h-screen overflow-x-hidden bg-background text-foreground antialiased">
   <%= render "shared/site_header", show_section_nav: true %>
 
   <main>
@@ -124,8 +124,8 @@
           </p>
 
           <div class="mt-8 flex flex-wrap items-center gap-3">
-            <a href="<%= hello_server_path %>" class="inline-flex h-11 items-center justify-center rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90">
-              Open the RSC demo
+            <a href="<%= rsc_showcase_path %>" class="inline-flex h-11 items-center justify-center rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90">
+              Open the RSC showcase
             </a>
             <a href="<%= dashboard_path %>" class="inline-flex h-11 items-center justify-center rounded-md border border-border bg-card px-6 text-sm font-medium shadow-sm transition-colors hover:bg-muted">
               Open the dashboard
@@ -151,7 +151,7 @@
           <div class="grid gap-px bg-border">
             <div class="bg-card p-5">
               <p class="font-medium">Public RSC</p>
-              <p class="mt-1 text-sm text-muted-foreground">Server components stream from Rails through React on Rails Pro; client islands stay small.</p>
+              <p class="mt-1 text-sm text-muted-foreground">A TanStack route loader composes a Pro RSC payload from Rails; only explicit client islands hydrate.</p>
             </div>
             <div class="bg-card p-5">
               <p class="font-medium">Authenticated TanStack</p>
@@ -283,7 +283,7 @@
 
         <div class="mt-10 grid gap-5 md:grid-cols-2">
           <% prompts.each do |prompt| %>
-            <div data-prompt-card class="flex flex-col rounded-lg border border-border bg-card shadow-sm">
+            <div data-prompt-card class="min-w-0 flex flex-col rounded-lg border border-border bg-card shadow-sm">
               <div class="flex items-center justify-between gap-2 border-b border-border px-5 py-3">
                 <h3 class="font-semibold"><%= prompt[:title] %></h3>
                 <button type="button" data-copy
@@ -292,7 +292,7 @@
                   <span data-copy-label>Copy</span>
                 </button>
               </div>
-              <pre data-prompt class="flex-1 whitespace-pre-wrap px-5 py-4 font-mono text-sm leading-relaxed text-muted-foreground"><%= prompt[:body] %></pre>
+              <pre data-prompt class="min-w-0 flex-1 whitespace-pre-wrap break-words px-5 py-4 font-mono text-sm leading-relaxed text-muted-foreground"><%= prompt[:body] %></pre>
             </div>
           <% end %>
         </div>

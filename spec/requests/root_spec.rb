@@ -51,7 +51,7 @@ RSpec.describe "Landing page", type: :request do
   it "links live surfaces and source files from the landing page" do
     get root_path
 
-    expect(parsed_response.css("a[href='#{hello_server_path}']")).not_to be_empty
+    expect(parsed_response.css("a[href='#{rsc_showcase_path}']")).not_to be_empty
     expect(parsed_response.css("a[href='#{dashboard_path}']")).not_to be_empty
     # Generated-file references point at the GitHub blob, not bare code text.
     expect(parsed_response.css("a[href*='github.com/shakacode/react-on-rails-starter-tanstack/blob/main']")).not_to be_empty

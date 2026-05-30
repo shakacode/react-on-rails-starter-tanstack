@@ -30,7 +30,7 @@ test.describe('accessibility smoke', () => {
         name: 'React Server Components on Rails, without moving your app to a JS server.',
       }),
     ).toBeVisible();
-    await expect(main.getByRole('link', { name: 'Open the RSC demo' })).toHaveAttribute('href', '/hello_server');
+    await expect(main.getByRole('link', { name: 'Open the RSC showcase' }).first()).toHaveAttribute('href', '/rsc-showcase');
     await expect(main.getByRole('link', { name: 'Open the dashboard' }).first()).toHaveAttribute('href', '/dashboard');
     await expect(main.getByRole('link', { name: 'Read source' }).first()).toHaveAttribute(
       'href',
