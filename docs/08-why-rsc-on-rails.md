@@ -40,13 +40,14 @@ does not need to download the component code that produced that content.
 
 For content-heavy public pages, server components can reduce the JavaScript sent
 to the browser. A server component renders on the server; only client component
-boundaries need browser JavaScript. In this starter, the current RSC demo lives
-at `/hello_server`, with the Rails entrypoint in
+boundaries need browser JavaScript. In this starter, `/rsc-showcase` is the
+public RSC + TanStack centerpiece: a bare TanStack Router loader fetches a React
+on Rails Pro RSC payload from Rails and composes that server-streamed tree beside
+ordinary client React. `/hello_server` remains the lower-level streaming
+reference, with the Rails entrypoint in
 `app/controllers/hello_server_controller.rb`, the streaming view in
 `app/views/hello_server/index.html.erb`, and the component source under
-`app/javascript/src/HelloServer/`. The demo intentionally keeps the interactive
-`LikeButton` as a client island while the surrounding content renders on the
-server.
+`app/javascript/src/HelloServer/`.
 
 RSC also gives you a streamed component protocol rather than a JSON props
 payload that the browser must turn into the whole page. That matters for cold
@@ -120,11 +121,10 @@ The practical answer is not one rendering model. It is surface-aware rendering.
 Public content is where RSC and streaming are most compelling. A landing page,
 documentation page, pricing page, product catalog page, or content page can
 benefit from server-only data access, streamable HTML, and less client
-JavaScript. In this starter today, `/hello_server` is the RSC reference route.
-The root path `/` is still a Rails landing page; if you promote the public
-landing to RSC, use the same shape as the `/hello_server` route and update
-[Architecture](01-architecture.md), [SPIKE.md](../SPIKE.md), and this document
-in the same change.
+JavaScript. In this starter today, `/rsc-showcase` is the RSC route that makes
+that positioning visible inside a TanStack Router surface. The root path `/`
+stays a Rails landing page that links into the examples and explains the
+rendering choices.
 
 Authenticated app surfaces are different. The dashboard in
 `app/javascript/src/Dashboard/ror_components/DashboardApp.tsx` is prerendered
@@ -158,6 +158,7 @@ renderer handles the React rendering work that needs a JavaScript runtime. The
 same app can use:
 
 - RSC streaming through `stream_react_component` on the `/hello_server` route.
+- RSC-as-data composition through the `/rsc-showcase` TanStack Router loader.
 - React on Rails Pro prerendering for the authenticated `DashboardApp`.
 - TanStack Router SSR state handoff through the Pro TanStack integration.
 - TanStack Query requests back to Rails through the CSRF-aware `apiFetch`
@@ -171,16 +172,17 @@ inside one Rails app.
 
 ## Limitations And Current State
 
-This starter is intentionally on Rspack, and the Rspack/RSC integration is not
-identical to the Webpack path yet. The current Rspack builds are green, but the
-interactive RSC client-reference manifest path is still limited by an upstream
-Rspack plugin gap. That status is tracked in [SPIKE.md](../SPIKE.md), and the
-small reproduction remains available through `pnpm run repro:rspack-rsc`.
+This starter intentionally keeps Rspack as the local default, and the
+Rspack/RSC integration is not identical to the Webpack path yet. The current
+Rspack builds are green, but the interactive RSC client-reference manifest path
+is still limited by an upstream Rspack plugin gap. That status is tracked in
+[SPIKE.md](../SPIKE.md), and the small reproduction remains available through
+`pnpm run repro:rspack-rsc`.
 
-That means `/hello_server` is useful as the route-level RSC streaming reference,
-but this repo should not claim complete interactive RSC coverage on Rspack until
-the client-reference manifests are generated and tested end to end. The checked
-smoke coverage in [Tested Modes](06-tested-modes.md) keeps the route visible so
+The Webpack bridge emits the manifests and is wired for deploy, which is why
+`/rsc-showcase` is the relaunch RSC centerpiece today. The official relaunch
+anchor remains "when Rspack RSC lands" for the default local stack. The checked
+smoke coverage in [Tested Modes](06-tested-modes.md) keeps both paths visible so
 the limitation does not silently regress.
 
 This is also why the thesis here is framed as surface-aware rendering rather
@@ -218,8 +220,9 @@ bin/dev
 
 Use `demo@example.com / password` to sign in. Visit `/dashboard` for the
 TanStack surface, `/projects` for a full-page load into the TanStack project
-routes, `/classic/projects` for the Rails CRUD surface, and `/hello_server` for
-the current RSC streaming demo.
+routes, `/classic/projects` for the Rails CRUD surface, `/rsc-showcase` for the
+RSC + TanStack route on the Webpack bridge, and `/hello_server` for the
+lower-level RSC streaming demo.
 
 The launch deployment target is `https://starter.reactonrails.com`. After the
 deployment issue is complete, the same demo user should work there.

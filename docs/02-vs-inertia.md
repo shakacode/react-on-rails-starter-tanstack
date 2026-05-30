@@ -11,9 +11,9 @@ This starter keeps Rails as the application server, but it does not make Rails
 page props the only frontend contract. Rails still owns sessions,
 authentication, authorization, CSRF, validations, mail, jobs, and persistence.
 React on Rails Pro owns the server-side React rendering boundary. TanStack
-Router, Query, and Table own the authenticated dashboard interaction model.
-The RSC reference route is separate because RSC is a different rendering model,
-not a richer page-props protocol.
+Router, Query, and Table own the authenticated dashboard interaction model. The
+RSC routes are separate because RSC is a different rendering model, not a richer
+page-props protocol.
 
 The tradeoff is real. Inertia is simpler when the product is mostly full-page
 CRUD. React on Rails Pro plus TanStack is more explicit when the product needs
@@ -50,11 +50,13 @@ navigation semantics inside the same surface. You can mount local React
 components inside an Inertia page, but making TanStack Router a peer routing
 system fights the abstraction that makes Inertia useful.
 
-This repo currently demonstrates TanStack Router routes, URL search validation,
-SSR handoff, and router links. It does not yet demonstrate TanStack Router route
-loaders. Data fetching in the dashboard is intentionally done through TanStack
-Query so the Rails JSON API, CSRF handling, cache keys, invalidation, and table
-state are visible.
+This repo demonstrates both sides deliberately. The authenticated dashboard uses
+TanStack Router routes, URL search validation, SSR handoff, and router links,
+while dashboard data fetching stays in TanStack Query so the Rails JSON API,
+CSRF handling, cache keys, invalidation, and table state remain visible.
+`/rsc-showcase` demonstrates the other primitive: a bare TanStack Router loader
+fetches a React on Rails Pro RSC payload from Rails and composes that streamed
+tree inside the route.
 
 ## RSC Requires A Rendering Boundary Inertia Does Not Have
 
@@ -70,12 +72,15 @@ ship browser JavaScript. The server is not merely preparing props for the
 browser. It is rendering part of the component tree and sending React a mixed
 server/client tree to continue.
 
-This starter demonstrates that boundary on `/hello_server`. Rails routes the
-request to [`HelloServerController`](../app/controllers/hello_server_controller.rb),
-the view calls [`stream_react_component`](../app/views/hello_server/index.html.erb),
+This starter demonstrates that boundary in two ways. `/hello_server` is the
+low-level streaming reference: Rails routes the request to
+[`HelloServerController`](../app/controllers/hello_server_controller.rb), the
+view calls [`stream_react_component`](../app/views/hello_server/index.html.erb),
 and the RSC source separates the async server component from the interactive
 [`LikeButton`](../app/javascript/src/HelloServer/components/LikeButton.tsx)
-client island.
+client island. `/rsc-showcase` is the product-facing bridge: the TanStack route
+loader fetches the React on Rails Pro RSC payload and renders it beside normal
+client React.
 
 That distinction is why "Inertia adds RSC" is not a small feature request. It
 would need a rendering boundary that understands the RSC payload and the
@@ -84,10 +89,22 @@ that shape in Rails, the natural integration would be Inertia on top of a
 renderer such as React on Rails Pro. That is an architectural inference, not a
 claim about Inertia's roadmap.
 
-The Rspack status is also intentionally conservative. `/hello_server` is the
-RSC streaming reference route, but complete interactive RSC client-reference
-coverage on Rspack is still limited by the manifest gap tracked in
-[SPIKE.md](../SPIKE.md) and [Tested Modes](06-tested-modes.md).
+The Rspack status is also intentionally conservative. Rspack remains the local
+default, but complete interactive RSC client-reference coverage on Rspack is
+still limited by the manifest gap tracked in [SPIKE.md](../SPIKE.md) and
+[Tested Modes](06-tested-modes.md). The Webpack bridge emits those manifests
+and is the deploy path for `/rsc-showcase`.
+
+## TanStack Router RSC Is Not TanStack Start Parity
+
+TanStack's framework-level RSC story lives in TanStack Start, which is a Vite
+framework with its own conventions and experimental RSC support. This starter
+does not use TanStack Start, Vite, or file-based routing.
+
+The honest claim here is narrower: React on Rails Pro composes server-streamed
+RSC into a bare TanStack Router route on Rails. That is enough to demonstrate
+the architectural gap with Inertia, because Inertia's page-props transport has
+no place to host a streamed RSC payload and its client/server module manifests.
 
 ## What Inertia Is Better At
 
@@ -118,17 +135,19 @@ that this starter is arranged around different ownership boundaries.
 | --- | --- |
 | Rails-owned full-page entrypoints into TanStack routes | [`config/routes.rb`](../config/routes.rb) maps `/dashboard`, `/projects...`, and `/settings...` to the dashboard shell instead of classic CRUD pages. [`DashboardController`](../app/controllers/dashboard_controller.rb) passes the initial path, search string, current user, links, and API endpoints. |
 | React on Rails Pro SSR for the dashboard | [`app/views/dashboard/show.html.erb`](../app/views/dashboard/show.html.erb) prerenders `DashboardApp`, and [`DashboardApp.tsx`](../app/javascript/src/Dashboard/ror_components/DashboardApp.tsx) uses `serverRenderTanStackAppAsync` for the server branch. |
-| TanStack Router route tree and URL state | [`DashboardApp.tsx`](../app/javascript/src/Dashboard/ror_components/DashboardApp.tsx) defines the route tree, validates dashboard search params, uses router links, and preserves direct full-page loads into `/projects...`. Route loader APIs are a next step, not a current shipped demo. |
+| TanStack Router route tree and URL state | [`DashboardApp.tsx`](../app/javascript/src/Dashboard/ror_components/DashboardApp.tsx) defines the authenticated route tree, validates dashboard search params, uses router links, and preserves direct full-page loads into `/projects...`. |
+| TanStack Router loader composing RSC | [`RscShowcaseApp.tsx`](../app/javascript/src/RscShowcase/ror_components/RscShowcaseApp.tsx) defines the public `/rsc-showcase` route whose loader fetches a React on Rails Pro RSC payload and composes it with a client island. |
 | TanStack Query with Rails CSRF | [`apiFetch`](../app/javascript/lib/apiFetch.ts) sends same-origin credentials and the Rails CSRF token. [`queryClient`](../app/javascript/lib/queryClient.ts) centralizes query defaults. Dashboard mutations invalidate Rails-backed query keys. |
 | TanStack Table backed by Rails persistence | `ProjectsTable` in [`DashboardApp.tsx`](../app/javascript/src/Dashboard/ror_components/DashboardApp.tsx) keeps filter, sort, and pagination state in the URL. [`Api::ProjectsController`](../app/controllers/api/projects_controller.rb) owns filtering, sorting, pagination, validation errors, and per-user scoping. |
 | Classic Rails CRUD coexistence | The [`classic` routes](../config/routes.rb) and [`ProjectsController`](../app/controllers/projects_controller.rb) keep a Rails-rendered CRUD surface at `/classic/projects`, while `/projects...` stays in the TanStack dashboard. |
-| RSC streaming reference route | [`HelloServerController`](../app/controllers/hello_server_controller.rb), [`hello_server/index.html.erb`](../app/views/hello_server/index.html.erb), and [`HelloServer`](../app/javascript/src/HelloServer/components/HelloServer.tsx) demonstrate the current RSC route. |
+| RSC streaming reference route | [`HelloServerController`](../app/controllers/hello_server_controller.rb), [`hello_server/index.html.erb`](../app/views/hello_server/index.html.erb), and [`HelloServer`](../app/javascript/src/HelloServer/components/HelloServer.tsx) demonstrate the lower-level RSC streaming route. |
 | Rendering-mode explanation in the product UI | `RenderingModeDrawer` in [`DashboardApp.tsx`](../app/javascript/src/Dashboard/ror_components/DashboardApp.tsx) explains why public RSC, authenticated SSR, TanStack state, and classic Rails CRUD coexist in one app. |
 | Head-to-head and migration demos | The [Gumroad-style RSC comparison](https://github.com/shakacode/react-on-rails-demo-gumroad-rsc) is the head-to-head demo. The [Octochangelog migration probe](https://github.com/shakacode/react_on_rails-demo-octochangelog-on-rails-pro) is the migration story. |
 
 The deeper RSC thesis is in [Why RSC On Rails](08-why-rsc-on-rails.md).
-That document also keeps the current root route honest: `/` is still the Rails
-landing page today, while `/hello_server` is the RSC reference route.
+That document also keeps the current public routes honest: `/` is the Rails
+landing page, `/rsc-showcase` is the RSC + TanStack centerpiece on the Webpack
+bridge, and `/hello_server` is the lower-level streaming reference route.
 
 ## When To Pick Inertia Anyway
 

@@ -15,8 +15,10 @@ shakacode/react_on_rails#1828 / #3385.)
 ## Verdict: YES
 
 On Webpack the build emits **both** RSC client-reference manifests, the React on
-Rails Pro Node renderer loads them, and `/hello_server` (the `use client`
-`LikeButton` island) renders end-to-end with `REQUIRE_RSC_MANIFESTS=true`.
+Rails Pro Node renderer loads them, `/hello_server` (the `use client`
+`LikeButton` island) renders end-to-end with `REQUIRE_RSC_MANIFESTS=true`, and
+`/rsc-showcase` can fetch and compose a Pro RSC payload inside a bare TanStack
+Router route loader.
 
 ### Evidence
 
@@ -50,6 +52,10 @@ manifest:
   script/dev-mode-smoke.mjs hmr hello-server` → Webpack dev-server + HMR boots,
   writes the client manifest to disk for Pro, and `/hello_server` streams the
   RSC view instead of rendering the fallback.
+- `SHAKAPACKER_ASSETS_BUNDLER=webpack pnpm exec playwright test
+  test/playwright/rsc_showcase.spec.ts` → `/rsc-showcase` fetches the Pro RSC
+  payload through its TanStack Router loader, renders the RSC island, and keeps
+  the route-owned client island interactive.
 - The Rspack track is unchanged: the default-bundler repro still reports
   `"status": "blocked"` with both manifests absent.
 
@@ -175,6 +181,7 @@ All run with `SHAKAPACKER_ASSETS_BUNDLER=webpack` on a clean production build
 | Classic Rails CRUD (`/classic/projects` index/new/show) | authed `curl` on prod server | ✅ HTTP 200 on all three |
 | Auth (sign-in, signup, reset, verify) | dashboard smoke + `auth.spec.ts` | ✅ sign-in POST → 302 `/`; all auth Playwright specs pass |
 | `/hello_server` interactive RSC | `REQUIRE_RSC_MANIFESTS=true node script/dev-mode-smoke.mjs static hello-server` | ✅ `"missingRscManifests": []`, `"outcome": "rendered"` |
+| `/rsc-showcase` RSC-in-TanStack route | `pnpm exec playwright test test/playwright/rsc_showcase.spec.ts` | ✅ loader fetched the Pro RSC payload, decoded the Flight stream, and kept both the RSC island and route-owned client island interactive |
 | Webpack HMR dashboard | `SHAKAPACKER_ASSETS_BUNDLER=webpack node script/dev-mode-smoke.mjs hmr dashboard` | ✅ Webpack dev-server starts with HMR, dashboard hydrates/navigates, and the browser observes a source edit via hot-update assets |
 | Webpack HMR `/hello_server` RSC | `SHAKAPACKER_ASSETS_BUNDLER=webpack REQUIRE_RSC_MANIFESTS=true node script/dev-mode-smoke.mjs hmr hello-server` | ✅ both RSC manifests present, `/hello_server` streams the RSC view instead of the fallback |
 | LikeButton client island hydration | Playwright click (CSP bypassed) | ✅ `0 likes` → `1 like` — island hydrates and is interactive |
@@ -236,6 +243,8 @@ bundler or Webpack-adoption issue:
 - `/` and `/dashboard` have **no** CSP errors on Webpack (`csp.spec.ts` passes),
   because they use classic React on Rails Pro SSR (nonce'd scripts), not RSC
   streaming.
+- `/rsc-showcase` is the safe public interim because it fetches the RSC payload
+  as route data and does not depend on React's inline streaming bootstrap.
 - Fix belongs upstream in react-on-rails-pro (React's streaming bootstrap must
   receive the per-request nonce). See `docs/11-rsc-csp-nonce-spike.md` for the
   reproduction, rejected in-app workarounds, and safe interim.
@@ -243,11 +252,12 @@ bundler or Webpack-adoption issue:
 ## Go / No-Go for flipping the staging deploy to Webpack
 
 **YES — safe to flip staging to Webpack.** Every deployed surface
-(landing, classic CRUD, auth, the TanStack dashboard SSR, and the production
-boot) works on Webpack and is covered by green RSpec + Playwright + smoke runs;
-the build is reversible to Rspack in one line. The single caveat is that
-`/hello_server`'s client island will not *hydrate* under the production CSP until
-the upstream streaming-script-nonce fix lands — but the route still renders
-(HTTP 200, SSR'd), it is strictly better than the Rspack fallback, and it does
-not affect any other surface. Flip staging, keep `/hello_server` interactivity as
-the known upstream follow-up.
+(landing, `/rsc-showcase`, classic CRUD, auth, the TanStack dashboard SSR, and
+the production boot) works on Webpack and is covered by green RSpec, Playwright,
+and smoke runs; the build is reversible to Rspack in one line. The single caveat
+is that `/hello_server`'s client island will not *hydrate* under the production
+CSP until the upstream streaming-script-nonce fix lands — but the route still
+renders (HTTP 200, SSR'd), it is strictly better than the Rspack fallback, and it
+does not affect any other surface. Flip staging, use `/rsc-showcase` as the
+public RSC centerpiece, and keep `/hello_server` interactivity as the known
+upstream follow-up.

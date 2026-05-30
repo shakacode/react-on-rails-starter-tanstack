@@ -283,6 +283,7 @@ function ShowcasePage({ appProps, payload }: { appProps: RscShowcaseAppProps; pa
   );
 }
 
+// REFERENCE PATTERN: rsc-showcase-loader — see AGENTS.md
 function createShowcaseRouter(appProps: RscShowcaseAppProps) {
   const rootRoute = createRootRoute({ component: RootLayout });
   const showcaseRoute = createRoute({
