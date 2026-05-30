@@ -3,81 +3,83 @@
     so opt out of the global site chrome to avoid duplicate header/footer. %>
 <% content_for(:no_site_chrome, true) %>
 <% content_for :head do %>
-  <% social_image = "#{github_repo_url}/raw/#{ApplicationHelper::GITHUB_DEFAULT_BRANCH}/docs/images/landing-comparison.png" %>
-  <meta name="description" content="A Rails 8 + React on Rails Pro starter that shows the Rails-vs-React difference live: server-rendered Rails CRUD beside an instant, URL-synced TanStack Router, Query, and Table dashboard. Agent-native, with copy-paste AI prompts.">
+  <% social_image = "#{github_repo_url}/raw/#{ApplicationHelper::GITHUB_DEFAULT_BRANCH}/docs/images/rendering-mode-drawer.png" %>
+  <meta name="description" content="A Rails 8 + React on Rails Pro starter for React 19 Server Components, TanStack Router, TanStack Query, and TanStack Table without moving the app server out of Rails.">
   <meta property="og:type" content="website">
   <meta property="og:title" content="React on Rails × TanStack Starter">
-  <meta property="og:description" content="The same app, two front-ends, side by side: server-rendered Rails next to an instant TanStack Table island. Plus copy-paste AI prompts to extend it with your agent.">
+  <meta property="og:description" content="React Server Components on Rails, with TanStack Router where client app state belongs. A clean Rails + React on Rails Pro reference starter.">
   <meta property="og:image" content="<%= social_image %>">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="React on Rails × TanStack Starter">
-  <meta name="twitter:description" content="The same app, two front-ends, side by side. An agent-native Rails + TanStack starter with copy-paste AI prompts.">
+  <meta name="twitter:description" content="React Server Components on Rails, with TanStack Router where client app state belongs.">
   <meta name="twitter:image" content="<%= social_image %>">
 <% end %>
 <%
-  comparison_props = {
-    projects: @demo_projects.map do |project|
-      {
-        id: project[:id],
-        name: project[:name],
-        owner: project[:owner],
-        status: project[:status],
-        lastActivityAt: project[:last_activity_at]
-      }
-    end,
-    pageSize: 5
-  }
-
-  status_badge_classes = {
-    "Active" => "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
-    "Paused" => "bg-amber-500/15 text-amber-700 dark:text-amber-300",
-    "Completed" => "bg-violet-500/15 text-violet-700 dark:text-violet-300",
-    "Archived" => "bg-muted text-muted-foreground"
-  }
-
   examples = [
     {
-      eyebrow: "The showcase", title: "TanStack dashboard",
-      body: "TanStack Router, Query, and Table on one authenticated surface, server-rendered by React on Rails Pro and hydrated in the browser.",
-      live: dashboard_path, live_label: "Open dashboard",
-      source: github_source_url("app/javascript/src/Dashboard/ror_components/DashboardApp.tsx"), auth: true
+      eyebrow: "RSC",
+      title: "React Server Components",
+      body: "Rails routes the request and React on Rails Pro streams an async React Server Component tree. Only the client island ships browser JavaScript.",
+      live: hello_server_path,
+      live_label: "Open RSC demo",
+      source: github_source_url("app/javascript/src/HelloServer/"),
+      auth: false
     },
     {
-      eyebrow: "The baseline", title: "Classic Rails CRUD",
-      body: "Server-rendered create, read, update, and destroy. Full page reloads, Rails forms, and validation errors. The honest baseline.",
-      live: classic_projects_path, live_label: "Open CRUD",
-      source: github_source_url("app/controllers/projects_controller.rb"), auth: true
+      eyebrow: "App shell",
+      title: "TanStack dashboard",
+      body: "Authenticated Rails routes render a TanStack Router, Query, and Table dashboard through the React on Rails Pro Node renderer.",
+      live: dashboard_path,
+      live_label: "Open dashboard",
+      source: github_source_url("app/javascript/src/Dashboard/ror_components/DashboardApp.tsx"),
+      auth: true
     },
     {
-      eyebrow: "Streaming", title: "React Server Components",
-      body: "Async server components streamed from Rails, shipping JavaScript only for the interactive islands.",
-      live: hello_server_path, live_label: "Open RSC demo",
-      source: github_source_url("app/javascript/src/HelloServer/"), auth: false
+      eyebrow: "Data",
+      title: "Rails JSON API + Query",
+      body: "Rails keeps persistence, validation, CSRF, filtering, sorting, and pagination. TanStack Query owns browser cache and invalidation.",
+      live: projects_path,
+      live_label: "Open projects",
+      source: github_source_url("app/controllers/api/projects_controller.rb"),
+      auth: true
     },
     {
-      eyebrow: "Accounts", title: "Auth + email verification",
-      body: "Session auth, signup with email verification gating, and password reset. Mailer previews included.",
-      live: new_session_path, live_label: "Open sign in",
-      source: github_source_url("app/controllers/registrations_controller.rb"), auth: false
+      eyebrow: "Baseline",
+      title: "Classic Rails CRUD",
+      body: "Conventional Rails forms and controller patterns remain available for CRUD screens that do not need a client app shell.",
+      live: classic_projects_path,
+      live_label: "Open CRUD",
+      source: github_source_url("app/controllers/projects_controller.rb"),
+      auth: true
     },
     {
-      eyebrow: "Data layer", title: "JSON API + TanStack Query",
-      body: "CSRF-aware JSON endpoints with server-side filtering, sorting, and pagination, consumed by TanStack Query.",
-      live: nil, live_label: nil,
-      source: github_source_url("app/controllers/api/projects_controller.rb"), auth: true
+      eyebrow: "Accounts",
+      title: "Auth + email verification",
+      body: "Session auth, signup with email verification gating, password reset, mailers, and previews are already wired.",
+      live: new_session_path,
+      live_label: "Open sign in",
+      source: github_source_url("app/controllers/registrations_controller.rb"),
+      auth: false
     },
     {
-      eyebrow: "Profile", title: "Settings",
-      body: "Profile updates from the TanStack dashboard, including the unverified-on-email-change gate.",
-      live: settings_path, live_label: "Open settings",
-      source: github_source_url("app/controllers/settings_controller.rb"), auth: true
+      eyebrow: "Profile",
+      title: "Settings",
+      body: "Profile updates run from the TanStack dashboard while Rails still owns validation and the unverified-on-email-change gate.",
+      live: settings_path,
+      live_label: "Open settings",
+      source: github_source_url("app/controllers/settings_controller.rb"),
+      auth: true
     }
   ]
 
   prompts = [
     {
       title: "Get oriented",
-      body: "Clone shakacode/react-on-rails-starter-tanstack and read AGENTS.md. Then explain how a full-page TanStack route is wired by tracing DashboardController#show to app/views/dashboard/show.html.erb to app/javascript/src/Dashboard/ror_components/DashboardApp.tsx, including the SSR and hydration handoff."
+      body: "Clone shakacode/react-on-rails-starter-tanstack and read AGENTS.md. Then explain how Rails routes /dashboard to DashboardController#show, how app/views/dashboard/show.html.erb renders DashboardApp, and how React on Rails Pro hands TanStack Router its SSR and hydration state."
+    },
+    {
+      title: "Trace the RSC path",
+      body: "Walk me through the React Server Components flow in this repo, from app/controllers/hello_server_controller.rb through app/views/hello_server/index.html.erb and app/javascript/src/HelloServer. Include the Webpack bridge status and the documented Rspack manifest limitation in SPIKE.md."
     },
     {
       title: "Add a feature",
@@ -86,20 +88,16 @@
     {
       title: "Add a new route",
       body: "Add an authenticated TanStack route at /reports following the dashboard-props-controller and tanstack-route reference patterns in AGENTS.md. Pass Rails-owned props through DashboardController and render a summary built with TanStack Query."
-    },
-    {
-      title: "Learn the rendering model",
-      body: "Walk me through the React Server Components flow in this repo, from app/controllers/hello_server_controller.rb through app/javascript/src/HelloServer, and explain the documented Rspack client-reference limitation in SPIKE.md and what it means for interactivity."
     }
   ]
 
   learn_links = [
-    { label: "SSR tutorial", desc: "Render on the server, hydrate in the browser.", href: "https://www.reactonrails.com/docs/getting-started/tutorial/" },
+    { label: "Why RSC on Rails", desc: "The launch thesis for keeping Rails as the app server.", href: github_source_url("docs/08-why-rsc-on-rails.md") },
+    { label: "React on Rails + TanStack vs Inertia", desc: "Where the rendering boundary differs from page-props protocols.", href: github_source_url("docs/02-vs-inertia.md") },
     { label: "React Server Components", desc: "Architecture, rendering flow, and migration guidance.", href: "https://www.reactonrails.com/docs/pro/react-server-components/" },
-    { label: "OSS vs Pro", desc: "What stays in OSS and what moves into the Pro track.", href: "https://www.reactonrails.com/docs/getting-started/oss-vs-pro/" },
+    { label: "SSR tutorial", desc: "Render on the server, hydrate in the browser.", href: "https://www.reactonrails.com/docs/getting-started/tutorial/" },
     { label: "TanStack", desc: "Router, Query, and Table reference docs.", href: "https://tanstack.com/" },
-    { label: "React on Rails Pro", desc: "Node renderer, RSC, and support paths.", href: "https://www.reactonrails.com/pro/" },
-    { label: "Marketplace RSC demo", desc: "A larger app comparing SSR, client boundaries, and RSC.", href: "https://github.com/shakacode/react-on-rails-demo-marketplace-rsc" }
+    { label: "React on Rails Pro", desc: "Node renderer, RSC, and support paths.", href: "https://www.reactonrails.com/pro/" }
   ]
 %>
 
@@ -108,29 +106,29 @@
 
   <main>
     <%# ===================== HERO ===================== %>
-    <section class="relative overflow-hidden border-b border-border">
-      <div class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_50%_0%,rgba(16,185,129,0.10),transparent)]"></div>
-      <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-        <div class="mx-auto max-w-3xl text-center">
+    <section id="rsc" class="scroll-mt-16 border-b border-border">
+      <div class="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-20">
+        <div>
           <span class="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
             <span class="inline-block size-1.5 rounded-full bg-emerald-500"></span>
-            Rails 8 · React 19 · React on Rails Pro starter
+            Rails 8 · React 19 · React on Rails Pro · TanStack Router
           </span>
-          <h1 class="mt-6 text-balance text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-            Feel the difference between Rails and React. In the same app.
+          <h1 class="mt-6 max-w-4xl text-balance text-4xl font-bold tracking-normal sm:text-5xl lg:text-6xl">
+            React Server Components on Rails, without moving your app to a JS server.
           </h1>
-          <p class="mx-auto mt-6 max-w-2xl text-pretty text-lg text-muted-foreground">
-            One Rails 8 codebase, two front-ends side by side: classic server-rendered CRUD next to a
-            TanStack Router, Query, and Table dashboard, server-rendered and streamed by React on Rails Pro.
-            Scroll down and try them both.
+          <p class="mt-6 max-w-2xl text-pretty text-lg text-muted-foreground">
+            Keep Rails as the application server for auth, sessions, CSRF, validations,
+            mailers, jobs, and Active Record. Add React on Rails Pro where server-rendered
+            React and RSC need a Node rendering boundary. Use bare TanStack Router where
+            the browser should own app navigation and URL state.
           </p>
 
-          <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <a href="<%= dashboard_path %>" class="inline-flex h-11 items-center justify-center rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90">
-              Open the live dashboard
+          <div class="mt-8 flex flex-wrap items-center gap-3">
+            <a href="<%= hello_server_path %>" class="inline-flex h-11 items-center justify-center rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90">
+              Open the RSC demo
             </a>
-            <a href="#comparison" class="inline-flex h-11 items-center justify-center rounded-md border border-border bg-card px-6 text-sm font-medium shadow-sm transition-colors hover:bg-muted">
-              See the comparison
+            <a href="<%= dashboard_path %>" class="inline-flex h-11 items-center justify-center rounded-md border border-border bg-card px-6 text-sm font-medium shadow-sm transition-colors hover:bg-muted">
+              Open the dashboard
             </a>
             <a href="<%= github_repo_url %>" target="_blank" rel="noreferrer noopener" class="inline-flex h-11 items-center justify-center rounded-md px-4 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
               Browse the source →
@@ -143,139 +141,93 @@
               / <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-foreground"><%= demo_account_password %></code>
             </p>
           <% end %>
-
-          <ul class="mt-10 flex flex-wrap items-center justify-center gap-2">
-            <% [
-                 { label: "TanStack Router", accent: true },
-                 { label: "TanStack Query", accent: true },
-                 { label: "TanStack Table", accent: true },
-                 { label: "Rails 8" }, { label: "PostgreSQL" }, { label: "React 19" },
-                 { label: "TypeScript" }, { label: "Tailwind v4" }, { label: "shadcn/ui" },
-                 { label: "Rspack" }, { label: "React on Rails Pro" }
-               ].each do |chip| %>
-              <li class="inline-flex items-center rounded-full border px-3 py-1 text-sm <%= chip[:accent] ? 'border-emerald-500/40 bg-emerald-500/10 font-medium text-emerald-700 dark:text-emerald-300' : 'border-border bg-card text-muted-foreground' %>">
-                <%= chip[:label] %>
-              </li>
-            <% end %>
-          </ul>
         </div>
+
+        <div class="rounded-lg border border-border bg-card shadow-sm">
+          <div class="border-b border-border px-5 py-4">
+            <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Rendering boundary</p>
+            <h2 class="mt-2 text-2xl font-semibold tracking-normal">One Rails app, three deliberate surfaces</h2>
+          </div>
+          <div class="grid gap-px bg-border">
+            <div class="bg-card p-5">
+              <p class="font-medium">Public RSC</p>
+              <p class="mt-1 text-sm text-muted-foreground">Server components stream from Rails through React on Rails Pro; client islands stay small.</p>
+            </div>
+            <div class="bg-card p-5">
+              <p class="font-medium">Authenticated TanStack</p>
+              <p class="mt-1 text-sm text-muted-foreground">TanStack Router, Query, and Table run inside Rails-owned full-page routes.</p>
+            </div>
+            <div class="bg-card p-5">
+              <p class="font-medium">Classic Rails</p>
+              <p class="mt-1 text-sm text-muted-foreground">Plain Rails CRUD remains available where a client app shell would add no value.</p>
+            </div>
+          </div>
+        </div>
+
+        <ul class="lg:col-span-2 flex flex-wrap items-center justify-center gap-2">
+          <% [
+               { label: "React Server Components", accent: true },
+               { label: "React on Rails Pro", accent: true },
+               { label: "TanStack Router", accent: true },
+               { label: "TanStack Query" },
+               { label: "TanStack Table" },
+               { label: "Rails 8" },
+               { label: "PostgreSQL" },
+               { label: "React 19" },
+               { label: "TypeScript" },
+               { label: "Tailwind v4" },
+               { label: "shadcn/ui" },
+               { label: "Rspack local default" },
+               { label: "Webpack deploy bridge" }
+             ].each do |chip| %>
+            <li class="inline-flex items-center rounded-full border px-3 py-1 text-sm <%= chip[:accent] ? 'border-emerald-500/40 bg-emerald-500/10 font-medium text-emerald-700 dark:text-emerald-300' : 'border-border bg-card text-muted-foreground' %>">
+              <%= chip[:label] %>
+            </li>
+          <% end %>
+        </ul>
       </div>
     </section>
 
-    <%# ===================== COMPARISON ===================== %>
-    <section id="comparison" class="scroll-mt-16 border-b border-border">
+    <%# ===================== POSITIONING ===================== %>
+    <section class="border-b border-border">
       <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <div class="max-w-2xl">
-          <h2 class="text-3xl font-bold tracking-tight">Same data. Two front-ends.</h2>
-          <p class="mt-3 text-muted-foreground">
-            Both panels list the same projects. The left panel is server-rendered Rails: every filter,
-            sort, and page is a real request with a full page reload. The right panel is a TanStack Table
-            client island: every interaction is instant, with the view state kept in the URL. No round trip.
-          </p>
-        </div>
-
-        <div class="mt-10 grid gap-6 lg:grid-cols-2">
-          <%# ---- LEFT: server-rendered Rails panel ---- %>
-          <div class="flex flex-col rounded-xl border border-border bg-card shadow-sm">
-            <div class="flex items-center justify-between gap-2 border-b border-border px-5 py-3">
-              <div class="flex items-center gap-2 font-semibold">
-                <svg viewBox="0 0 24 24" class="size-4 text-rose-500" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12a9 3 0 1 0 18 0a9 3 0 1 0-18 0M3 12v6a9 3 0 0 0 18 0v-6"/></svg>
-                Classic Rails
-              </div>
-              <span class="inline-flex items-center gap-1 rounded-full bg-rose-500/10 px-2.5 py-0.5 text-xs font-medium text-rose-700 dark:text-rose-300">
-                Server round trip · full reload
-              </span>
-            </div>
-
-            <div class="flex flex-1 flex-col gap-3 p-5">
-              <%= form_with url: root_path(anchor: "comparison"), method: :get, data: { turbo: false } do %>
-                <input type="hidden" name="sort" value="<%= @rails_sort %>">
-                <input type="hidden" name="dir" value="<%= @rails_dir %>">
-                <div class="flex gap-2">
-                  <input type="text" name="q" value="<%= @rails_query %>"
-                         placeholder="Filter projects (submits to the server)…"
-                         class="h-9 flex-1 rounded-md border border-input bg-background px-3 text-sm shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                  <button type="submit" class="inline-flex h-9 items-center rounded-md bg-secondary px-3 text-sm font-medium text-secondary-foreground transition-colors hover:bg-secondary/80">
-                    Filter
-                  </button>
-                </div>
-              <% end %>
-
-              <div class="overflow-hidden rounded-lg border border-border">
-                <table class="w-full text-sm" data-testid="rails-panel-table">
-                  <thead>
-                    <tr class="border-b border-border bg-muted/40 text-left text-muted-foreground">
-                      <th class="px-3 py-2"><%= home_sort_link("Project", "name") %></th>
-                      <th class="px-3 py-2"><%= home_sort_link("Owner", "owner") %></th>
-                      <th class="px-3 py-2"><%= home_sort_link("Status", "status") %></th>
-                      <th class="px-3 py-2"><%= home_sort_link("Last activity", "activity") %></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <% if @rails_rows.empty? %>
-                      <tr><td colspan="4" class="px-3 py-8 text-center text-muted-foreground">No projects match “<%= @rails_query %>”.</td></tr>
-                    <% else %>
-                      <% @rails_rows.each do |project| %>
-                        <tr class="border-b border-border last:border-0">
-                          <td class="px-3 py-2 font-medium"><%= project[:name] %></td>
-                          <td class="px-3 py-2 text-muted-foreground"><%= project[:owner] %></td>
-                          <td class="px-3 py-2">
-                            <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium <%= status_badge_classes[project[:status]] %>">
-                              <%= project[:status] %>
-                            </span>
-                          </td>
-                          <td class="px-3 py-2 tabular-nums text-muted-foreground">
-                            <%= Date.parse(project[:last_activity_at]).strftime("%b %-d, %Y") %>
-                          </td>
-                        </tr>
-                      <% end %>
-                    <% end %>
-                  </tbody>
-                </table>
-              </div>
-
-              <div class="mt-auto flex items-center justify-between pt-1 text-sm text-muted-foreground">
-                <span>Page <%= @rails_page %> of <%= @rails_page_count %> (<%= @rails_total %>)</span>
-                <div class="flex gap-2">
-                  <%= home_rails_page_link("Prev", @rails_page - 1, disabled: @rails_page <= 1) %>
-                  <%= home_rails_page_link("Next", @rails_page + 1, disabled: @rails_page >= @rails_page_count) %>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <%# ---- RIGHT: TanStack React island ---- %>
-          <div class="flex flex-col rounded-xl border border-emerald-500/40 bg-card shadow-sm ring-1 ring-emerald-500/10">
-            <div class="flex items-center justify-between gap-2 border-b border-border px-5 py-3">
-              <div class="flex items-center gap-2 font-semibold">
-                <svg viewBox="0 0 24 24" class="size-4 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                TanStack table <span class="font-normal text-muted-foreground">(React island)</span>
-              </div>
-              <span class="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-300">
-                Instant · URL-synced
-              </span>
-            </div>
-            <div class="p-5">
-              <%= react_component("ComparisonTable", props: comparison_props, prerender: !Rails.env.test?) %>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-8 flex flex-col items-start justify-between gap-4 rounded-xl border border-border bg-muted/30 p-5 sm:flex-row sm:items-center">
+        <div class="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
           <div>
-            <p class="font-medium">You feel the difference in two seconds. Don't take our word for it.</p>
-            <p class="mt-1 text-sm text-muted-foreground">Run Google PageSpeed Insights against this very page, or open the real surfaces.</p>
+            <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Why this stack</p>
+            <h2 class="mt-3 text-3xl font-bold tracking-normal">React where it changes the product. Rails where it already wins.</h2>
+            <p class="mt-4 text-muted-foreground">
+              Inertia keeps Rails controllers close to pages by sending props to a client component tree.
+              This starter chooses a different boundary: Rails remains the app server, while React on Rails
+              Pro owns the server-rendered React and RSC boundary. That lets server components stay server-only
+              instead of becoming another client page protocol.
+            </p>
+            <div class="mt-6 flex flex-wrap gap-2">
+              <a href="<%= github_source_url('docs/08-why-rsc-on-rails.md') %>" target="_blank" rel="noreferrer noopener" class="inline-flex h-10 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90">
+                Read the RSC thesis
+              </a>
+              <a href="<%= github_source_url('docs/02-vs-inertia.md') %>" target="_blank" rel="noreferrer noopener" class="inline-flex h-10 items-center rounded-md border border-border bg-card px-4 text-sm font-medium shadow-sm transition-colors hover:bg-muted">
+                Compare with Inertia
+              </a>
+            </div>
           </div>
-          <div class="flex flex-wrap gap-2">
-            <a href="<%= pagespeed_url(root_url) %>" target="_blank" rel="noreferrer noopener" class="inline-flex h-9 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90">
-              Measure it on PageSpeed
-            </a>
-            <a href="<%= classic_projects_path %>" class="inline-flex h-9 items-center rounded-md border border-border bg-card px-4 text-sm font-medium shadow-sm transition-colors hover:bg-muted">
-              Real Rails CRUD
-            </a>
-            <a href="<%= dashboard_path %>" class="inline-flex h-9 items-center rounded-md border border-border bg-card px-4 text-sm font-medium shadow-sm transition-colors hover:bg-muted">
-              Real dashboard
-            </a>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <article class="rounded-lg border border-border bg-card p-5 shadow-sm">
+              <h3 class="font-semibold">No framework swap</h3>
+              <p class="mt-2 text-sm text-muted-foreground">No TanStack Start, Vite migration, Hotwire layer, or file-based routing requirement.</p>
+            </article>
+            <article class="rounded-lg border border-border bg-card p-5 shadow-sm">
+              <h3 class="font-semibold">Server-only code stays server-only</h3>
+              <p class="mt-2 text-sm text-muted-foreground">RSC modules can await server data without shipping that implementation to the browser.</p>
+            </article>
+            <article class="rounded-lg border border-border bg-card p-5 shadow-sm">
+              <h3 class="font-semibold">URL state belongs to TanStack</h3>
+              <p class="mt-2 text-sm text-muted-foreground">The dashboard table keeps filter, sort, and pagination in shareable browser URLs.</p>
+            </article>
+            <article class="rounded-lg border border-border bg-card p-5 shadow-sm">
+              <h3 class="font-semibold">Rails still owns the app</h3>
+              <p class="mt-2 text-sm text-muted-foreground">Authentication, authorization boundaries, CSRF, model validation, mailers, and jobs stay in Rails.</p>
+            </article>
           </div>
         </div>
       </div>
@@ -285,7 +237,7 @@
     <section id="examples" class="scroll-mt-16 border-b border-border">
       <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div class="max-w-2xl">
-          <h2 class="text-3xl font-bold tracking-tight">Explore every surface</h2>
+          <h2 class="text-3xl font-bold tracking-normal">Explore every surface</h2>
           <p class="mt-3 text-muted-foreground">
             Each surface this starter ships is one click away, with a direct link to its source on GitHub.
             Authenticated routes open the sign-in page first.
@@ -294,7 +246,7 @@
 
         <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <% examples.each do |example| %>
-            <article class="flex flex-col rounded-xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md">
+            <article class="flex flex-col rounded-lg border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md">
               <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground"><%= example[:eyebrow] %></p>
               <h3 class="mt-2 text-lg font-semibold">
                 <%= example[:title] %>
@@ -321,17 +273,17 @@
     <section id="agents" class="scroll-mt-16 border-b border-border bg-muted/20">
       <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div class="max-w-2xl">
-          <h2 class="text-3xl font-bold tracking-tight">Made for your AI agent</h2>
+          <h2 class="text-3xl font-bold tracking-normal">Made for your AI agent</h2>
           <p class="mt-3 text-muted-foreground">
             The repo ships an <a href="<%= github_source_url('AGENTS.md') %>" target="_blank" rel="noreferrer noopener" class="font-medium text-foreground underline-offset-4 hover:underline">AGENTS.md</a>
             playbook with reference patterns. Point Claude, Cursor, or Codex at the repo and paste one of these
-            to learn, extend, or experiment. Copy, tweak, ship.
+            to learn, extend, or experiment.
           </p>
         </div>
 
         <div class="mt-10 grid gap-5 md:grid-cols-2">
           <% prompts.each do |prompt| %>
-            <div data-prompt-card class="flex flex-col rounded-xl border border-border bg-card shadow-sm">
+            <div data-prompt-card class="flex flex-col rounded-lg border border-border bg-card shadow-sm">
               <div class="flex items-center justify-between gap-2 border-b border-border px-5 py-3">
                 <h3 class="font-semibold"><%= prompt[:title] %></h3>
                 <button type="button" data-copy
@@ -351,11 +303,11 @@
     <section id="learn" class="scroll-mt-16">
       <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div class="max-w-2xl">
-          <h2 class="text-3xl font-bold tracking-tight">Choose what to learn next</h2>
+          <h2 class="text-3xl font-bold tracking-normal">Choose what to learn next</h2>
           <p class="mt-3 text-muted-foreground">One link each. No detours.</p>
         </div>
 
-        <div class="mt-10 grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+        <div class="mt-10 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
           <% learn_links.each do |link| %>
             <a href="<%= link[:href] %>" target="_blank" rel="noreferrer noopener" class="group flex flex-col bg-card p-5 transition-colors hover:bg-muted/50">
               <span class="flex items-center justify-between font-medium">
@@ -368,8 +320,9 @@
         </div>
 
         <p class="mt-8 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-800 dark:text-amber-200">
-          <strong>Honest status:</strong> interactive RSC client references have a documented Rspack
-          manifest limitation. It is intentionally tracked, not hidden — see
+          <strong>Honest status:</strong> Rspack remains the local default. The Webpack deploy bridge
+          emits the RSC manifests today; the official relaunch stays anchored to upstream Rspack RSC
+          support. See
           <a href="<%= github_source_url('SPIKE.md') %>" target="_blank" rel="noreferrer noopener" class="font-medium underline underline-offset-4">SPIKE.md</a>.
         </p>
       </div>

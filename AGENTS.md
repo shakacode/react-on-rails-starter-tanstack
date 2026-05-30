@@ -20,11 +20,10 @@ code first and then update the docs or this file in the same change.
   hybrid Rails UI coexisting with the TanStack surface.
 - `/hello_server` demonstrates streaming RSC. The current Rspack/RSC client
   reference manifest limitation is intentional and documented in `SPIKE.md`.
-- The root path `/` is a public Rails landing page (`home#index`). It renders a
-  shadcn/Tailwind surface plus the `ComparisonTable` TanStack client island, and
-  pairs a server-rendered "classic Rails" projects panel (GET form, full reload)
-  with the instant React island over the same demo dataset. It is not an RSC
-  landing. The demo dataset lives in `HomeController::DEMO_PROJECTS`.
+- The root path `/` is a public Rails landing page (`home#index`). It leads with
+  the React Server Components + TanStack Router positioning, links the RSC demo,
+  dashboard, and source map, and keeps the AI-agent prompt cards. It is not a
+  Rails-vs-React comparison surface.
 
 ## 2. Rails Controller Patterns
 
@@ -341,7 +340,6 @@ exactly one source comment.
 | `mailer` | `app/mailers/email_verification_mailer.rb` |
 | `mailer-preview` | `test/mailers/previews/email_verification_mailer_preview.rb` |
 | `tanstack-table` | `app/javascript/src/Dashboard/ror_components/DashboardApp.tsx` |
-| `home-comparison-island` | `app/javascript/src/Home/ror_components/ComparisonTable.tsx` |
 | `tanstack-route` | `app/javascript/src/Dashboard/ror_components/DashboardApp.tsx` |
 | `shakapacker-rspack-config` | `config/shakapacker.yml` |
 | `rspack-client-config` | `config/rspack/clientWebpackConfig.js` |

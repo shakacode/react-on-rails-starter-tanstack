@@ -170,7 +170,7 @@ All run with `SHAKAPACKER_ASSETS_BUNDLER=webpack` on a clean production build
 | Surface | How verified | Outcome |
 | --- | --- | --- |
 | Production Webpack build | `RAILS_ENV=production assets:precompile` | ✅ client + server + RSC bundles, both RSC manifests emitted, 0 dev-runtime client chunks |
-| `/` landing (ComparisonTable island) | `curl` prod server + `landing_comparison.spec.ts` | ✅ HTTP 200, `comparison-island` SSR'd, Playwright filter/sort/paginate passes |
+| `/` landing | `curl` prod server + root/a11y/CSP coverage | ✅ HTTP 200, public RSC + TanStack positioning renders |
 | `/dashboard`, `/settings`, `/projects/new` (TanStack SSR) | `node script/dev-mode-smoke.mjs static dashboard` | ✅ smoke passed: SSR shell + single-document hydration contract, settings nav, new-project route |
 | Classic Rails CRUD (`/classic/projects` index/new/show) | authed `curl` on prod server | ✅ HTTP 200 on all three |
 | Auth (sign-in, signup, reset, verify) | dashboard smoke + `auth.spec.ts` | ✅ sign-in POST → 302 `/`; all auth Playwright specs pass |
@@ -178,8 +178,8 @@ All run with `SHAKAPACKER_ASSETS_BUNDLER=webpack` on a clean production build
 | Webpack HMR dashboard | `SHAKAPACKER_ASSETS_BUNDLER=webpack node script/dev-mode-smoke.mjs hmr dashboard` | ✅ Webpack dev-server starts with HMR, dashboard hydrates/navigates, and the browser observes a source edit via hot-update assets |
 | Webpack HMR `/hello_server` RSC | `SHAKAPACKER_ASSETS_BUNDLER=webpack REQUIRE_RSC_MANIFESTS=true node script/dev-mode-smoke.mjs hmr hello-server` | ✅ both RSC manifests present, `/hello_server` streams the RSC view instead of the fallback |
 | LikeButton client island hydration | Playwright click (CSP bypassed) | ✅ `0 likes` → `1 like` — island hydrates and is interactive |
-| RSpec | `SHAKAPACKER_ASSETS_BUNDLER=webpack bundle exec rspec` | ✅ 96 examples, 0 failures |
-| Playwright (full) | `SHAKAPACKER_ASSETS_BUNDLER=webpack pnpm exec playwright test` | ✅ 13 passed (landing, auth, dashboard, route matrix, CSP, a11y) |
+| RSpec | `SHAKAPACKER_ASSETS_BUNDLER=webpack bundle exec rspec` | ✅ request coverage passed |
+| Playwright (full) | `SHAKAPACKER_ASSETS_BUNDLER=webpack pnpm exec playwright test` | ✅ landing, auth, dashboard, route matrix, CSP, a11y |
 | Production boot (true `RAILS_ENV=production` server + Node renderer) | `node script/production-boot-smoke.mjs` | ✅ "Production boot smoke passed" |
 
 ## Wiring the deployed build to Webpack

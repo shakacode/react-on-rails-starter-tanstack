@@ -31,7 +31,7 @@ test('baseline CSP allows public and authenticated browser flows', async ({ page
   const rootResponse = await page.goto('/');
   expect(rootResponse?.headers()['content-security-policy']).toContain("default-src 'self'");
   await expect(
-    page.getByRole('heading', { name: 'Feel the difference between Rails and React. In the same app.' }),
+    page.getByRole('heading', { name: 'React Server Components on Rails, without moving your app to a JS server.' }),
   ).toBeVisible();
 
   await signIn(page, email);
