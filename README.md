@@ -78,7 +78,7 @@ client-reference path needs.
 
 | Component | Version |
 | --- | --- |
-| React on Rails / Pro | `16.7.0.rc.3` |
+| React on Rails / Pro | `17.0.0.rc.0` |
 | Shakapacker / Shakapacker Rspack | `10.1.0` |
 | React | `19.0.6` |
 | Rails | `8.1.x` |
