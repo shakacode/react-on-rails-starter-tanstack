@@ -1,0 +1,32 @@
+<%# Honest fallback rendered when the interactive RSC client-reference manifests are
+    missing at runtime (the documented Rspack limitation, see SPIKE.md). Keeps the demo
+    shell intact and replaces the interactive island with a clear, on-brand notice so a
+    visitor never sees a blank or broken surface. %>
+<%= render "hello_server/styles" %>
+
+<div class="ror-demo-page">
+  <%= render "hello_server/hero" %>
+
+  <section class="notice" data-rsc-fallback>
+    <p class="badge">Known Rspack limitation</p>
+    <h2>The interactive island is not live on this build</h2>
+    <p>
+      The async server component above renders fine on the server, but its interactive
+      client island (the <code>LikeButton</code>) is intentionally not wired up here. The
+      current Rspack build does not emit the React Server Components client/server
+      manifests that the client-reference path needs at runtime, so rather than ship a
+      blank or broken widget we are showing this honest note instead.
+    </p>
+    <p>
+      This is a tracked, documented limitation — not a bug in your setup. The bundler,
+      streaming SSR, and server-only RSC compilation are all green; only interactive RSC
+      client references are blocked until the Rspack path can provide the required
+      manifests. Read the full status in
+      <a href="<%= github_source_url("SPIKE.md") %>" target="_blank" rel="noreferrer">SPIKE.md</a>,
+      or follow the upstream work in
+      <a href="https://github.com/shakacode/react_on_rails/issues/1828" target="_blank" rel="noreferrer">shakacode/react_on_rails#1828</a>.
+    </p>
+  </section>
+
+  <%= render "hello_server/cards" %>
+</div>
