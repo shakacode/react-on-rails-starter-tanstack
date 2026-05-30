@@ -1,0 +1,13 @@
+<% content_for(:title, "RSC Showcase") %>
+<% content_for(:no_site_chrome, true) %>
+
+<noscript>
+  <section class="mx-auto max-w-4xl px-6 py-16">
+    <h1 class="text-3xl font-semibold tracking-normal text-foreground">RSC Showcase</h1>
+    <p class="mt-4 text-muted-foreground">
+      This TanStack route needs JavaScript so the loader can fetch and compose the React Server Component payload.
+    </p>
+  </section>
+</noscript>
+
+<%= react_component("RscShowcaseApp", id: "RscShowcaseApp", props: @rsc_showcase_props, prerender: false) %>
