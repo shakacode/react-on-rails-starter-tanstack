@@ -39,7 +39,7 @@ const RscShowcaseServerPanel = async ({
   });
 
   return (
-    <article className="rounded-lg border border-slate-300 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-950">
+    <article className="min-w-0 rounded-lg border border-slate-300 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-950">
       <div className="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
         <p className="text-xs font-semibold uppercase text-sky-700 dark:text-sky-300">
           Server component payload
@@ -53,7 +53,34 @@ const RscShowcaseServerPanel = async ({
       </div>
 
       <div className="grid gap-5 p-5">
-        <pre className="overflow-x-auto rounded-md border border-slate-800 bg-slate-950 p-4 text-sm leading-6 text-slate-100">
+        <section className="rounded-md border border-emerald-300 bg-emerald-50 p-4 text-emerald-950 dark:border-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-50">
+          <p className="text-xs font-semibold uppercase text-emerald-700 dark:text-emerald-300">
+            Zero client JS proof
+          </p>
+          <h3 className="mt-2 text-lg font-semibold tracking-normal">
+            The server panel code stays out of the browser bundle.
+          </h3>
+          <p className="mt-2 text-sm text-emerald-900/80 dark:text-emerald-100/80">
+            Rails and Pro rendered these notes into the RSC payload. The only JavaScript that hydrates here is at
+            explicit <code className="rounded bg-emerald-100 px-1 py-0.5 dark:bg-emerald-900">use client</code> islands.
+          </p>
+          <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-3">
+            <div className="rounded border border-emerald-200 bg-white/70 p-3 dark:border-emerald-800 dark:bg-emerald-950/50">
+              <dt className="text-emerald-700 dark:text-emerald-300">Server panel JS shipped</dt>
+              <dd className="mt-1 text-xl font-semibold">0 KB</dd>
+            </div>
+            <div className="rounded border border-emerald-200 bg-white/70 p-3 dark:border-emerald-800 dark:bg-emerald-950/50">
+              <dt className="text-emerald-700 dark:text-emerald-300">Hydrating boundaries</dt>
+              <dd className="mt-1 text-xl font-semibold">Client islands only</dd>
+            </div>
+            <div className="rounded border border-emerald-200 bg-white/70 p-3 dark:border-emerald-800 dark:bg-emerald-950/50">
+              <dt className="text-emerald-700 dark:text-emerald-300">Transport</dt>
+              <dd className="mt-1 text-xl font-semibold">Flight data</dd>
+            </div>
+          </dl>
+        </section>
+
+        <pre className="max-w-full overflow-x-auto rounded-md border border-slate-800 bg-slate-950 p-4 text-sm leading-6 text-slate-100">
           <code>{sourceSnippet}</code>
         </pre>
 

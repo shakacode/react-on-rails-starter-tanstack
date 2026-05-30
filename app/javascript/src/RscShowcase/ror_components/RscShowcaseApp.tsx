@@ -188,7 +188,7 @@ function RspackFallback() {
 
 function RootLayout() {
   return (
-    <main className="min-h-screen bg-background text-foreground">
+    <main className="min-h-screen overflow-x-hidden bg-background text-foreground">
       <Outlet />
     </main>
   );
@@ -218,9 +218,9 @@ function ShowcasePage({ appProps, payload }: { appProps: RscShowcaseAppProps; pa
   const router = useRouter();
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-8 px-4 py-8 sm:px-6 lg:py-12">
-      <header className="grid gap-5 lg:grid-cols-[1.4fr_0.6fr] lg:items-end">
-        <div>
+    <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-8 sm:px-6 lg:py-12">
+      <header className="grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1.4fr)_minmax(18rem,0.6fr)] lg:items-end">
+        <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <Badge className="rounded-md" variant="secondary">
               Webpack bridge spike
@@ -239,10 +239,10 @@ function ShowcasePage({ appProps, payload }: { appProps: RscShowcaseAppProps; pa
           </p>
         </div>
 
-        <Card className="border-border/70 shadow-sm">
+        <Card className="min-w-0 border-border/70 shadow-sm">
           <CardHeader>
             <CardTitle className="text-base tracking-normal">Network contract</CardTitle>
-            <CardDescription>
+            <CardDescription className="break-all">
               {payload ? payload.requestPath : `/${appProps.rscPayloadPath.replace(/^\/|\/$/g, '')}/${appProps.rscComponentName}`}
             </CardDescription>
           </CardHeader>
@@ -270,7 +270,7 @@ function ShowcasePage({ appProps, payload }: { appProps: RscShowcaseAppProps; pa
       </header>
 
       {appProps.rscAvailable && payload ? (
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_22rem]">
+        <div className="grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_22rem]">
           <Suspense fallback={<LoadingPanel />}>
             <PayloadRenderer payload={payload} />
           </Suspense>

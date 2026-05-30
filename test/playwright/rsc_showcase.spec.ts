@@ -20,6 +20,8 @@ test('public RSC showcase route loads the TanStack composition surface', async (
   }
 
   await expect(page.getByText('RSC streamed by Rails, consumed by a TanStack loader')).toBeVisible();
+  await expect(page.getByText('Zero client JS proof')).toBeVisible();
+  await expect(page.getByText('Server panel JS shipped')).toBeVisible();
   await expect(page.getByText('Payload chunks')).toBeVisible();
 
   await page.getByRole('button', { name: 'Hydrated island' }).click();
