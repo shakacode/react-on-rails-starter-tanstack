@@ -27,13 +27,14 @@ test.describe('accessibility smoke', () => {
     await expect(
       main.getByRole('heading', {
         level: 1,
-        name: 'Feel the difference between Rails and React. In the same app.',
+        name: 'React Server Components on Rails, without moving your app to a JS server.',
       }),
     ).toBeVisible();
-    await expect(main.getByRole('link', { name: 'Open the live dashboard' })).toHaveAttribute('href', '/dashboard');
+    await expect(main.getByRole('link', { name: 'Open the RSC demo' })).toHaveAttribute('href', '/hello_server');
+    await expect(main.getByRole('link', { name: 'Open the dashboard' }).first()).toHaveAttribute('href', '/dashboard');
     await expect(main.getByRole('link', { name: 'Read source' }).first()).toHaveAttribute(
       'href',
-      /github\.com\/shakacode\/react-on-rails-starter-tanstack\/blob\/main/,
+      /github\.com\/shakacode\/react-on-rails-starter-tanstack\/(blob|tree)\/main/,
     );
   });
 

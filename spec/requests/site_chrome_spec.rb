@@ -35,7 +35,7 @@ RSpec.describe "Global site chrome", type: :request do
     it "keeps the global header slim by omitting the landing-only section nav" do
       get new_session_path
 
-      expect(parsed_response.css("header a[href='#comparison']")).to be_empty
+      expect(parsed_response.css("header a[href='#rsc']")).to be_empty
     end
   end
 
@@ -49,7 +49,7 @@ RSpec.describe "Global site chrome", type: :request do
       expect(parsed_response.css("header.sticky").count).to eq(1)
       expect(parsed_response.css("footer").count).to eq(1)
       # The landing header keeps its in-page section nav.
-      expect(parsed_response.css("header a[href='#comparison']")).not_to be_empty
+      expect(parsed_response.css("header a[href='#rsc']")).not_to be_empty
     end
 
     it "does not wrap the TanStack dashboard in global chrome" do

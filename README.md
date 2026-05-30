@@ -13,12 +13,6 @@ instead of moving the whole app to a JavaScript server framework.
 **Live demo: [starter.reactonrails.com](https://starter.reactonrails.com)** —
 sign in with `demo@example.com` / `password`.
 
-The landing page makes the argument without a pitch: the same projects rendered
-by a server-rendered Rails panel (full page reloads) beside an instant,
-URL-synced TanStack Table island.
-
-![The landing page comparison: the same projects rendered by a server-rendered Rails panel and an instant, URL-synced TanStack Table island](docs/images/landing-comparison.png)
-
 ![Rendering mode drawer](docs/images/rendering-mode-drawer.png)
 
 ## Why This Starter
@@ -44,12 +38,11 @@ the head-to-head with Inertia is in
 
 Each route demonstrates a deliberate rendering choice, not a fallback:
 
-- **`/`** is the public landing page: a live "same data, two front-ends"
-  comparison (a server-rendered Rails projects panel beside an instant,
-  URL-synced TanStack Table island over one demo dataset), a map of every
-  example surface linking to its source on GitHub, and copy-paste AI prompts for
-  extending the starter with an agent. It shares the shadcn/Tailwind design
-  system and dark mode with the rest of the app.
+- **`/`** is the public landing page: the React Server Components + TanStack
+  Router positioning, a map of every example surface linking to its source on
+  GitHub, and copy-paste AI prompts for extending the starter with an agent. It
+  shares the shadcn/Tailwind design system and dark mode with the rest of the
+  app.
 - **`/hello_server`** demonstrates streaming React Server Components. The demo
   keeps an interactive `LikeButton` client island inside a server-rendered
   tree. Interactive RSC client references remain limited by the documented
