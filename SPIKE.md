@@ -52,5 +52,10 @@ Switching the bundler from Rspack to Webpack makes interactive RSC work: the Web
 - Rspack remains the committed default in `config/shakapacker.yml` (fast local DX); Webpack is opt-in via `SHAKAPACKER_ASSETS_BUNDLER=webpack` or `bin/shakapacker --bundler webpack`, with configs in `config/webpack/`.
 - The root cause of the Rspack gap is confirmed: `react-on-rails-rsc`'s `RSCWebpackPlugin` is hard-wired to Webpack internals (`webpack/lib/...`) that Rspack does not expose.
 - Tradeoff: the Webpack build is ~3× slower (~8 s vs ~3 s). Bundle size is comparable.
-- **Adopted for deploy:** the full app (landing, classic CRUD, auth, TanStack dashboard SSR, `/hello_server`, RSpec, Playwright, production boot) is verified on Webpack, and the Docker build (`.controlplane/Dockerfile`) is wired to build on Webpack via `ARG SHAKAPACKER_ASSETS_BUNDLER=webpack` (one-line revert to Rspack). A `config/swc.config.js` (automatic JSX runtime) was required for the Webpack path. Known upstream follow-up: the `/hello_server` client island does not hydrate under the strict production CSP because React's streaming inline scripts lack the nonce — a react-on-rails-pro issue, not a bundler one.
+- `/rsc-showcase` uses the Webpack bridge as the public RSC + TanStack
+  centerpiece: a bare TanStack Router loader fetches a React on Rails Pro RSC
+  payload from Rails and composes the Flight tree beside a client island. This
+  is not TanStack Start parity; it keeps the starter on Rails + React on Rails
+  Pro + bare `@tanstack/react-router`.
+- **Adopted for deploy:** the full app (landing, classic CRUD, auth, TanStack dashboard SSR, `/hello_server`, `/rsc-showcase`, RSpec, Playwright, production boot) is verified on Webpack, and the Docker build (`.controlplane/Dockerfile`) is wired to build on Webpack via `ARG SHAKAPACKER_ASSETS_BUNDLER=webpack` (one-line revert to Rspack). A `config/swc.config.js` (automatic JSX runtime) was required for the Webpack path. Known upstream follow-up: the `/hello_server` client island does not hydrate under the strict production CSP because React's streaming inline scripts lack the nonce — a react-on-rails-pro issue, not a bundler one.
 - Full details, evidence, full-app verification, deploy wiring, and the go/no-go: `docs/09-rsc-webpack-bundler-spike.md`.

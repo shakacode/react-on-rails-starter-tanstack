@@ -12,12 +12,19 @@ code first and then update the docs or this file in the same change.
 - This is a Rails 8 starter using React on Rails Pro, TanStack Router, TanStack
   Query, TanStack Table, Rspack, pnpm, TypeScript, React 19, Tailwind v4, and
   shadcn/ui primitives.
-- Rspack is the active Shakapacker bundler. Use `config/shakapacker.yml` and
-  `config/rspack/` as the source of truth for bundling behavior.
+- Rspack is the active local Shakapacker bundler. Use `config/shakapacker.yml`
+  and `config/rspack/` as the source of truth for default local bundling
+  behavior. Webpack is the deploy/RSC bridge selected by
+  `SHAKAPACKER_ASSETS_BUNDLER=webpack` or the `.controlplane/Dockerfile` build
+  ARG.
 - `/dashboard`, `/settings...`, and `/projects...` are Rails routes that render
   the TanStack dashboard shell through `DashboardController#show`.
 - `/classic/projects` remains a classic Rails CRUD surface to demonstrate a
   hybrid Rails UI coexisting with the TanStack surface.
+- `/rsc-showcase` is the public Webpack-bridge centerpiece: Rails serves the
+  shell and Pro RSC payload endpoint; a bare TanStack Router loader fetches and
+  composes the RSC payload with client islands. On Rspack it renders a fallback
+  until upstream Rspack RSC manifests land.
 - `/hello_server` demonstrates streaming RSC. The current Rspack/RSC client
   reference manifest limitation is intentional and documented in `SPIKE.md`.
 - The root path `/` is a public Rails landing page (`home#index`). It leads with
@@ -184,6 +191,27 @@ Rules:
   glue for the current Pro/TanStack Router API mismatch. Remove it only after
   the upstream issue is fixed and tests prove it is unnecessary.
 
+## 8.1 RSC Payload In A TanStack Router Loader
+
+Canonical example:
+
+- `app/javascript/src/RscShowcase/ror_components/RscShowcaseApp.tsx` for a
+  bare TanStack Router route loader that fetches a React on Rails Pro RSC
+  payload and composes it with route-owned client React.
+
+Reference marker ID: `rsc-showcase-loader`.
+
+Rules:
+
+- Keep this route on Rails + React on Rails Pro + bare
+  `@tanstack/react-router`; do not add TanStack Start, Vite, file-based routing,
+  Hotwire, or Stimulus.
+- Use the Pro RSC payload endpoint as data for the route loader. Do not replace
+  the payload with a bespoke JSON protocol when the goal is to demonstrate RSC.
+- Keep the Rspack fallback honest until upstream Rspack RSC manifests land.
+- A `use client` `ror_components` file must export only its default component,
+  or the RSC build can fail.
+
 ## 9. Rspack, Dev Modes, And RSC
 
 Canonical examples:
@@ -209,6 +237,9 @@ Rules:
 
 - Keep this starter on Rspack unless the task explicitly asks to evaluate
   Webpack.
+- Keep Webpack as the deploy/RSC bridge until the upstream Rspack RSC manifest
+  gap is closed. Reverting the deployed build to Rspack should remain a one-line
+  Docker build ARG change.
 - Default development mode is live reload. HMR is tested through
   `SHAKAPACKER_DEV_SERVER_HMR=true bin/dev --no-open-browser --route=dashboard`
   and `pnpm run test:hmr`.
@@ -341,6 +372,7 @@ exactly one source comment.
 | `mailer-preview` | `test/mailers/previews/email_verification_mailer_preview.rb` |
 | `tanstack-table` | `app/javascript/src/Dashboard/ror_components/DashboardApp.tsx` |
 | `tanstack-route` | `app/javascript/src/Dashboard/ror_components/DashboardApp.tsx` |
+| `rsc-showcase-loader` | `app/javascript/src/RscShowcase/ror_components/RscShowcaseApp.tsx` |
 | `shakapacker-rspack-config` | `config/shakapacker.yml` |
 | `rspack-client-config` | `config/rspack/clientWebpackConfig.js` |
 | `rspack-server-config` | `config/rspack/serverWebpackConfig.js` |

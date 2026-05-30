@@ -43,11 +43,17 @@ Each route demonstrates a deliberate rendering choice, not a fallback:
   GitHub, and copy-paste AI prompts for extending the starter with an agent. It
   shares the shadcn/Tailwind design system and dark mode with the rest of the
   app.
+- **`/rsc-showcase`** is the public RSC + TanStack centerpiece. A bare TanStack
+  Router loader fetches a React on Rails Pro RSC payload from Rails, decodes the
+  Flight stream, and composes that server-streamed tree beside ordinary client
+  React. It uses the Webpack bridge today; on the Rspack local default it renders
+  the documented fallback until upstream Rspack RSC manifests land.
 - **`/hello_server`** demonstrates streaming React Server Components. The demo
   keeps an interactive `LikeButton` client island inside a server-rendered
-  tree. Interactive RSC client references remain limited by the documented
-  Rspack manifest gap, so this is the RSC streaming reference route rather than
-  full interactive RSC coverage on Rspack. See [SPIKE.md](SPIKE.md).
+  tree. On the Webpack bridge the route renders end to end; under the strict
+  production CSP the client island still waits on the upstream streaming nonce
+  fix. See [SPIKE.md](SPIKE.md) and
+  [RSC Streaming And CSP Nonces](docs/11-rsc-csp-nonce-spike.md).
 - **`/dashboard`, `/settings...`, and `/projects...`** are Rails full-page
   routes that render the React on Rails Pro + TanStack Router, Query, and Table
   dashboard shell using classic SSR through the Node renderer.
@@ -63,8 +69,12 @@ classic Rails CRUD coexist in one app.
 
 ## Stack and Pinned Versions
 
-Rspack is the Shakapacker bundler. Use `config/shakapacker.yml` and
-`config/rspack/` as the source of truth.
+Rspack remains the local default Shakapacker bundler. Use
+`config/shakapacker.yml` and `config/rspack/` as the source of truth for the
+default development path. Webpack is the deploy/RSC bridge, selected with
+`SHAKAPACKER_ASSETS_BUNDLER=webpack` or the one-line Docker build ARG in
+`.controlplane/Dockerfile`, until Rspack emits the RSC manifests the Pro RSC
+client-reference path needs.
 
 | Component | Version |
 | --- | --- |
@@ -93,8 +103,9 @@ the HMR command only when testing HMR behavior.
 
 Sign in with `demo@example.com` / `password`. Visit `/dashboard` for the
 TanStack surface, `/projects` for a full-page load into the TanStack project
-routes, `/classic/projects` for the Rails CRUD surface, and `/hello_server` for
-the RSC streaming demo.
+routes, `/classic/projects` for the Rails CRUD surface, `/rsc-showcase` for the
+RSC-in-a-TanStack-route centerpiece, and `/hello_server` for the lower-level RSC
+streaming demo.
 
 ## Checks
 
@@ -145,10 +156,12 @@ It includes Rails authentication, email verification, password reset, Projects
 CRUD, scoped JSON APIs, demo seeds, development mail previews, and the
 authenticated TanStack Router/Query/Table dashboard.
 
-See [SPIKE.md](SPIKE.md) for the current AMBER RSC/Rspack compatibility note:
-Rspack builds and server-only RSC bundling are green, but interactive RSC
-client references are blocked until Rspack emits the React Server Components
-client/server manifests expected by the React on Rails RSC path.
+See [SPIKE.md](SPIKE.md) and the
+[RSC Webpack Bundler Spike](docs/09-rsc-webpack-bundler-spike.md) for the
+current RSC status. Rspack builds and server-only RSC bundling are green, but
+interactive RSC client references are blocked until Rspack emits the React
+Server Components client/server manifests expected by the Pro RSC path. The
+Webpack bridge is verified for deploy and powers `/rsc-showcase`.
 
 ## Links
 
@@ -168,6 +181,9 @@ client/server manifests expected by the React on Rails RSC path.
 - [Tested Modes](docs/06-tested-modes.md)
 - [Control Plane Handoff](docs/07-control-plane-handoff.md)
 - [Why RSC on Rails](docs/08-why-rsc-on-rails.md)
+- [RSC Webpack Bundler Spike](docs/09-rsc-webpack-bundler-spike.md)
+- [RSC Payloads In A TanStack Route Loader](docs/10-rsc-tanstack-loader-spike.md)
+- [RSC Streaming And CSP Nonces](docs/11-rsc-csp-nonce-spike.md)
 - [Upgrading](UPGRADING.md)
 
 ## License
