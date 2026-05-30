@@ -43,8 +43,9 @@ const commonOptions = {
 // the client/server/RSC config builds (which all run in one Webpack invocation),
 // the RSC loader-append would mutate the shared object and leak the RSC transform
 // into the client/server bundles — producing duplicate `export const type` /
-// `export const interface` parse errors. `rorRscSkip` marks it so the RSC config
-// leaves it alone.
+// `export const interface` parse errors. rscWebpackConfig.js excludes the rule
+// returned by makeTanstackSourceRule by matching its include pattern against
+// /@tanstack/, so the RSC transform does not run on these third-party sources.
 const makeTanstackSourceRule = () => ({
   test: /\.(ts|tsx)$/,
   include: /[/\\]@tanstack[/\\]/,

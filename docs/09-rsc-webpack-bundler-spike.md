@@ -22,7 +22,7 @@ Rails Pro Node renderer loads them, and `/hello_server` (the `use client`
 
 Full production build on Webpack (`SHAKAPACKER_ASSETS_BUNDLER=webpack`):
 
-```
+```text
 public/packs/react-client-manifest.json        (2.2 KB)  ✅
 ssr-generated/react-server-client-manifest.json (1.0 KB)  ✅
 ssr-generated/server-bundle.js                 (3.9 MB)  ✅
@@ -138,7 +138,7 @@ RSC under the production CSP.
 The spike verified `/hello_server` and the manifests, but a **full**-app build on
 Webpack 500s on every prerendered TanStack route (e.g. `/dashboard`) with:
 
-```
+```text
 ReferenceError: React is not defined
     at Toaster (app/javascript/src/components/ui/sonner.tsx)
 ```
