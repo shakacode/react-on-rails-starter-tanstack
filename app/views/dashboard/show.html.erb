@@ -1,3 +1,7 @@
+<%# The TanStack dashboard renders its own shell and in-app theme toggle, so opt out
+    of the global site chrome to avoid a duplicate header/footer. %>
+<% content_for(:no_site_chrome, true) %>
+
 <% dashboard_fallback = capture do %>
   <section class="tanstack-noscript-shell" aria-label="Dashboard">
     <h1>Dashboard</h1>

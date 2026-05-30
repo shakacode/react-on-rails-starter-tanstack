@@ -1,4 +1,8 @@
-<%# Shared site header: wayfinding + source link + dark-mode toggle. %>
+<%# Shared site header: wayfinding + source link + dark-mode toggle.
+    Locals:
+      show_section_nav - render the landing page's in-page anchor nav (defaults to false
+                         so the global header on other surfaces stays slim). %>
+<% show_section_nav = local_assigns.fetch(:show_section_nav, false) %>
 <header class="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
   <div class="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
     <a href="<%= root_path %>" class="flex items-center gap-2 font-semibold tracking-tight">
@@ -6,12 +10,14 @@
       <span>RoR <span class="text-muted-foreground">&times;</span> TanStack</span>
     </a>
 
-    <nav class="hidden items-center gap-1 text-sm md:flex">
-      <a href="#comparison" class="rounded-md px-3 py-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">Comparison</a>
-      <a href="#examples" class="rounded-md px-3 py-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">Explore</a>
-      <a href="#agents" class="rounded-md px-3 py-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">AI agents</a>
-      <a href="#learn" class="rounded-md px-3 py-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">Learn</a>
-    </nav>
+    <% if show_section_nav %>
+      <nav class="hidden items-center gap-1 text-sm md:flex">
+        <a href="#comparison" class="rounded-md px-3 py-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">Comparison</a>
+        <a href="#examples" class="rounded-md px-3 py-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">Explore</a>
+        <a href="#agents" class="rounded-md px-3 py-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">AI agents</a>
+        <a href="#learn" class="rounded-md px-3 py-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">Learn</a>
+      </nav>
+    <% end %>
 
     <div class="flex items-center gap-2">
       <a href="<%= dashboard_path %>" class="hidden rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:inline-block">Dashboard</a>

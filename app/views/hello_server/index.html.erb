@@ -1,3 +1,7 @@
+<%# This RSC demo ships its own themed layout (react_on_rails_default), so opt out of
+    the global site chrome to avoid a duplicate header/footer. %>
+<% content_for(:no_site_chrome, true) %>
+
 <style>
   :root {
     color-scheme: light;
