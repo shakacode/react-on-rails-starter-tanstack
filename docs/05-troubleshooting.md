@@ -98,6 +98,22 @@ Symptom: the SSR dashboard shell renders, but metric cards and the projects tabl
 
 Fix: restart `bin/dev` after changing `config/shakapacker.yml`. This starter defaults to Rspack live reload for deterministic SSR smoke tests. To exercise HMR and React Fast Refresh without editing configuration, run `SHAKAPACKER_DEV_SERVER_HMR=true bin/dev --no-open-browser --route=dashboard` or `pnpm run test:hmr`. If the dashboard still hangs, check the browser network panel for missing hot-update or hot-dev-server chunks.
 
+## Shakapacker Reports Missing Generated Components
+
+Symptom: `bin/shakapacker` fails with an import error under
+`app/javascript/packs/generated` or `app/javascript/generated` after switching
+branches, rebasing, or removing a React on Rails component.
+
+Fix: rerun `bin/shakapacker`. The wrapper refreshes React on Rails generated
+packs before the Shakapacker build starts, so stale ignored generated files are
+removed or regenerated automatically. If you intentionally bypassed that
+preflight with `REACT_ON_RAILS_SKIP_GENERATE_PACKS=true`, run:
+
+```sh
+bin/rails react_on_rails:generate_packs
+bin/shakapacker
+```
+
 ## Browser Reports Content Security Policy Violations
 
 Symptom: the browser console reports `Content Security Policy` violations after changing packs, inline scripts, RSC streaming, or dev-server wiring.

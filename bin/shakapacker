@@ -8,4 +8,35 @@ require "bundler/setup"
 require "shakapacker"
 require "shakapacker/runner"
 
+def help_command?
+  ARGV.any? do |arg|
+    ["-h", "-v", "help", "version"].include?(arg) ||
+      arg == "--version" ||
+      arg.start_with?("--help")
+  end
+end
+
+def ensure_react_on_rails_packs_current!
+  return if help_command?
+  return if ENV["REACT_ON_RAILS_SKIP_GENERATE_PACKS"] == "true"
+
+  temporary_env = {
+    "REACT_ON_RAILS_SKIP_VALIDATION" => "true",
+    "SHAKAPACKER_SKIP_PRECOMPILE_HOOK" => "true"
+  }
+  previous_env = temporary_env.keys.to_h { |key| [key, ENV.fetch(key, nil)] }
+
+  temporary_env.each { |key, value| ENV[key] = value }
+  begin
+    require_relative "../config/environment"
+    ReactOnRails::PacksGenerator.instance.generate_packs_if_stale
+  ensure
+    previous_env.each do |key, value|
+      value.nil? ? ENV.delete(key) : ENV[key] = value
+    end
+  end
+end
+
+ensure_react_on_rails_packs_current!
+
 Shakapacker::Runner.run(ARGV)

@@ -240,6 +240,12 @@ Rules:
 - Keep Webpack as the deploy/RSC bridge until the upstream Rspack RSC manifest
   gap is closed. Reverting the deployed build to Rspack should remain a one-line
   Docker build ARG change.
+- `bin/shakapacker` refreshes React on Rails generated packs before invoking
+  Shakapacker so ignored files under `app/javascript/**/generated` do not stay
+  stale after branch switches. Only use
+  `REACT_ON_RAILS_SKIP_GENERATE_PACKS=true` for targeted debugging, and then
+  run `bin/rails react_on_rails:generate_packs` manually before judging build
+  failures.
 - Default development mode is live reload. HMR is tested through
   `SHAKAPACKER_DEV_SERVER_HMR=true bin/dev --no-open-browser --route=dashboard`
   and `pnpm run test:hmr`.
