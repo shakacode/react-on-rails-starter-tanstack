@@ -256,6 +256,9 @@ Rules:
 - Treat interactive RSC client references as blocked until the Rspack manifest
   gap is fixed upstream. Keep `pnpm run repro:rspack-rsc` available as the
   small repro.
+- When validating unreleased `react_on_rails` or `react_on_rails_rsc` branches,
+  follow `docs/12-upstream-branch-testing.md`. Do not leave local path or git
+  branch dependencies in a release PR unless that PR is explicitly a canary.
 
 ## 10. Tailwind v4 And shadcn/ui
 
