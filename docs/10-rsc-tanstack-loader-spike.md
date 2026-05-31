@@ -1,8 +1,9 @@
 # RSC Payloads In A TanStack Route Loader
 
-This spike verifies the interim Webpack bridge can compose a React on Rails Pro
-React Server Component payload inside a plain `@tanstack/react-router` route.
-It does not use TanStack Start, Vite, file-based routing, Hotwire, or Stimulus.
+This spike verifies the default Rspack bundler can compose a React on Rails Pro
+React Server Component payload inside a plain `@tanstack/react-router` route
+with `react-on-rails-rsc@19.0.5-rc.2`. It does not use TanStack Start, Vite,
+file-based routing, Hotwire, or Stimulus.
 
 ## Result
 
@@ -18,14 +19,13 @@ It does not use TanStack Start, Vite, file-based routing, Hotwire, or Stimulus.
 - A `use client` island inside the fetched RSC payload hydrates and updates
   independently from the route-owned client panel.
 
-Verified locally on the Webpack bridge with:
+Verified locally on Rspack with:
 
 ```sh
-SHAKAPACKER_ASSETS_BUNDLER=webpack bin/shakapacker
+bin/shakapacker
 RENDERER_HOST=127.0.0.1 RENDERER_PORT=3402 node client/node-renderer.js
 SKIP_DATABASE_CHECK=true RAILS_ENV=development PORT=3400 \
   REACT_RENDERER_URL=http://127.0.0.1:3402 \
-  SHAKAPACKER_ASSETS_BUNDLER=webpack \
   bin/rails server -p 3400
 ```
 
@@ -38,11 +38,12 @@ Browser verification against `http://127.0.0.1:3400/rsc-showcase` confirmed:
 
 ## Rspack Default Behavior
 
-Rspack remains the local default in `config/shakapacker.yml`. Because the Rspack
-RSC client-reference manifests are still the upstream blocker, `/rsc-showcase`
-checks manifest availability before the loader fetches the payload. When the
-manifests are missing, the route renders an honest fallback instead of issuing a
-payload request that would fail at runtime.
+Rspack remains the local default in `config/shakapacker.yml`.
+`react-on-rails-rsc@19.0.5-rc.2` emits the RSC client-reference manifests on
+Rspack, so `/rsc-showcase` fetches the payload on the default path. The route
+still checks manifest availability before the loader fetches the payload, so it
+can render an honest fallback if a future dependency regression removes the
+manifests.
 
 ## Follow-Up For Issue #110
 

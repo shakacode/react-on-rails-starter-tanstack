@@ -16,17 +16,18 @@ code first and then update the docs or this file in the same change.
   and `config/rspack/` as the source of truth for default local bundling
   behavior. Webpack is the deploy/RSC bridge selected by
   `SHAKAPACKER_ASSETS_BUNDLER=webpack` or the `.controlplane/Dockerfile` build
-  ARG.
+  ARG until the deploy default is explicitly flipped.
 - `/dashboard`, `/settings...`, and `/projects...` are Rails routes that render
   the TanStack dashboard shell through `DashboardController#show`.
 - `/classic/projects` remains a classic Rails CRUD surface to demonstrate a
   hybrid Rails UI coexisting with the TanStack surface.
-- `/rsc-showcase` is the public Webpack-bridge centerpiece: Rails serves the
+- `/rsc-showcase` is the public RSC + TanStack centerpiece: Rails serves the
   shell and Pro RSC payload endpoint; a bare TanStack Router loader fetches and
-  composes the RSC payload with client islands. On Rspack it renders a fallback
-  until upstream Rspack RSC manifests land.
-- `/hello_server` demonstrates streaming RSC. The current Rspack/RSC client
-  reference manifest limitation is intentional and documented in `SPIKE.md`.
+  composes the RSC payload with client islands on the local Rspack default.
+- `/hello_server` demonstrates streaming RSC. Rspack client-reference manifests
+  are available with `react-on-rails-rsc@19.0.5-rc.2`; the remaining strict
+  production CSP hydration limitation is documented in
+  `docs/11-rsc-csp-nonce-spike.md`.
 - The root path `/` is a public Rails landing page (`home#index`). It leads with
   the React Server Components + TanStack Router positioning, links the RSC demo,
   dashboard, and source map, and keeps the AI-agent prompt cards. It is not a
@@ -208,7 +209,8 @@ Rules:
   Hotwire, or Stimulus.
 - Use the Pro RSC payload endpoint as data for the route loader. Do not replace
   the payload with a bespoke JSON protocol when the goal is to demonstrate RSC.
-- Keep the Rspack fallback honest until upstream Rspack RSC manifests land.
+- Keep the manifest-availability fallback honest so dependency regressions fail
+  visibly instead of issuing RSC payload requests that cannot hydrate.
 - A `use client` `ror_components` file must export only its default component,
   or the RSC build can fail.
 
@@ -237,8 +239,8 @@ Rules:
 
 - Keep this starter on Rspack unless the task explicitly asks to evaluate
   Webpack.
-- Keep Webpack as the deploy/RSC bridge until the upstream Rspack RSC manifest
-  gap is closed. Reverting the deployed build to Rspack should remain a one-line
+- Keep Webpack as the deploy/RSC bridge until the deploy default is explicitly
+  flipped. Reverting or switching the deployed build should remain a one-line
   Docker build ARG change.
 - `bin/shakapacker` refreshes React on Rails generated packs before invoking
   Shakapacker so ignored files under `app/javascript/**/generated` do not stay
@@ -253,9 +255,9 @@ Rules:
   static assets.
 - Production-assets mode must run with optimized assets and the React on Rails
   Pro Node renderer.
-- Treat interactive RSC client references as blocked until the Rspack manifest
-  gap is fixed upstream. Keep `pnpm run repro:rspack-rsc` available as the
-  small repro.
+- Treat interactive RSC client-reference manifest generation on Rspack as
+  expected behavior with `react-on-rails-rsc@19.0.5-rc.2` or newer. Keep
+  `pnpm run repro:rspack-rsc` available as the small regression check.
 - When validating unreleased `react_on_rails` or `react_on_rails_rsc` branches,
   follow `docs/12-upstream-branch-testing.md`. Do not leave local path or git
   branch dependencies in a release PR unless that PR is explicitly a canary.

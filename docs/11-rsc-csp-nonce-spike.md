@@ -24,8 +24,8 @@ script-src 'self' 'nonce-...'
 
 ## Evidence
 
-On the Webpack bridge, `/hello_server` emits both RSC manifests and the page
-renders. Fetching the route locally shows the nonce split:
+With the RSC manifests present, `/hello_server` renders and exposes the
+remaining CSP issue. Fetching the route locally shows the nonce split:
 
 - external Rails pack scripts have `nonce="..."`;
 - Pro's component-loaded, console replay, and embedded RSC payload scripts have
@@ -73,9 +73,10 @@ renderToPipeableStream(reactRenderedElement, {
 });
 ```
 
-After upgrading Pro, the regression should be verified by running the Webpack
-bridge under production CSP and clicking `/hello_server`'s `LikeButton` from
-`0 likes` to `1 like` with no browser CSP console errors.
+After upgrading Pro, the regression should be verified by running the Rspack
+default under production CSP and clicking `/hello_server`'s `LikeButton` from
+`0 likes` to `1 like` with no browser CSP console errors. The Webpack bridge can
+remain as a comparison check while it is still wired for deploy.
 
 ## Safe Interim
 

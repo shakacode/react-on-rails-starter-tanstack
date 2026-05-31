@@ -8,6 +8,8 @@ const bundler = config.assets_bundler === 'rspack'
   ? require('@rspack/core')
   : require('webpack');
 const { RSCWebpackPlugin } = require('react-on-rails-rsc/WebpackPlugin');
+const { RSCRspackPlugin } = require('react-on-rails-rsc/RspackPlugin');
+const rscClientReferences = require('./rscClientReferences');
 
 function extractLoader(rule, loaderName) {
   if (!Array.isArray(rule.use)) return null;
@@ -68,10 +70,16 @@ const configureServer = (rscBundle = false) => {
   serverWebpackConfig.optimization = {
     minimize: false,
   };
-  // Add RSC plugin for server bundle (handles client component references)
-  // Skip for RSC bundle - it doesn't need RSCWebpackPlugin
-  if (!rscBundle && config.assets_bundler !== 'rspack') {
-    serverWebpackConfig.plugins.push(new RSCWebpackPlugin({ isServer: true }));
+  // Add RSC plugin for server bundle (handles client component references).
+  // Skip for RSC bundle - it doesn't need the client-reference manifest plugin.
+  if (!rscBundle) {
+    const RSCClientReferencePlugin =
+      config.assets_bundler === 'rspack' ? RSCRspackPlugin : RSCWebpackPlugin;
+
+    serverWebpackConfig.plugins.push(new RSCClientReferencePlugin({
+      isServer: true,
+      clientReferences: rscClientReferences,
+    }));
   }
   serverWebpackConfig.plugins.unshift(new bundler.optimize.LimitChunkCountPlugin({ maxChunks: 1 }));
 

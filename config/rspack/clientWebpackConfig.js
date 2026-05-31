@@ -4,6 +4,8 @@
 const commonWebpackConfig = require('./commonWebpackConfig');
 const { config } = require('shakapacker');
 const { RSCWebpackPlugin } = require('react-on-rails-rsc/WebpackPlugin');
+const { RSCRspackPlugin } = require('react-on-rails-rsc/RspackPlugin');
+const rscClientReferences = require('./rscClientReferences');
 
 // REFERENCE PATTERN: rspack-client-config — see AGENTS.md
 const configureClient = () => {
@@ -15,14 +17,13 @@ const configureClient = () => {
   // client config is going to try to load chunks.
   delete clientConfig.entry['server-bundle'];
 
-  // AMBER fallback from the Phase 0 spike:
-  // react-on-rails-rsc's WebpackPlugin calls a Webpack API that Rspack does not
-  // currently expose. Keep Rspack builds green and let the RSC bundle compile
-  // without client-reference plugin metadata until the upstream plugin supports
-  // Rspack.
-  if (config.assets_bundler !== 'rspack') {
-    clientConfig.plugins.push(new RSCWebpackPlugin({ isServer: false }));
-  }
+  const RSCClientReferencePlugin =
+    config.assets_bundler === 'rspack' ? RSCRspackPlugin : RSCWebpackPlugin;
+
+  clientConfig.plugins.push(new RSCClientReferencePlugin({
+    isServer: false,
+    clientReferences: rscClientReferences,
+  }));
 
   return clientConfig;
 };
