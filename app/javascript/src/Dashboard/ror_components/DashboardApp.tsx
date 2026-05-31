@@ -88,6 +88,11 @@ type DashboardAppProps = {
     classicProjects: string;
     signOut: string;
   };
+  build: {
+    commitSha: string | null;
+    commitLabel: string | null;
+    commitUrl: string | null;
+  };
 };
 
 type Project = {
@@ -473,6 +478,8 @@ function shellTitleForPath(pathname: string) {
 }
 
 function DashboardFooter() {
+  const { build } = useDashboardProps();
+
   return (
     <footer className="flex flex-col gap-2 border-t border-border/60 pt-5 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
       <ExternalDashboardLink
@@ -483,7 +490,29 @@ function DashboardFooter() {
       >
         Powered by React on Rails Pro
       </ExternalDashboardLink>
-      <span>Rails stays the app server; Pro handles the React rendering boundary.</span>
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 sm:justify-end">
+        <span>Rails stays the app server; Pro handles the React rendering boundary.</span>
+        {build.commitLabel ? (
+          <span>
+            Commit{' '}
+            {build.commitUrl ? (
+              <a
+                href={build.commitUrl}
+                className="font-mono text-foreground underline-offset-4 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+                title={build.commitSha ?? build.commitLabel}
+              >
+                {build.commitLabel}
+              </a>
+            ) : (
+              <code className="font-mono text-foreground" title={build.commitSha ?? build.commitLabel}>
+                {build.commitLabel}
+              </code>
+            )}
+          </span>
+        ) : null}
+      </div>
     </footer>
   );
 }

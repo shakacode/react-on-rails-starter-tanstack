@@ -79,6 +79,7 @@ test.describe('accessibility smoke', () => {
     await expect(dashboardNav).toBeVisible();
     await expect(dashboardNav.getByRole('link', { name: 'Projects' })).toHaveAttribute('href', '/projects');
     await expect(dashboardNav.getByRole('link', { name: 'Settings' })).toHaveAttribute('href', '/settings');
+    await expect(page.locator('footer').getByText(/Commit [0-9a-f]{7}/i)).toBeVisible();
 
     await page.goto('/settings/profile');
     await expect(page.locator('nav[aria-label="Settings tabs"]')).toBeVisible();

@@ -49,11 +49,24 @@
     </div>
 
     <div class="mt-10 flex flex-col items-center justify-between gap-4 border-t border-border pt-6 text-sm text-muted-foreground sm:flex-row">
-      <p>
-        <a href="<%= github_source_url('LICENSE') %>" target="_blank" rel="noreferrer noopener" class="hover:text-foreground">MIT licensed</a>
-        &middot; Open the source on
-        <a href="<%= github_repo_url %>" target="_blank" rel="noreferrer noopener" class="hover:text-foreground">GitHub</a>
-      </p>
+      <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 sm:justify-start">
+        <p>
+          <a href="<%= github_source_url('LICENSE') %>" target="_blank" rel="noreferrer noopener" class="hover:text-foreground">MIT licensed</a>
+          &middot; Open the source on
+          <a href="<%= github_repo_url %>" target="_blank" rel="noreferrer noopener" class="hover:text-foreground">GitHub</a>
+        </p>
+        <% if deployed_commit_short_sha.present? %>
+          <span aria-hidden="true">&middot;</span>
+          <p>
+            Commit
+            <% if deployed_commit_url.present? %>
+              <a href="<%= deployed_commit_url %>" target="_blank" rel="noreferrer noopener" class="font-mono text-foreground underline-offset-4 hover:underline" title="<%= deployed_commit_sha %>"><%= deployed_commit_short_sha %></a>
+            <% else %>
+              <code class="font-mono text-foreground" title="<%= deployed_commit_sha %>"><%= deployed_commit_short_sha %></code>
+            <% end %>
+          </p>
+        <% end %>
+      </div>
       <button type="button" data-theme-toggle
               class="inline-flex items-center gap-2 rounded-md border border-border bg-card px-3 py-1.5 text-foreground shadow-sm transition-colors hover:bg-muted">
         <svg class="block size-4 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>

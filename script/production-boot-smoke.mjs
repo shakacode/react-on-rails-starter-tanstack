@@ -339,6 +339,7 @@ async function smokeAuthenticatedDashboard(baseURL) {
   assertBodyIncludes(projectsBody, 'class="tanstack-shell', projectsPath);
   assertBodyIncludes(projectsBody, 'Demo User', projectsPath);
   assertBodyIncludes(projectsBody, 'Project list', projectsPath);
+  assertBodyIncludes(projectsBody, 'Commit', projectsPath);
 }
 
 function stopServices() {
