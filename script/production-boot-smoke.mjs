@@ -324,20 +324,21 @@ async function smokeAuthenticatedDashboard(baseURL) {
     throw new Error(`/session returned ${signInResponse.status} instead of a redirect: ${body.slice(0, 500)}`);
   }
 
-  const dashboardPath = '/dashboard?status=active&sort=name&dir=asc';
-  const dashboardResponse = await fetchSmokePath(baseURL, dashboardPath, {
+  const projectsPath = '/projects?status=active&sort=name&dir=asc';
+  const projectsResponse = await fetchSmokePath(baseURL, projectsPath, {
     cookieHeader: jar.header(),
   });
 
-  if (dashboardResponse.status !== 200) {
-    const body = await dashboardResponse.text();
-    throw new Error(`${dashboardPath} returned ${dashboardResponse.status}: ${body.slice(0, 500)}`);
+  if (projectsResponse.status !== 200) {
+    const body = await projectsResponse.text();
+    throw new Error(`${projectsPath} returned ${projectsResponse.status}: ${body.slice(0, 500)}`);
   }
 
-  const dashboardBody = await dashboardResponse.text();
-  assertBodyIncludes(dashboardBody, 'TANSTACK_SSR_SHELL', dashboardPath);
-  assertBodyIncludes(dashboardBody, 'class="tanstack-shell', dashboardPath);
-  assertBodyIncludes(dashboardBody, 'Demo User', dashboardPath);
+  const projectsBody = await projectsResponse.text();
+  assertBodyIncludes(projectsBody, 'TANSTACK_SSR_SHELL', projectsPath);
+  assertBodyIncludes(projectsBody, 'class="tanstack-shell', projectsPath);
+  assertBodyIncludes(projectsBody, 'Demo User', projectsPath);
+  assertBodyIncludes(projectsBody, 'Project list', projectsPath);
 }
 
 function stopServices() {
@@ -376,6 +377,7 @@ statuses = Project.statuses.keys
   project.assign_attributes(
     description: "Production boot smoke coverage",
     status: statuses[index % statuses.length],
+    created_at: (index + 7).days.ago,
     last_activity_at: (index + 1).hours.ago
   )
   project.save!

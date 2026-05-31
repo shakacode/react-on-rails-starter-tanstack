@@ -27,7 +27,15 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { ExternalLink, Info } from 'lucide-react';
+import {
+  ArrowRight,
+  ExternalLink,
+  FolderKanban,
+  GitBranch,
+  Info,
+  ServerCog,
+  Settings,
+} from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -185,6 +193,48 @@ const demoPortfolioCards = [
     href: 'https://github.com/shakacode/react_on_rails-demo-octochangelog-on-rails-pro',
   },
 ] as const;
+
+const overviewCards = [
+  {
+    icon: FolderKanban,
+    title: 'Project workspace',
+    description: 'Open the focused TanStack Table route for server-side filtering, sorting, pagination, and mutations.',
+    href: '/projects',
+    label: 'Open projects',
+    internal: true,
+  },
+  {
+    icon: Settings,
+    title: 'Nested settings',
+    description: 'Exercise authenticated nested routes and profile writes without a full-page document request.',
+    href: '/settings',
+    label: 'Open settings',
+    internal: true,
+  },
+  {
+    icon: ServerCog,
+    title: 'RSC + TanStack',
+    description: 'See a public TanStack route compose a React on Rails Pro RSC payload on the Rspack path.',
+    href: '/rsc-showcase',
+    label: 'Open RSC showcase',
+    internal: false,
+  },
+  {
+    icon: GitBranch,
+    title: 'Classic Rails coexistence',
+    description: 'Compare the Rails-rendered CRUD fallback that shares the same models, auth, and validations.',
+    href: '/classic/projects',
+    label: 'Open classic CRUD',
+    internal: false,
+  },
+] as const;
+
+const metricHelp: Record<keyof MetricsResponse, string> = {
+  total: 'All projects scoped to the current Rails user.',
+  active_count: 'Active records counted by Rails, cached by TanStack Query.',
+  completed_this_week: 'Completed records updated in the last seven days.',
+  avg_cycle_time: 'Nonnegative days from creation to last activity for completed work.',
+};
 
 type DashboardLinkProps = Omit<React.ComponentProps<typeof Link>, 'className' | 'params' | 'to'> & {
   className?: string;
@@ -370,13 +420,14 @@ function RootLayout() {
   const { user, links } = useDashboardProps();
   const router = useRouter();
   const showDevtools = showTanStackDevtools();
+  const pathname = router.state.location.pathname;
 
   return (
     <main className="tanstack-shell bg-background text-foreground">
       <header className="tanstack-header border border-border/70 bg-card/95 shadow-sm">
         <div>
           <p className={eyebrowClassName}>React on Rails + TanStack</p>
-          <h1>Dashboard</h1>
+          <h1>{shellTitleForPath(pathname)}</h1>
           <p className={mutedTextClassName}>Signed in as <strong>{user.emailAddress}</strong>.</p>
         </div>
         <nav className="tanstack-nav" aria-label="Dashboard navigation">
@@ -414,6 +465,13 @@ function RootLayout() {
   );
 }
 
+function shellTitleForPath(pathname: string) {
+  if (pathname.startsWith('/projects')) return 'Projects';
+  if (pathname.startsWith('/settings')) return 'Settings';
+
+  return 'Dashboard';
+}
+
 function DashboardFooter() {
   return (
     <footer className="flex flex-col gap-2 border-t border-border/60 pt-5 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
@@ -445,23 +503,7 @@ function RouteError({ error }: { error: Error }) {
 }
 
 function DashboardPage() {
-  const search = dashboardRoute.useSearch();
-  const navigate = dashboardRoute.useNavigate();
-
-  return (
-    <DashboardContent
-      search={search}
-      updateSearch={(next) => {
-        navigate({
-          search: (previous: DashboardSearch) => ({
-            ...previous,
-            ...next,
-            page: next.page ?? 1,
-          }),
-        });
-      }}
-    />
-  );
+  return <DashboardOverviewPage />;
 }
 
 function ProjectsIndexPage() {
@@ -469,7 +511,7 @@ function ProjectsIndexPage() {
   const navigate = projectsIndexRoute.useNavigate();
 
   return (
-    <DashboardContent
+    <ProjectsPage
       search={search}
       updateSearch={(next) => {
         navigate({
@@ -484,7 +526,19 @@ function ProjectsIndexPage() {
   );
 }
 
-function DashboardContent({
+function DashboardOverviewPage() {
+  return (
+    <div className="tanstack-stack">
+      <DashboardOverviewHero />
+      <MetricsGrid />
+      <OverviewRouteCards />
+      <DemoPortfolioCards />
+      <RenderingModeDrawer />
+    </div>
+  );
+}
+
+function ProjectsPage({
   search,
   updateSearch,
 }: {
@@ -493,11 +547,104 @@ function DashboardContent({
 }) {
   return (
     <div className="tanstack-stack">
-      <RenderingModeDrawer />
-      <DemoPortfolioCards />
-      <MetricsGrid />
+      <ProjectsIntro />
       <ProjectsTable search={search} updateSearch={updateSearch} />
     </div>
+  );
+}
+
+function DashboardOverviewHero() {
+  return (
+    <Card className={cn(panelClassName, 'overview-hero')}>
+      <CardHeader className={panelHeaderClassName}>
+        <div>
+          <p className={eyebrowClassName}>Dashboard overview</p>
+          <CardTitle><h2>Rails-owned app shell with React where it pays off</h2></CardTitle>
+          <CardDescription>
+            Use this page to orient yourself. The project table lives at /projects,
+            while the dashboard explains the app surfaces and shows account-level metrics.
+          </CardDescription>
+        </div>
+        <div className={actionRowClassName}>
+          <Button asChild>
+            <Link to="/projects">
+              View projects
+              <ArrowRight aria-hidden="true" size={16} />
+            </Link>
+          </Button>
+          <Button asChild variant="secondary">
+            <a href="/rsc-showcase">Open RSC showcase</a>
+          </Button>
+        </div>
+      </CardHeader>
+    </Card>
+  );
+}
+
+function OverviewRouteCards() {
+  return (
+    <section className="overview-route-grid" aria-labelledby="overview-route-title">
+      <div className="overview-route-heading">
+        <p className={eyebrowClassName}>Route map</p>
+        <h2 id="overview-route-title">Pick the surface you want to inspect</h2>
+      </div>
+      <div className="overview-route-cards">
+        {overviewCards.map((card) => {
+          const Icon = card.icon;
+          const icon = <Icon aria-hidden="true" size={20} strokeWidth={2.2} />;
+
+          return (
+            <Card className="overview-route-card" key={card.href}>
+              <CardHeader>
+                <span className="overview-route-icon">{icon}</span>
+                <div>
+                  <CardTitle><h3>{card.title}</h3></CardTitle>
+                  <CardDescription>{card.description}</CardDescription>
+                </div>
+              </CardHeader>
+              <CardFooter>
+                {card.internal ? (
+                  <DashboardLink className="overview-route-link" to={card.href}>
+                    {card.label}
+                    <ArrowRight aria-hidden="true" size={15} />
+                  </DashboardLink>
+                ) : (
+                  <ExternalDashboardLink className="overview-route-link" href={card.href}>
+                    {card.label}
+                    <ArrowRight aria-hidden="true" size={15} />
+                  </ExternalDashboardLink>
+                )}
+              </CardFooter>
+            </Card>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function ProjectsIntro() {
+  return (
+    <Card className={panelClassName}>
+      <CardHeader className={panelHeaderClassName}>
+        <div>
+          <p className={eyebrowClassName}>Project workspace</p>
+          <CardTitle><h2>Workspace controls</h2></CardTitle>
+          <CardDescription>
+            This route is the focused TanStack Table surface. Rails owns persistence,
+            validation, filtering, sorting, and pagination through the JSON API.
+          </CardDescription>
+        </div>
+        <div className={actionRowClassName}>
+          <Button asChild>
+            <Link to="/projects/new">Create project</Link>
+          </Button>
+          <Button asChild variant="secondary">
+            <Link to="/dashboard">Dashboard overview</Link>
+          </Button>
+        </div>
+      </CardHeader>
+    </Card>
   );
 }
 
@@ -546,6 +693,11 @@ function DemoPortfolioCards() {
 function MetricsGrid() {
   const { api } = useDashboardProps();
   const metricsProjectId = api.metricsProjectId;
+  const query = useQuery({
+    queryKey: ['metrics', metricsProjectId],
+    enabled: Boolean(metricsProjectId),
+    queryFn: () => apiFetch<MetricsResponse>(`${api.projectsPath}/${metricsProjectId}/metrics`),
+  });
   const metrics = [
     ['total', 'Total projects'],
     ['active_count', 'Active projects'],
@@ -556,7 +708,15 @@ function MetricsGrid() {
   return (
     <section className="metric-grid" aria-label="Project metrics">
       {metrics.map(([key, label]) => (
-        <MetricCard key={key} metricKey={key} label={label} metricsProjectId={metricsProjectId} />
+        <MetricCard
+          key={key}
+          metricKey={key}
+          label={label}
+          metricsProjectId={metricsProjectId}
+          isPending={query.isPending}
+          errorMessage={query.isError ? query.error.message : null}
+          value={query.data?.[key] ?? 0}
+        />
       ))}
     </section>
   );
@@ -566,18 +726,17 @@ function MetricCard({
   metricKey,
   label,
   metricsProjectId,
+  isPending,
+  errorMessage,
+  value,
 }: {
   metricKey: keyof MetricsResponse;
   label: string;
   metricsProjectId: number | null;
+  isPending: boolean;
+  errorMessage: string | null;
+  value: number;
 }) {
-  const { api } = useDashboardProps();
-  const query = useQuery({
-    queryKey: ['metric', metricKey, metricsProjectId],
-    enabled: Boolean(metricsProjectId),
-    queryFn: () => apiFetch<MetricsResponse>(`${api.projectsPath}/${metricsProjectId}/metrics`),
-  });
-
   if (!metricsProjectId) {
     return (
       <Card className="metric-card">
@@ -592,7 +751,7 @@ function MetricCard({
     );
   }
 
-  if (query.isPending) {
+  if (isPending) {
     return (
       <Card className="metric-card metric-card-muted">
         <CardHeader>
@@ -606,7 +765,7 @@ function MetricCard({
     );
   }
 
-  if (query.isError) {
+  if (errorMessage) {
     return (
       <Card className="metric-card metric-card-error border-destructive/50">
         <CardHeader>
@@ -614,7 +773,7 @@ function MetricCard({
           <CardTitle className="text-3xl"><strong>!</strong></CardTitle>
         </CardHeader>
         <CardContent>
-          <p>{query.error.message}</p>
+          <p>{errorMessage}</p>
         </CardContent>
       </Card>
     );
@@ -624,13 +783,19 @@ function MetricCard({
     <Card className="metric-card">
       <CardHeader>
         <CardDescription>{label}</CardDescription>
-        <CardTitle className="text-3xl"><strong>{query.data[metricKey]}</strong></CardTitle>
+        <CardTitle className="text-3xl"><strong>{formatMetricValue(metricKey, value)}</strong></CardTitle>
       </CardHeader>
       <CardContent>
-        <p>Loaded independently with TanStack Query.</p>
+        <p>{metricHelp[metricKey]}</p>
       </CardContent>
     </Card>
   );
+}
+
+function formatMetricValue(metricKey: keyof MetricsResponse, value: number) {
+  if (metricKey === 'avg_cycle_time') return `${value}d`;
+
+  return value;
 }
 
 function ProjectsTable({
@@ -713,7 +878,7 @@ function ProjectsTable({
       <CardHeader className={panelHeaderClassName}>
         <div>
           <p className={eyebrowClassName}>TanStack Table</p>
-          <CardTitle><h2>Projects</h2></CardTitle>
+          <CardTitle><h2>Project list</h2></CardTitle>
           <CardDescription>Server-driven sort, filter, and pagination stored in the URL.</CardDescription>
         </div>
         <Button asChild>
@@ -839,7 +1004,7 @@ function NewProjectPage() {
       queryClient.setQueryData(['project', String(project.id)], { project });
       if (!api.metricsProjectId) setMetricsProjectId(project.id);
       queryClient.invalidateQueries({ queryKey: ['projects'] });
-      queryClient.invalidateQueries({ queryKey: ['metric'] });
+      queryClient.invalidateQueries({ queryKey: ['metrics'] });
       toast.success('Project created.');
       navigate({ to: '/projects/$projectId', params: { projectId: String(project.id) } });
     },
@@ -928,7 +1093,7 @@ function EditProjectPage() {
     onSuccess: ({ project }) => {
       queryClient.setQueryData(['project', String(project.id)], { project });
       queryClient.invalidateQueries({ queryKey: ['projects'] });
-      queryClient.invalidateQueries({ queryKey: ['metric'] });
+      queryClient.invalidateQueries({ queryKey: ['metrics'] });
       toast.success('Project saved.');
       navigate({ to: '/projects/$projectId', params: { projectId: String(project.id) } });
     },
@@ -1074,7 +1239,7 @@ function SettingsLayout() {
       <CardHeader className={panelHeaderClassName}>
         <div>
           <p className={eyebrowClassName}>TanStack Router</p>
-          <CardTitle><h2>Settings</h2></CardTitle>
+          <CardTitle><h2>Account preferences</h2></CardTitle>
           <CardDescription>Nested routes render client-side without leaving the Rails shell.</CardDescription>
         </div>
       </CardHeader>

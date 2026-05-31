@@ -18,7 +18,9 @@ code first and then update the docs or this file in the same change.
   the source of truth for default bundling behavior. Webpack remains an opt-in
   bridge/comparison path via `SHAKAPACKER_ASSETS_BUNDLER=webpack`.
 - `/dashboard`, `/settings...`, and `/projects...` are Rails routes that render
-  the TanStack dashboard shell through `DashboardController#show`.
+  the TanStack dashboard shell through `DashboardController#show`. `/dashboard`
+  is the authenticated overview, while `/projects...` is the focused TanStack
+  Table and project-workspace surface.
 - `/classic/projects` remains a classic Rails CRUD surface to demonstrate a
   hybrid Rails UI coexisting with the TanStack surface.
 - `/rsc-showcase` is the public RSC + TanStack centerpiece: Rails serves the
@@ -27,7 +29,7 @@ code first and then update the docs or this file in the same change.
   helper fetches/composes the RSC payload with client islands on the local
   Rspack default.
 - `/hello_server` demonstrates streaming RSC. Rspack client-reference manifests
-  are available with `react-on-rails-rsc@19.0.5-rc.2`; the remaining strict
+  are available with `react-on-rails-rsc@19.0.5-rc.3`; the remaining strict
   production CSP hydration limitation is documented in
   `docs/11-rsc-csp-nonce-spike.md`.
 - The root path `/` is a public Rails landing page (`home#index`). It leads with
@@ -265,7 +267,7 @@ Rules:
 - Production-assets mode must run with optimized assets and the React on Rails
   Pro Node renderer.
 - Treat interactive RSC client-reference manifest generation on Rspack as
-  expected behavior with `react-on-rails-rsc@19.0.5-rc.2` or newer. Keep
+  expected behavior with `react-on-rails-rsc@19.0.5-rc.3` or newer. Keep
   `pnpm run repro:rspack-rsc` available as the small regression check.
 - When validating unreleased `react_on_rails` or `react_on_rails_rsc` branches,
   follow `docs/12-upstream-branch-testing.md`. Do not leave local path or git

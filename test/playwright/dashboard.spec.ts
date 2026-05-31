@@ -65,10 +65,10 @@ test('authenticated dashboard hydrates client routes and project mutations', asy
   await expect(page.locator('main.tanstack-shell').getByRole('heading', { name: 'New project' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Open classic Rails form' })).toHaveAttribute('href', '/classic/projects/new');
 
-  await page.goto('/dashboard?status=active&sort=name&dir=asc');
+  await page.goto('/projects?status=active&sort=name&dir=asc');
   const shell = page.locator('main.tanstack-shell');
-  await expect(shell.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
-  await expect(shell.locator('.metric-card')).toHaveCount(4);
+  await expect(shell.getByRole('heading', { name: 'Projects' })).toBeVisible();
+  await expect(shell.getByRole('heading', { name: 'Project list' })).toBeVisible();
   await expect(shell.getByRole('link', { name: 'Playwright Project 1' })).toBeVisible();
   await expect(page.locator('body')).not.toContainText('Loading projects...');
   expect(page.url()).toContain('status=active');
@@ -87,6 +87,8 @@ test('authenticated dashboard hydrates client routes and project mutations', asy
   await expect(page.getByRole('heading', { name: 'TanStack Playwright Updated' })).toBeVisible();
   await page.locator('nav[aria-label="Dashboard navigation"] a[href="/dashboard"]').click();
   await expect(page).toHaveURL('/dashboard');
+  await expect(shell.getByRole('heading', { name: 'Rails-owned app shell with React where it pays off' })).toBeVisible();
+  await expect(shell.locator('.metric-card')).toHaveCount(4);
   expect(documentRequests).toBe(documentRequestsBeforeClientRoutes);
 
   await page.getByRole('button', { name: 'Rendering mode details' }).click();
@@ -94,7 +96,7 @@ test('authenticated dashboard hydrates client routes and project mutations', asy
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog', { name: 'Rendering on this page' })).toBeHidden();
 
-  await page.getByRole('link', { name: 'New project' }).click();
+  await page.getByRole('link', { name: 'Create project' }).click();
   await expect(page).toHaveURL('/projects/new');
   const projectName = `Playwright Created ${Date.now()}`;
   await page.getByLabel('Name').fill(projectName);
@@ -131,7 +133,7 @@ test('first project creation enables metrics without a reload', async ({ page })
   await expect(page.locator('.metric-card').first().locator('strong')).toHaveText('0');
   await expect(page.getByText('Create a project to populate metrics.')).toHaveCount(4);
 
-  await page.getByRole('link', { name: 'New project' }).click();
+  await page.getByRole('link', { name: 'Create project' }).click();
   await page.getByLabel('Name').fill('Playwright First Project');
   await page.getByLabel('Description').fill('Created as the first project');
   await page.getByLabel('Status').selectOption('active');

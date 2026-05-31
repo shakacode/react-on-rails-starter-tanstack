@@ -47,7 +47,7 @@ Each route demonstrates a deliberate rendering choice, not a fallback:
   Router loader fetches a React on Rails Pro RSC payload from Rails, decodes the
   Flight stream, and composes that server-streamed tree beside ordinary client
   React. It runs on the default Rspack bundler with
-  `react-on-rails-rsc@19.0.5-rc.2`.
+  `react-on-rails-rsc@19.0.5-rc.3`.
 - **`/hello_server`** demonstrates streaming React Server Components. The demo
   keeps an interactive `LikeButton` client island inside a server-rendered
   tree. On Rspack the route renders end to end; under the strict production CSP
@@ -73,7 +73,7 @@ Rspack is the default Shakapacker bundler for local development and the
 deployed image. Use `config/shakapacker.yml`, `config/rspack/`, and the
 `.controlplane/Dockerfile` build ARG as the source of truth for the default
 path. The Rspack RSC plugin in
-`react-on-rails-rsc@19.0.5-rc.2` emits the client/server manifests the Pro RSC
+`react-on-rails-rsc@19.0.5-rc.3` emits the client/server manifests the Pro RSC
 client-reference path needs. Webpack remains an opt-in bridge/comparison path
 via `SHAKAPACKER_ASSETS_BUNDLER=webpack`.
 
@@ -103,7 +103,7 @@ renderer, and the RSC bundle watcher. Development defaults to live reload; use
 the HMR command only when testing HMR behavior.
 
 Sign in with `demo@example.com` / `password`. Visit `/dashboard` for the
-TanStack surface, `/projects` for a full-page load into the TanStack project
+authenticated overview, `/projects` for the focused TanStack Table and project
 routes, `/classic/projects` for the Rails CRUD surface, `/rsc-showcase` for the
 RSC-in-a-TanStack-route centerpiece, and `/hello_server` for the lower-level RSC
 streaming demo.
@@ -134,7 +134,8 @@ Both static and production-assets development modes start the Node renderer
 because the authenticated TanStack dashboard is server-rendered by React on
 Rails Pro.
 
-The authenticated `/dashboard` route is the TanStack surface.
+The authenticated `/dashboard` route is the overview. `/projects` is the focused
+TanStack Table surface.
 
 TanStack Router runs under a Rails-owned HTML shell and is prerendered by React
 on Rails Pro's Node renderer. Project index/create/show/edit and nested
@@ -154,8 +155,8 @@ This repo is the public template seed for the Rails + React on Rails Pro +
 TanStack surface described in
 [shakacode/react_on_rails#3364](https://github.com/shakacode/react_on_rails/pull/3364).
 It includes Rails authentication, email verification, password reset, Projects
-CRUD, scoped JSON APIs, demo seeds, development mail previews, and the
-authenticated TanStack Router/Query/Table dashboard.
+CRUD, scoped JSON APIs, demo seeds, development mail previews, and authenticated
+TanStack Router/Query/Table routes.
 
 See [SPIKE.md](SPIKE.md) and the
 [RSC Webpack Bundler Spike](docs/09-rsc-webpack-bundler-spike.md) for the
