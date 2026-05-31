@@ -41,10 +41,10 @@ does not need to download the component code that produced that content.
 For content-heavy public pages, server components can reduce the JavaScript sent
 to the browser. A server component renders on the server; only client component
 boundaries need browser JavaScript. In this starter, `/rsc-showcase` is the
-public RSC + TanStack centerpiece: a bare TanStack Router loader fetches a React
-on Rails Pro RSC payload from Rails and composes that server-streamed tree beside
-ordinary client React. `/hello_server` remains the lower-level streaming
-reference, with the Rails entrypoint in
+public RSC + TanStack centerpiece: a bare TanStack Router loader selects a React
+on Rails Pro server component and props, then the exported `RSCRoute` helper
+fetches and composes that server-streamed tree beside ordinary client React.
+`/hello_server` remains the lower-level streaming reference, with the Rails entrypoint in
 `app/controllers/hello_server_controller.rb`, the streaming view in
 `app/views/hello_server/index.html.erb`, and the component source under
 `app/javascript/src/HelloServer/`.

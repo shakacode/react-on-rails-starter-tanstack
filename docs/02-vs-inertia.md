@@ -55,8 +55,8 @@ TanStack Router routes, URL search validation, SSR handoff, and router links,
 while dashboard data fetching stays in TanStack Query so the Rails JSON API,
 CSRF handling, cache keys, invalidation, and table state remain visible.
 `/rsc-showcase` demonstrates the other primitive: a bare TanStack Router loader
-fetches a React on Rails Pro RSC payload from Rails and composes that streamed
-tree inside the route.
+selects the React on Rails Pro server component and props, then the exported
+`RSCRoute` helper fetches and composes that streamed tree inside the route.
 
 ## RSC Requires A Rendering Boundary Inertia Does Not Have
 
@@ -79,8 +79,8 @@ view calls [`stream_react_component`](../app/views/hello_server/index.html.erb),
 and the RSC source separates the async server component from the interactive
 [`LikeButton`](../app/javascript/src/HelloServer/components/LikeButton.tsx)
 client island. `/rsc-showcase` is the product-facing bridge: the TanStack route
-loader fetches the React on Rails Pro RSC payload and renders it beside normal
-client React.
+selects the React on Rails Pro server component and `RSCRoute` renders the RSC
+payload beside normal client React.
 
 That distinction is why "Inertia adds RSC" is not a small feature request. It
 would need a rendering boundary that understands the RSC payload and the
@@ -136,7 +136,7 @@ that this starter is arranged around different ownership boundaries.
 | Rails-owned full-page entrypoints into TanStack routes | [`config/routes.rb`](../config/routes.rb) maps `/dashboard`, `/projects...`, and `/settings...` to the dashboard shell instead of classic CRUD pages. [`DashboardController`](../app/controllers/dashboard_controller.rb) passes the initial path, search string, current user, links, and API endpoints. |
 | React on Rails Pro SSR for the dashboard | [`app/views/dashboard/show.html.erb`](../app/views/dashboard/show.html.erb) prerenders `DashboardApp`, and [`DashboardApp.tsx`](../app/javascript/src/Dashboard/ror_components/DashboardApp.tsx) uses `serverRenderTanStackAppAsync` for the server branch. |
 | TanStack Router route tree and URL state | [`DashboardApp.tsx`](../app/javascript/src/Dashboard/ror_components/DashboardApp.tsx) defines the authenticated route tree, validates dashboard search params, uses router links, and preserves direct full-page loads into `/projects...`. |
-| TanStack Router loader composing RSC | [`RscShowcaseApp.tsx`](../app/javascript/src/RscShowcase/ror_components/RscShowcaseApp.tsx) defines the public `/rsc-showcase` route whose loader fetches a React on Rails Pro RSC payload and composes it with a client island. |
+| TanStack Router route composing RSC | [`RscShowcaseApp.tsx`](../app/javascript/src/RscShowcase/ror_components/RscShowcaseApp.tsx) defines the public `/rsc-showcase` route whose loader selects a React on Rails Pro server component/props pair and whose `RSCRoute` render composes the payload with a client island. |
 | TanStack Query with Rails CSRF | [`apiFetch`](../app/javascript/lib/apiFetch.ts) sends same-origin credentials and the Rails CSRF token. [`queryClient`](../app/javascript/lib/queryClient.ts) centralizes query defaults. Dashboard mutations invalidate Rails-backed query keys. |
 | TanStack Table backed by Rails persistence | `ProjectsTable` in [`DashboardApp.tsx`](../app/javascript/src/Dashboard/ror_components/DashboardApp.tsx) keeps filter, sort, and pagination state in the URL. [`Api::ProjectsController`](../app/controllers/api/projects_controller.rb) owns filtering, sorting, pagination, validation errors, and per-user scoping. |
 | Classic Rails CRUD coexistence | The [`classic` routes](../config/routes.rb) and [`ProjectsController`](../app/controllers/projects_controller.rb) keep a Rails-rendered CRUD surface at `/classic/projects`, while `/projects...` stays in the TanStack dashboard. |

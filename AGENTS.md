@@ -22,8 +22,10 @@ code first and then update the docs or this file in the same change.
 - `/classic/projects` remains a classic Rails CRUD surface to demonstrate a
   hybrid Rails UI coexisting with the TanStack surface.
 - `/rsc-showcase` is the public RSC + TanStack centerpiece: Rails serves the
-  shell and Pro RSC payload endpoint; a bare TanStack Router loader fetches and
-  composes the RSC payload with client islands on the local Rspack default.
+  shell and Pro RSC payload endpoint; a bare TanStack Router loader selects the
+  server component and props, and the exported React on Rails Pro `RSCRoute`
+  helper fetches/composes the RSC payload with client islands on the local
+  Rspack default.
 - `/hello_server` demonstrates streaming RSC. Rspack client-reference manifests
   are available with `react-on-rails-rsc@19.0.5-rc.2`; the remaining strict
   production CSP hydration limitation is documented in
@@ -197,8 +199,9 @@ Rules:
 Canonical example:
 
 - `app/javascript/src/RscShowcase/ror_components/RscShowcaseApp.tsx` for a
-  bare TanStack Router route loader that fetches a React on Rails Pro RSC
-  payload and composes it with route-owned client React.
+  bare TanStack Router route loader that selects a React on Rails Pro RSC
+  component/props pair and composes it with route-owned client React through
+  the exported `RSCRoute` helper.
 
 Reference marker ID: `rsc-showcase-loader`.
 
@@ -207,12 +210,19 @@ Rules:
 - Keep this route on Rails + React on Rails Pro + bare
   `@tanstack/react-router`; do not add TanStack Start, Vite, file-based routing,
   Hotwire, or Stimulus.
-- Use the Pro RSC payload endpoint as data for the route loader. Do not replace
+- Use `react-on-rails-pro/wrapServerComponentRenderer/client` for the
+  auto-loaded client wrapper and `react-on-rails-pro/RSCRoute` for payload
+  fetching/rendering. Do not recreate the Pro length-prefixed stream parser,
+  import `react-on-rails-rsc/client.browser` directly from app code, or replace
   the payload with a bespoke JSON protocol when the goal is to demonstrate RSC.
+- Keep `app/views/react_on_rails_pro/rsc_payload.text.erb` trim-safe. A trailing
+  newline after the helper output creates a blank line between length-prefixed
+  RSC chunks, which the current Pro client parser treats as malformed. Track
+  removal against upstream `shakacode/react_on_rails#3499`.
 - Keep the manifest-availability fallback honest so dependency regressions fail
   visibly instead of issuing RSC payload requests that cannot hydrate.
-- A `use client` `ror_components` file must export only its default component,
-  or the RSC build can fail.
+- The `use client` `RscShowcaseApp` `ror_components` file must export only the
+  default wrapped renderer, or the RSC build can fail.
 
 ## 9. Rspack, Dev Modes, And RSC
 
