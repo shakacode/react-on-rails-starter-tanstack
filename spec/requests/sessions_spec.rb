@@ -37,14 +37,14 @@ RSpec.describe "Sessions", type: :request do
     expect(response.body).to include("Use the account you created for this starter.")
   end
 
-  it "signs in a verified user with the demo credentials contract" do
+  it "signs in a verified user and opens the TanStack dashboard by default" do
     user = create(:user, :verified, email_address: "demo@example.com", password: "password", password_confirmation: "password")
 
     expect do
       sign_in(user)
     end.to change { user.sessions.reload.count }.by(1)
 
-    expect(response).to redirect_to(root_url)
+    expect(response).to redirect_to(dashboard_url)
     expect(flash[:alert]).to be_nil
   end
 
