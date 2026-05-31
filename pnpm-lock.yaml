@@ -87,11 +87,11 @@ importers:
         specifier: 19.0.6
         version: 19.0.6(react@19.0.6)
       react-on-rails-pro:
-        specifier: 16.7.0-rc.3
-        version: 16.7.0-rc.3(@tanstack/react-router@1.170.7(react-dom@19.0.6(react@19.0.6))(react@19.0.6))(react-dom@19.0.6(react@19.0.6))(react-on-rails-rsc@19.0.5-rc.1(react-dom@19.0.6(react@19.0.6))(react@19.0.6)(webpack@5.107.1))(react@19.0.6)
+        specifier: 17.0.0-rc.0
+        version: 17.0.0-rc.0(@tanstack/react-router@1.170.7(react-dom@19.0.6(react@19.0.6))(react@19.0.6))(react-dom@19.0.6(react@19.0.6))(react-on-rails-rsc@19.0.5-rc.1(react-dom@19.0.6(react@19.0.6))(react@19.0.6)(webpack@5.107.1))(react@19.0.6)
       react-on-rails-pro-node-renderer:
-        specifier: 16.7.0-rc.3
-        version: 16.7.0-rc.3
+        specifier: 17.0.0-rc.0
+        version: 17.0.0-rc.0
       react-on-rails-rsc:
         specifier: 19.0.5-rc.1
         version: 19.0.5-rc.1(react-dom@19.0.6(react@19.0.6))(react@19.0.6)(webpack@5.107.1)
@@ -2929,8 +2929,8 @@ packages:
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
-  react-on-rails-pro-node-renderer@16.7.0-rc.3:
-    resolution: {integrity: sha512-k8fyz2BZBW6YlVAt4BP7WQ+J8czAq0p27NDAlcasBNk9C1fttP2UjLY7n9WpkCJPW6Uc4B74dNwzmfcUDYG1FQ==}
+  react-on-rails-pro-node-renderer@17.0.0-rc.0:
+    resolution: {integrity: sha512-7UtLwN8oTe9lDTyrfXwepauBH3K0qPK1Lmm3Lv0+3QOg+qHRIIq4Oli3IeWlM+TO38V8/XjtUIi4BjpigOZb6Q==}
     peerDependencies:
       '@fastify/otel': '>=0.18.0 <1.0.0'
       '@honeybadger-io/js': '>=4.0.0'
@@ -2970,8 +2970,8 @@ packages:
       '@sentry/tracing':
         optional: true
 
-  react-on-rails-pro@16.7.0-rc.3:
-    resolution: {integrity: sha512-oJO7/26c+UQwd2/YbPkXqQgsGhXc1HE1iOwhCJijs4iKvQkOFb8Mm6r1BLrb3Kt/28n9PChZq0+XfbMDPvCuLg==}
+  react-on-rails-pro@17.0.0-rc.0:
+    resolution: {integrity: sha512-/ZO/gPOqlI/ENWoZMSvteMGGi5IWuXJBjY9dj3QHYZIKYeflySlOP+FrErpcOy0TzEZ8IU1gCQYeyJXzBgm2fA==}
     peerDependencies:
       '@tanstack/react-router': '>=1.139.0 <2.0.0'
       react: '>= 16'
@@ -2990,8 +2990,8 @@ packages:
       react-dom: ^19.0.3
       webpack: ^5.59.0
 
-  react-on-rails@16.7.0-rc.3:
-    resolution: {integrity: sha512-je/0D0w0rHKW5eVwqajqci4F3IGe3O7jfzJcQ7Lv/WrHUqy+QcTkwYxsnrVfsk+8SkMlkFGVCmuUjcuVWJncLg==}
+  react-on-rails@17.0.0-rc.0:
+    resolution: {integrity: sha512-zjAf7E3TjTQXSmg7UY+C6P3eqExYf6IxQeEjNe5Eo/LTgEIbNYpbYRZFfYhr520hdFj0V50E+CWkq9h1lZWl/Q==}
     peerDependencies:
       react: '>= 16'
       react-dom: '>= 16'
@@ -6401,7 +6401,7 @@ snapshots:
 
   react-is@16.13.1: {}
 
-  react-on-rails-pro-node-renderer@16.7.0-rc.3:
+  react-on-rails-pro-node-renderer@17.0.0-rc.0:
     dependencies:
       '@fastify/formbody': 8.0.2
       '@fastify/multipart': 9.4.0
@@ -6411,11 +6411,11 @@ snapshots:
       lockfile: 1.0.4
       pino: 9.14.0
 
-  react-on-rails-pro@16.7.0-rc.3(@tanstack/react-router@1.170.7(react-dom@19.0.6(react@19.0.6))(react@19.0.6))(react-dom@19.0.6(react@19.0.6))(react-on-rails-rsc@19.0.5-rc.1(react-dom@19.0.6(react@19.0.6))(react@19.0.6)(webpack@5.107.1))(react@19.0.6):
+  react-on-rails-pro@17.0.0-rc.0(@tanstack/react-router@1.170.7(react-dom@19.0.6(react@19.0.6))(react@19.0.6))(react-dom@19.0.6(react@19.0.6))(react-on-rails-rsc@19.0.5-rc.1(react-dom@19.0.6(react@19.0.6))(react@19.0.6)(webpack@5.107.1))(react@19.0.6):
     dependencies:
       react: 19.0.6
       react-dom: 19.0.6(react@19.0.6)
-      react-on-rails: 16.7.0-rc.3(react-dom@19.0.6(react@19.0.6))(react@19.0.6)
+      react-on-rails: 17.0.0-rc.0(react-dom@19.0.6(react@19.0.6))(react@19.0.6)
     optionalDependencies:
       '@tanstack/react-router': 1.170.7(react-dom@19.0.6(react@19.0.6))(react@19.0.6)
       react-on-rails-rsc: 19.0.5-rc.1(react-dom@19.0.6(react@19.0.6))(react@19.0.6)(webpack@5.107.1)
@@ -6429,7 +6429,7 @@ snapshots:
       webpack: 5.107.1(@swc/core@1.15.33)(postcss@8.5.15)(webpack-cli@6.0.1)
       webpack-sources: 3.5.0
 
-  react-on-rails@16.7.0-rc.3(react-dom@19.0.6(react@19.0.6))(react@19.0.6):
+  react-on-rails@17.0.0-rc.0(react-dom@19.0.6(react@19.0.6))(react@19.0.6):
     dependencies:
       react: 19.0.6
       react-dom: 19.0.6(react@19.0.6)

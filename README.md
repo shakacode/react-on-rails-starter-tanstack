@@ -78,7 +78,7 @@ client-reference path needs.
 
 | Component | Version |
 | --- | --- |
-| React on Rails / Pro | `16.7.0.rc.3` |
+| React on Rails / Pro | `17.0.0.rc.0` |
 | Shakapacker / Shakapacker Rspack | `10.1.0` |
 | React | `19.0.6` |
 | Rails | `8.1.x` |
@@ -184,6 +184,7 @@ Webpack bridge is verified for deploy and powers `/rsc-showcase`.
 - [RSC Webpack Bundler Spike](docs/09-rsc-webpack-bundler-spike.md)
 - [RSC Payloads In A TanStack Route Loader](docs/10-rsc-tanstack-loader-spike.md)
 - [RSC Streaming And CSP Nonces](docs/11-rsc-csp-nonce-spike.md)
+- [Testing Upstream Branches](docs/12-upstream-branch-testing.md)
 - [Upgrading](UPGRADING.md)
 
 ## License
