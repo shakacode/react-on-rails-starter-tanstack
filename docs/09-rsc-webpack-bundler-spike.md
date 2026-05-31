@@ -191,7 +191,7 @@ All run with `SHAKAPACKER_ASSETS_BUNDLER=webpack` on a clean production build
 | Classic Rails CRUD (`/classic/projects` index/new/show) | authed `curl` on prod server | ✅ HTTP 200 on all three |
 | Auth (sign-in, signup, reset, verify) | dashboard smoke + `auth.spec.ts` | ✅ sign-in POST → 302 `/`; all auth Playwright specs pass |
 | `/hello_server` interactive RSC | `REQUIRE_RSC_MANIFESTS=true node script/dev-mode-smoke.mjs static hello-server` | ✅ `"missingRscManifests": []`, `"outcome": "rendered"` |
-| `/rsc-showcase` RSC-in-TanStack route | `pnpm exec playwright test test/playwright/rsc_showcase.spec.ts` | ✅ loader fetched the Pro RSC payload, decoded the Flight stream, and kept both the RSC island and route-owned client island interactive |
+| `/rsc-showcase` RSC-in-TanStack route | `pnpm exec playwright test test/playwright/rsc_showcase.spec.ts` | ✅ loader selected the Pro RSC component/props, `RSCRoute` fetched and rendered the payload, and both the RSC island and route-owned client island stayed interactive |
 | Webpack HMR dashboard | `SHAKAPACKER_ASSETS_BUNDLER=webpack node script/dev-mode-smoke.mjs hmr dashboard` | ✅ Webpack dev-server starts with HMR, dashboard hydrates/navigates, and the browser observes a source edit via hot-update assets |
 | Webpack HMR `/hello_server` RSC | `SHAKAPACKER_ASSETS_BUNDLER=webpack REQUIRE_RSC_MANIFESTS=true node script/dev-mode-smoke.mjs hmr hello-server` | ✅ both RSC manifests present, `/hello_server` streams the RSC view instead of the fallback |
 | LikeButton client island hydration | Playwright click (CSP bypassed) | ✅ `0 likes` → `1 like` — island hydrates and is interactive |

@@ -42,9 +42,11 @@ The Node renderer receives Fetch API globals from `client/node-renderer.js` so T
 
 `/rsc-showcase` is the public RSC + TanStack route. Rails serves the shell
 through `RscShowcaseController#show`, and a bare TanStack Router loader in
-`RscShowcaseApp` fetches a React on Rails Pro RSC payload from the Rails
-`rsc_payload_route`. The route decodes the Flight stream in the browser and
-composes the server-streamed RSC tree beside an ordinary client island.
+`RscShowcaseApp` selects the React on Rails Pro server component and props.
+The route is wrapped with `react-on-rails-pro/wrapServerComponentRenderer/client`
+and renders the payload through the exported `RSCRoute` helper, so Pro owns the
+length-prefixed stream parsing and Flight rendering while the route composes the
+server-streamed RSC tree beside an ordinary client island.
 
 This is intentionally not TanStack Start. The route keeps this starter on
 Rails, React on Rails Pro, and bare `@tanstack/react-router`; it does not add

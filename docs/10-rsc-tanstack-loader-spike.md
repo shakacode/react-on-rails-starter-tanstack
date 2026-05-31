@@ -9,12 +9,18 @@ file-based routing, Hotwire, or Stimulus.
 
 - Rails serves the public `/rsc-showcase` page and remains responsible for the
   route, CSP, and the Pro `/rsc_payload/:component_name` endpoint.
-- A TanStack Router loader fetches
-  `/rsc_payload/RscShowcaseServerPanel?props=...`.
-- The loader buffers the Pro length-prefixed RSC stream as serializable Flight
-  chunks.
-- The route component reconstructs a `ReadableStream` and passes it to
-  `createFromReadableStream` from `react-on-rails-rsc/client.browser`.
+- A TanStack Router loader selects the server component and props for
+  `RscShowcaseServerPanel`.
+- `RscShowcaseApp` is registered through
+  `react-on-rails-pro/wrapServerComponentRenderer/client`, which installs the
+  Pro RSC provider around the route tree.
+- The route renders the exported `react-on-rails-pro/RSCRoute` helper, so React
+  on Rails Pro owns the payload fetch, length-prefixed stream parser, and Flight
+  rendering.
+- The local `app/views/react_on_rails_pro/rsc_payload.text.erb` override keeps
+  the helper output trim-safe so the streamed response does not add a blank line
+  between length-prefixed chunks. Track removing this override against
+  `shakacode/react_on_rails#3499`.
 - The fetched RSC tree renders beside ordinary route-level client React.
 - A `use client` island inside the fetched RSC payload hydrates and updates
   independently from the route-owned client panel.
@@ -31,7 +37,7 @@ SKIP_DATABASE_CHECK=true RAILS_ENV=development PORT=3400 \
 
 Browser verification against `http://127.0.0.1:3400/rsc-showcase` confirmed:
 
-- the loader fetched 3 RSC payload chunks;
+- the route rendered the RSC payload through `RSCRoute`;
 - the server component rendered in the TanStack route;
 - the RSC-embedded client island accepted clicks;
 - the route-owned client island accepted clicks.
@@ -41,9 +47,8 @@ Browser verification against `http://127.0.0.1:3400/rsc-showcase` confirmed:
 Rspack remains the default in `config/shakapacker.yml` and the deploy image.
 `react-on-rails-rsc@19.0.5-rc.2` emits the RSC client-reference manifests on
 Rspack, so `/rsc-showcase` fetches the payload on the default path. The route
-still checks manifest availability before the loader fetches the payload, so it
-can render an honest fallback if a future dependency regression removes the
-manifests.
+still checks manifest availability before rendering `RSCRoute`, so it can render
+an honest fallback if a future dependency regression removes the manifests.
 
 ## Follow-Up For Issue #110
 
@@ -52,8 +57,7 @@ This proves the core composition contract for the public centerpiece route:
 > React on Rails Pro composes server-streamed RSC into a TanStack route on
 > Rails; this is not TanStack Start parity.
 
-The current route is intentionally client-loader-first. A future SSR-preloaded
-version would need either an exported Pro helper for app code to consume the RSC
-payload stream on the server or a React on Rails Pro wrapper that exposes the
-same server/client `getComponent` behavior currently used internally by
-`RSCRoute`.
+The current route is intentionally client-composed: the TanStack loader owns the
+route data, and `RSCRoute` owns the RSC payload fetch/render lifecycle. A future
+SSR-preloaded version would need a Pro helper that exposes the same server-side
+preload behavior for a bare TanStack route without requiring TanStack Start.

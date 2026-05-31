@@ -8,8 +8,11 @@ type RscShowcaseServerPanelProps = {
 const sourceSnippet = `const rscShowcaseRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/rsc-showcase',
-  loader: () => fetch('/rsc_payload/RscShowcaseServerPanel'),
-  component: RscShowcasePage,
+  loader: () => ({
+    componentName: 'RscShowcaseServerPanel',
+    componentProps: { requestedBy: 'TanStack Router loader' },
+  }),
+  component: () => <RSCRoute {...rscShowcaseRoute.useLoaderData()} />,
 });`;
 
 const wait = (milliseconds: number) =>
@@ -22,8 +25,8 @@ async function loadBridgeNotes() {
 
   return [
     'Rails still owns the route, session, CSP, and component payload endpoint.',
-    'React on Rails Pro renders the Server Component payload through the Webpack bridge.',
-    'TanStack Router treats the payload as loader data and composes it with route-level client UI.',
+    'React on Rails Pro renders the Server Component payload through the exported RSCRoute helper.',
+    'TanStack Router owns the route data and composes the payload with route-level client UI.',
   ];
 }
 
@@ -45,7 +48,7 @@ const RscShowcaseServerPanel = async ({
           Server component payload
         </p>
         <h2 className="mt-2 text-2xl font-semibold tracking-normal text-slate-950 dark:text-white">
-          RSC streamed by Rails, consumed by a TanStack loader
+          RSC streamed by Rails, consumed by a TanStack route
         </h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
           Requested by {requestedBy}; rendered on the server at {renderedAt}.
