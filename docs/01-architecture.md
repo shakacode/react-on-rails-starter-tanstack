@@ -4,6 +4,49 @@ This starter begins from `create-react-on-rails-app --rsc --rspack` and is launc
 
 Shakapacker remains on `10.1.0` because public `11.1.0` artifacts are not visible in the registries this starter consumes. Rspack is the checked-in local and deploy default. `react-on-rails-rsc@19.0.5-rc.3` provides the Rspack RSC manifest support this starter needs, while Webpack remains an opt-in bridge/comparison path.
 
+## Related React On Rails Docs
+
+- [React on Rails documentation guide](https://reactonrails.com/docs/) for the
+  canonical docs map.
+- [15-minute quick start](https://reactonrails.com/docs/getting-started/quick-start/)
+  for the baseline generator flow, including the `--rspack` option.
+- [React on Rails Pro](https://reactonrails.com/docs/pro/) for the Node
+  renderer, streaming SSR, RSC, and Pro feature map.
+- [Render-functions and `railsContext`](https://reactonrails.com/docs/core-concepts/render-functions-and-railscontext/)
+  for the Rails-to-React request context that this starter uses for SSR.
+- [React server rendering](https://reactonrails.com/docs/core-concepts/react-server-rendering/)
+  and [client vs. server rendering](https://reactonrails.com/docs/core-concepts/client-vs-server-rendering/)
+  for the underlying `react_component(..., prerender: true)` contract.
+- [React Server Components in React on Rails Pro](https://reactonrails.com/docs/pro/react-server-components/)
+  and [Rspack compatibility](https://reactonrails.com/docs/pro/react-server-components/rspack-compatibility/)
+  for the RSC/Rspack path used by `/rsc-showcase` and `/hello_server`.
+
+## System Diagram
+
+```mermaid
+flowchart TB
+  Browser["Browser request"] --> Rails["Rails app server"]
+
+  Rails --> PublicRails["Rails landing and auth pages"]
+  Rails --> Classic["Classic Rails CRUD\n/classic/projects"]
+  Rails --> DashboardShell["Rails dashboard shell\n/dashboard and /projects..."]
+  Rails --> RscShowcase["Public RSC + TanStack route\n/rsc-showcase"]
+  Rails --> HelloServer["Streaming RSC reference\n/hello_server"]
+
+  DashboardShell --> RorProSSR["React on Rails Pro\nNode renderer SSR"]
+  RorProSSR --> TanStack["TanStack Router + Query + Table\nhydrated dashboard"]
+
+  RscShowcase --> RorProPayload["React on Rails Pro\nRSC payload endpoint"]
+  HelloServer --> RorProStream["React on Rails Pro\nstream_react_component"]
+
+  TanStack --> Api["Rails JSON API\nCSRF, scopes, validation"]
+  Classic --> ActiveRecord["Active Record models"]
+  Api --> ActiveRecord
+  PublicRails --> ActiveRecord
+  RorProPayload --> ActiveRecord
+  RorProStream --> ActiveRecord
+```
+
 - Rails owns the public routes, auth routes, API routes, and the HTML shells.
 - Shakapacker uses Rspack for the default local client, server, and RSC bundles,
   including RSC client-reference manifest generation.

@@ -6,6 +6,30 @@
 > wired as an opt-in bridge/comparison path, so this file records the bridge
 > evidence and comparison path.
 
+## Related React On Rails Docs
+
+- [Rspack compatibility with React Server Components](https://reactonrails.com/docs/pro/react-server-components/rspack-compatibility/)
+  for the current default Rspack status.
+- [React Server Components rendering flow](https://reactonrails.com/docs/pro/react-server-components/rendering-flow/)
+  for the client/server/RSC bundle responsibilities.
+- [Flight protocol syntax](https://reactonrails.com/docs/pro/react-server-components/flight-protocol-syntax/)
+  for the payload format that the manifests support.
+- [React on Rails Pro troubleshooting](https://reactonrails.com/docs/pro/troubleshooting/)
+  for RSC manifest and hydration failures.
+
+## Bundler Comparison Diagram
+
+```mermaid
+flowchart LR
+  Source["Starter source"] --> Rspack["Rspack default\nconfig/rspack"]
+  Source --> Webpack["Webpack bridge\nconfig/webpack"]
+  Rspack --> RspackManifests["RSC manifests\nvia RSCRspackPlugin"]
+  Webpack --> WebpackManifests["RSC manifests\nvia RSCWebpackPlugin"]
+  RspackManifests --> Pro["React on Rails Pro\nRSC payload + SSR"]
+  WebpackManifests --> Pro
+  Pro --> Routes["/rsc-showcase\n/hello_server"]
+```
+
 ## Question
 
 Before native Rspack support, did switching the Shakapacker bundler from

@@ -19,6 +19,31 @@ validation branches unless the PR is explicitly a canary PR.
 - Keep `react-on-rails-pro` as the only direct React on Rails JavaScript package
   in `package.json`; Pro depends on the base `react-on-rails` package.
 
+## Related React On Rails Docs
+
+- [Upgrading React on Rails Pro](https://reactonrails.com/docs/pro/updating/)
+  for published package changes and version alignment.
+- [React on Rails Pro installation](https://reactonrails.com/docs/pro/installation/)
+  for the expected gem/npm package layout.
+- [React Server Components in React on Rails Pro](https://reactonrails.com/docs/pro/react-server-components/)
+  for the RSC package and manifest expectations under test.
+- [Rspack compatibility](https://reactonrails.com/docs/pro/react-server-components/rspack-compatibility/)
+  for the default native Rspack path.
+
+## Upstream Validation Diagram
+
+```mermaid
+flowchart TD
+  Branch["Upstream branch or PR"] --> Source{"Which repo changed?"}
+  Source -- "react_on_rails" --> Gems["Install local/git gems\nreact_on_rails + react_on_rails_pro"]
+  Source -- "react_on_rails JS" --> Tarballs["Build pnpm package tarballs\nand install Pro packages"]
+  Source -- "react_on_rails_rsc" --> RscPkg["Install react-on-rails-rsc\nfrom local path or git ref"]
+  Gems --> Checks["doctor, tsc, shakapacker,\nRSC repro"]
+  Tarballs --> Checks
+  RscPkg --> Checks
+  Checks --> Release["Restore published pins\nbefore merge"]
+```
+
 ## Local Clones
 
 The examples below assume sibling clones:

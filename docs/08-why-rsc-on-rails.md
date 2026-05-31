@@ -33,6 +33,45 @@ The third answer is React on Rails Pro: keep Rails as the application server and
 let the Pro Node renderer host the modern React rendering paths that need Node.
 That is what this starter is exploring.
 
+## Related React On Rails Docs
+
+- [React on Rails Pro](https://reactonrails.com/docs/pro/) for the Pro feature
+  map: Node renderer, RSC, streaming SSR, and fragment caching.
+- [React Server Components in React on Rails Pro](https://reactonrails.com/docs/pro/react-server-components/)
+  for the RSC overview, requirements, and tutorial route map.
+- [React Server Components rendering flow](https://reactonrails.com/docs/pro/react-server-components/rendering-flow/)
+  for the three-bundle flow behind the starter's RSC routes.
+- [Streaming SSR](https://reactonrails.com/docs/pro/streaming-ssr/) for the
+  progressive rendering model that RSC builds on.
+- [Rspack compatibility](https://reactonrails.com/docs/pro/react-server-components/rspack-compatibility/)
+  for why this starter keeps Rspack as the default bundler.
+- [Render-functions and `railsContext`](https://reactonrails.com/docs/core-concepts/render-functions-and-railscontext/)
+  for the Rails request context shared with React render functions.
+
+## Surface-Aware Rendering Diagram
+
+```mermaid
+flowchart LR
+  Rails["Rails app\nmodels, sessions, jobs, mail, auth"] --> Public["Public content"]
+  Rails --> App["Authenticated app"]
+  Rails --> Classic["Classic Rails workflows"]
+
+  Public --> RSC["React Server Components\nless browser JS, streamed payloads"]
+  Public --> RailsLanding["Rails landing pages\nwhen ERB is enough"]
+
+  App --> ProSSR["React on Rails Pro SSR\nfast first paint"]
+  ProSSR --> TanStack["TanStack Router + Query + Table\nclient interaction and URL state"]
+
+  Classic --> RailsViews["Rails controllers and views\nforms, redirects, validations"]
+
+  RSC --> NodeRenderer["Pro Node renderer"]
+  ProSSR --> NodeRenderer
+  TanStack --> JsonApi["Rails JSON API\nCSRF and scoped persistence"]
+  RailsViews --> ActiveRecord["Active Record"]
+  JsonApi --> ActiveRecord
+  NodeRenderer --> ActiveRecord
+```
+
 ## What RSC Buys You
 
 RSC helps when the page has meaningful server-rendered content and the browser

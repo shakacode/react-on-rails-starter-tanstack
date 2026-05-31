@@ -5,6 +5,42 @@ React Server Component payload inside a plain `@tanstack/react-router` route
 with `react-on-rails-rsc@19.0.5-rc.3`. It does not use TanStack Start, Vite,
 file-based routing, Hotwire, or Stimulus.
 
+## Related React On Rails Docs
+
+- [React Server Components in React on Rails Pro](https://reactonrails.com/docs/pro/react-server-components/)
+  for the RSC overview and tutorial route map.
+- [React Server Components rendering flow](https://reactonrails.com/docs/pro/react-server-components/rendering-flow/)
+  for the client, server, and RSC bundle responsibilities.
+- [Flight protocol syntax](https://reactonrails.com/docs/pro/react-server-components/flight-protocol-syntax/)
+  for the wire format consumed by the Pro RSC client helpers.
+- [Pro installation](https://reactonrails.com/docs/pro/installation/) for the
+  `RSCRoute`, `registerServerComponent`, and wrapper imports this route uses.
+- [Rspack compatibility](https://reactonrails.com/docs/pro/react-server-components/rspack-compatibility/)
+  for the manifest-generation path this spike validates.
+- [Pro troubleshooting](https://reactonrails.com/docs/pro/troubleshooting/) for
+  common RSC payload and hydration failures.
+
+## Payload Loader Diagram
+
+```mermaid
+sequenceDiagram
+  participant Browser
+  participant TanStack as TanStack Router loader
+  participant Rails as Rails /rsc_payload route
+  participant Renderer as React on Rails Pro Node renderer
+  participant RSC as RSC bundle
+
+  Browser->>TanStack: Open /rsc-showcase
+  TanStack->>TanStack: Select component name and props
+  TanStack->>Rails: RSCRoute fetches payload
+  Rails->>Renderer: Render server component payload
+  Renderer->>RSC: Execute server component tree
+  RSC-->>Renderer: Flight payload + client refs
+  Renderer-->>Rails: Length-prefixed RSC stream
+  Rails-->>TanStack: Text payload response
+  TanStack-->>Browser: Compose RSC tree beside client island
+```
+
 ## Result
 
 - Rails serves the public `/rsc-showcase` page and remains responsible for the

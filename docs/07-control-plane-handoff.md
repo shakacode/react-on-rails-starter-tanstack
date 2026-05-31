@@ -6,6 +6,33 @@ This handoff summarizes the Control Plane Flow rollout for this repo after the
 original [PR #11](https://github.com/shakacode/react-on-rails-starter-tanstack/pull/11)
 merge and the follow-up cpflow 5.0.4 release maintenance.
 
+## Related React On Rails Docs
+
+- [React on Rails Pro](https://reactonrails.com/docs/pro/) for why the deployed
+  app has a separate Node renderer workload.
+- [React on Rails Pro installation](https://reactonrails.com/docs/pro/installation/)
+  for the renderer package and runtime configuration.
+- [Streaming SSR](https://reactonrails.com/docs/pro/streaming-ssr/) for why the
+  renderer must be reachable as an SSR service.
+- [Pro troubleshooting](https://reactonrails.com/docs/pro/troubleshooting/) for
+  renderer, license, and RSC payload production failures.
+
+## Control Plane Runtime Diagram
+
+```mermaid
+flowchart TB
+  Public["starter.reactonrails.com"] --> Rails["Rails workload"]
+  Rails --> Postgres["Postgres workload"]
+  Rails --> Renderer["React on Rails Pro renderer\nHTTP/2 workload"]
+  Rails --> Queue["Solid Queue tables"]
+  Worker["Worker workload"] --> Queue
+  Renderer --> Bundles["Server and RSC bundles\nfrom Docker image"]
+  Github["GitHub Actions cpflow"] --> Image["Built image"]
+  Image --> Rails
+  Image --> Renderer
+  Image --> Worker
+```
+
 ## ShakaCode Staff — Operations
 
 Internal quick reference for ShakaCode staff who run this demo. These links
