@@ -386,6 +386,7 @@ async function assertTanStackSsrRouterContract(page, response, state, documentRe
   assertHtmlContains(body, '"initialSearch":"?status=active', 'the Rails initialSearch handoff');
   assertHtmlContains(body, 'sort=name', 'the Rails initialSearch sort handoff');
   assertHtmlContains(body, 'dir=asc', 'the Rails initialSearch direction handoff');
+  assertHtmlContains(body, 'Commit', 'deployed commit footer label');
   assertHtmlContains(body, '__tanstackRouterDehydratedState', 'the dehydrated TanStack Router state');
 
   await page.locator('main.tanstack-shell').waitFor({ timeout: 30_000 });

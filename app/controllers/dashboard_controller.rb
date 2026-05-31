@@ -19,6 +19,11 @@ class DashboardController < AuthenticatedController
         newProject: new_project_path,
         classicProjects: classic_projects_path,
         signOut: session_path
+      },
+      build: {
+        commitSha: deployed_commit_sha,
+        commitLabel: deployed_commit_short_sha,
+        commitUrl: deployed_commit_url
       }
     }
   end

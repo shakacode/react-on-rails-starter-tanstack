@@ -84,7 +84,7 @@ ENV RAILS_ENV=production
 # build) — NOT at runtime — so this canNOT be set via a Control Plane GVC env
 # var. It must be baked into the build.
 #
-# `rspack` is the repo and deploy default. `react-on-rails-rsc@19.0.5-rc.2`
+# `rspack` is the repo and deploy default. `react-on-rails-rsc@19.0.5-rc.3`
 # emits the RSC client-reference manifests on Rspack. The Webpack bridge remains
 # available as an opt-in comparison path with:
 #   --build-arg SHAKAPACKER_ASSETS_BUNDLER=webpack
@@ -98,6 +98,13 @@ RUN bin/shakapacker-precompile-hook
 
 
 RUN rails assets:precompile
+
+# cpflow passes the GitHub commit through `--build-arg GIT_COMMIT=...` when it
+# builds the image. Persist it as runtime metadata after the expensive cached
+# build steps so a new commit SHA does not invalidate dependency and asset
+# layers.
+ARG GIT_COMMIT
+ENV GIT_COMMIT=${GIT_COMMIT}
 
 # add entrypoint
 COPY .controlplane/entrypoint.sh ./

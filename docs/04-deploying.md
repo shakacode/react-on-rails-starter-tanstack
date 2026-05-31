@@ -61,3 +61,8 @@ production manually.
 The Control Plane setup runs separate workloads for Rails, Solid Queue, and the
 React on Rails Pro Node renderer. See `.controlplane/readme.md` for required
 GitHub variables, Control Plane secrets, and the release-tag pinning workflow.
+
+The cpflow build passes the deployed GitHub revision to Docker as `GIT_COMMIT`.
+`.controlplane/Dockerfile` persists that value into the runtime environment so
+the shared Rails footer and authenticated TanStack footer can link to the exact
+commit running in the deployed image.
