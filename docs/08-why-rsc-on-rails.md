@@ -172,18 +172,16 @@ inside one Rails app.
 
 ## Limitations And Current State
 
-This starter intentionally keeps Rspack as the local default, and the
-Rspack/RSC integration is not identical to the Webpack path yet. The current
-Rspack builds are green, but the interactive RSC client-reference manifest path
-is still limited by an upstream Rspack plugin gap. That status is tracked in
-[SPIKE.md](../SPIKE.md), and the small reproduction remains available through
-`pnpm run repro:rspack-rsc`.
+This starter intentionally keeps Rspack as the local default.
+`react-on-rails-rsc@19.0.5-rc.2` provides the Rspack plugin path that emits the
+RSC client-reference manifests required by React on Rails Pro. That status is
+tracked in [SPIKE.md](../SPIKE.md), and the small reproduction remains available
+through `pnpm run repro:rspack-rsc`.
 
-The Webpack bridge emits the manifests and is wired for deploy, which is why
-`/rsc-showcase` is the relaunch RSC centerpiece today. The official relaunch
-anchor remains "when Rspack RSC lands" for the default local stack. The checked
-smoke coverage in [Tested Modes](06-tested-modes.md) keeps both paths visible so
-the limitation does not silently regress.
+The Webpack bridge is still documented and wired for deploy until the deploy
+default is explicitly flipped, but `/rsc-showcase` now works on the default
+local Rspack path. The checked smoke coverage in [Tested Modes](06-tested-modes.md)
+keeps both bundler paths visible so neither silently regresses.
 
 This is also why the thesis here is framed as surface-aware rendering rather
 than "make every page RSC." React's RSC APIs are stable enough to build on, but
@@ -221,8 +219,8 @@ bin/dev
 Use `demo@example.com / password` to sign in. Visit `/dashboard` for the
 TanStack surface, `/projects` for a full-page load into the TanStack project
 routes, `/classic/projects` for the Rails CRUD surface, `/rsc-showcase` for the
-RSC + TanStack route on the Webpack bridge, and `/hello_server` for the
-lower-level RSC streaming demo.
+RSC + TanStack route on Rspack, and `/hello_server` for the lower-level RSC
+streaming demo.
 
 The launch deployment target is `https://starter.reactonrails.com`. After the
 deployment issue is complete, the same demo user should work there.

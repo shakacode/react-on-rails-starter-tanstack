@@ -46,13 +46,13 @@ Each route demonstrates a deliberate rendering choice, not a fallback:
 - **`/rsc-showcase`** is the public RSC + TanStack centerpiece. A bare TanStack
   Router loader fetches a React on Rails Pro RSC payload from Rails, decodes the
   Flight stream, and composes that server-streamed tree beside ordinary client
-  React. It uses the Webpack bridge today; on the Rspack local default it renders
-  the documented fallback until upstream Rspack RSC manifests land.
+  React. It runs on the default Rspack bundler with
+  `react-on-rails-rsc@19.0.5-rc.2`.
 - **`/hello_server`** demonstrates streaming React Server Components. The demo
   keeps an interactive `LikeButton` client island inside a server-rendered
-  tree. On the Webpack bridge the route renders end to end; under the strict
-  production CSP the client island still waits on the upstream streaming nonce
-  fix. See [SPIKE.md](SPIKE.md) and
+  tree. On Rspack the route renders end to end; under the strict production CSP
+  the client island still waits on the upstream streaming nonce fix. See
+  [SPIKE.md](SPIKE.md) and
   [RSC Streaming And CSP Nonces](docs/11-rsc-csp-nonce-spike.md).
 - **`/dashboard`, `/settings...`, and `/projects...`** are Rails full-page
   routes that render the React on Rails Pro + TanStack Router, Query, and Table
@@ -71,10 +71,11 @@ classic Rails CRUD coexist in one app.
 
 Rspack remains the local default Shakapacker bundler. Use
 `config/shakapacker.yml` and `config/rspack/` as the source of truth for the
-default development path. Webpack is the deploy/RSC bridge, selected with
-`SHAKAPACKER_ASSETS_BUNDLER=webpack` or the one-line Docker build ARG in
-`.controlplane/Dockerfile`, until Rspack emits the RSC manifests the Pro RSC
-client-reference path needs.
+default development path. The Rspack RSC plugin in
+`react-on-rails-rsc@19.0.5-rc.2` emits the client/server manifests the Pro RSC
+client-reference path needs. Webpack remains the current deploy bridge through
+the one-line Docker build ARG in `.controlplane/Dockerfile` until the deploy
+default is explicitly flipped.
 
 | Component | Version |
 | --- | --- |
@@ -158,10 +159,12 @@ authenticated TanStack Router/Query/Table dashboard.
 
 See [SPIKE.md](SPIKE.md) and the
 [RSC Webpack Bundler Spike](docs/09-rsc-webpack-bundler-spike.md) for the
-current RSC status. Rspack builds and server-only RSC bundling are green, but
-interactive RSC client references are blocked until Rspack emits the React
-Server Components client/server manifests expected by the Pro RSC path. The
-Webpack bridge is verified for deploy and powers `/rsc-showcase`.
+current RSC status. Rspack builds now emit the React Server Components
+client/server manifests expected by the Pro RSC path, and `/rsc-showcase` runs
+on the default local Rspack bundler. The Webpack bridge remains documented and
+kept as the current deploy bridge. The remaining known RSC limitation is the
+strict production CSP nonce issue for React's streaming bootstrap on
+`/hello_server`.
 
 ## Links
 

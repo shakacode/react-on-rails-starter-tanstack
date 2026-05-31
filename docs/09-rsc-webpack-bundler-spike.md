@@ -1,16 +1,23 @@
 # RSC Webpack Bundler Spike
 
+> Status update: this is now historical bridge documentation.
+> `react-on-rails-rsc@19.0.5-rc.2` adds `RSCRspackPlugin`, and the default
+> Rspack build now emits both RSC client-reference manifests. Webpack remains
+> wired as the current deploy bridge until the Docker build ARG is explicitly
+> flipped, so this file still records the bridge evidence and comparison path.
+
 ## Question
 
-Does switching the Shakapacker bundler from **Rspack to Webpack** make interactive
-React Server Components actually work in this starter — i.e. does the Webpack
-build emit the RSC client-reference manifests that the Rspack build does not?
+Before native Rspack support, did switching the Shakapacker bundler from
+**Rspack to Webpack** make interactive React Server Components work in this
+starter — i.e. did the Webpack build emit the RSC client-reference manifests
+that the old Rspack build did not?
 
 - `public/packs/react-client-manifest.json`
 - `ssr-generated/react-server-client-manifest.json`
 
-(See `SPIKE.md` for the AMBER Rspack/RSC limitation and upstream
-shakacode/react_on_rails#1828 / #3385.)
+(See `SPIKE.md` for the current Rspack/RSC status and the historical upstream
+tracking in shakacode/react_on_rails#1828 / #3385.)
 
 ## Verdict: YES
 
@@ -42,7 +49,8 @@ manifest:
 
 - `pnpm run repro:rspack-rsc` with `SHAKAPACKER_ASSETS_BUNDLER=webpack
   REQUIRE_RSC_MANIFESTS=true` → `"status": "ready"`, both manifests present,
-  exit 0. (The same gate fails on Rspack.)
+  exit 0. (Before `react-on-rails-rsc@19.0.5-rc.2`, the same gate failed on
+  Rspack.)
 - `SHAKAPACKER_ASSETS_BUNDLER=webpack REQUIRE_RSC_MANIFESTS=true node
   script/dev-mode-smoke.mjs static hello-server` → full stack boots; the Node
   renderer logs `Copied assets ["react-client-manifest.json",
@@ -56,17 +64,19 @@ manifest:
   test/playwright/rsc_showcase.spec.ts` → `/rsc-showcase` fetches the Pro RSC
   payload through its TanStack Router loader, renders the RSC island, and keeps
   the route-owned client island interactive.
-- The Rspack track is unchanged: the default-bundler repro still reports
-  `"status": "blocked"` with both manifests absent.
+- The Rspack track has since changed: with `react-on-rails-rsc@19.0.5-rc.2`,
+  the default-bundler repro reports `"status": "ready"` with both manifests
+  present.
 
-## Why Webpack works and Rspack doesn't
+## Why Webpack was needed before `react-on-rails-rsc@19.0.5-rc.2`
 
-`react-on-rails-rsc`'s `RSCWebpackPlugin` is hard-wired to Webpack internals
+Before `react-on-rails-rsc@19.0.5-rc.2`, `RSCWebpackPlugin` was hard-wired to
+Webpack internals
 (`require('webpack/lib/dependencies/ModuleDependency')`,
 `require('webpack/lib/Template')`, etc.). Rspack does not expose those modules,
-so the existing `config/rspack/*` configs deliberately skip the plugin on Rspack
-(`if (config.assets_bundler !== 'rspack')`), which is exactly why the Rspack
-build cannot emit the manifests. On Webpack the plugin runs:
+so the old `config/rspack/*` configs deliberately skipped the plugin on Rspack,
+which is exactly why the Rspack build could not emit the manifests. On Webpack
+the plugin runs:
 
 - `RSCWebpackPlugin({ isServer: false })` on the client → `react-client-manifest.json`
 - `RSCWebpackPlugin({ isServer: true })` on the server → `react-server-client-manifest.json`
@@ -109,12 +119,13 @@ Three non-obvious adjustments were needed beyond a straight port of the Pro
 
 Rspack does not surface any of these because it doesn't run the Webpack RSC
 plugin/loader and resolves the TanStack `exports` maps without the fall-through.
+With `RSCRspackPlugin`, Rspack now has its own manifest-generation path.
 
 ## Tradeoffs vs Rspack
 
 | Dimension            | Rspack (default)         | Webpack (RSC-capable)               |
 | -------------------- | ------------------------ | ----------------------------------- |
-| Interactive RSC      | ❌ manifests not emitted | ✅ manifests emitted, island renders |
+| Interactive RSC      | ✅ manifests emitted with `react-on-rails-rsc@19.0.5-rc.2` | ✅ manifests emitted, island renders |
 | Clean prod build     | ~2.8 s                   | ~8.3 s (≈3× slower)                 |
 | Client JS total      | ~2.6 MB                  | ~2.6 MB (comparable)                |
 | Dev server / HMR     | `@rspack/plugin-react-refresh` | `@pmmmwh/react-refresh-webpack-plugin`; dashboard and `/hello_server` HMR smokes pass |
@@ -126,10 +137,9 @@ default.
 
 ## Caveats / follow-ups
 
-- The TanStack `src`-leak workarounds are specific to this app's dependency set.
-  The cleaner long-term fix is upstream: either `react-on-rails-rsc` resolving
-  third-party `use client` modules to their compiled entry, or Rspack support in
-  `RSCWebpackPlugin` (which would let the starter stay on Rspack).
+- The TanStack `src`-leak workarounds are specific to this app's Webpack
+  dependency set. Rspack no longer needs the Webpack bridge for manifest
+  generation.
 - `pnpm-workspace.yaml` gained `'core-js-pure': false` (a transitive dep of the
   new Webpack/react-refresh tree whose only postinstall is a funding message).
 
@@ -237,9 +247,9 @@ and is blocked, so the island does not hydrate in the browser. This is a
 **react-on-rails-pro RSC-streaming ⇄ CSP-nonce** integration issue — not a
 bundler or Webpack-adoption issue:
 
-- It is independent of Rspack vs Webpack. On Rspack `/hello_server` cannot
-  hydrate at all (no manifests → graceful fallback, see PR #103), so Webpack is
-  strictly better; this is simply the first time the island can run.
+- It is independent of Rspack vs Webpack. Rspack now emits the manifests; the
+  remaining failure mode is React's nonce-less streaming bootstrap under strict
+  production CSP.
 - `/` and `/dashboard` have **no** CSP errors on Webpack (`csp.spec.ts` passes),
   because they use classic React on Rails Pro SSR (nonce'd scripts), not RSC
   streaming.
@@ -249,7 +259,7 @@ bundler or Webpack-adoption issue:
   receive the per-request nonce). See `docs/11-rsc-csp-nonce-spike.md` for the
   reproduction, rejected in-app workarounds, and safe interim.
 
-## Go / No-Go for flipping the staging deploy to Webpack
+## Historical go / no-go for flipping the staging deploy to Webpack
 
 **YES — safe to flip staging to Webpack.** Every deployed surface
 (landing, `/rsc-showcase`, classic CRUD, auth, the TanStack dashboard SSR, and
