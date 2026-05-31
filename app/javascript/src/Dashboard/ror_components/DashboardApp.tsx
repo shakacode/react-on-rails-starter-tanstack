@@ -1409,19 +1409,19 @@ function RenderingModeDrawer() {
 
               <section className="rendering-mode-section">
                 <Badge variant="secondary">Public</Badge>
-                <h3>The public landing (/) - RSC + streaming.</h3>
+                <h3>The public RSC showcase (/rsc-showcase) - RSC composed inside TanStack.</h3>
                 <p>
-                  TTFB, mobile cold load, and indexable content matter before a visitor has downloaded
-                  an app shell.
+                  The root path is a Rails landing page; the showcase is the public RSC route where a
+                  TanStack loader composes a Pro payload with client islands.
                 </p>
                 <ExternalDashboardLink
                   className="rendering-mode-inline-link"
-                  href="/"
+                  href="/rsc-showcase"
                   target="_blank"
                   rel="noopener noreferrer"
                   ref={firstLinkRef}
                 >
-                  Open public landing
+                  Open RSC showcase
                   <ExternalLink aria-hidden="true" size={14} />
                 </ExternalDashboardLink>
               </section>

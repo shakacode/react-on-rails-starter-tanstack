@@ -14,11 +14,7 @@
   </section>
 <% end %>
 
-<% if Rails.env.test? %>
-  <%= dashboard_fallback %>
-<% else %>
-  <noscript><%= dashboard_fallback %></noscript>
-<% end %>
+<noscript><%= dashboard_fallback %></noscript>
 
 <!-- TANSTACK_SSR_SHELL: DashboardApp is prerendered by React on Rails Pro and hydrated by TanStack Router. -->
 <%= react_component("DashboardApp", id: "DashboardApp", props: @dashboard_props, prerender: !Rails.env.test?) %>

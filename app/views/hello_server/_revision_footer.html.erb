@@ -1,0 +1,15 @@
+<footer class="demo-footer">
+  <span>Rails streams this page through React on Rails Pro.</span>
+  <% if deployed_commit_short_sha.present? %>
+    <span>
+      Commit
+      <% if deployed_commit_url.present? %>
+        <a href="<%= deployed_commit_url %>" target="_blank" rel="noreferrer">
+          <%= deployed_commit_short_sha %>
+        </a>
+      <% else %>
+        <code title="<%= deployed_commit_sha %>"><%= deployed_commit_short_sha %></code>
+      <% end %>
+    </span>
+  <% end %>
+</footer>

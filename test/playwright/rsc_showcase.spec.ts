@@ -11,6 +11,14 @@ test('public RSC showcase route loads the TanStack composition surface', async (
   await expect(
     page.getByRole('heading', { name: 'Server-streamed RSC composed inside a TanStack route on Rails' }),
   ).toBeVisible();
+  await expect(page.getByRole('navigation', { name: 'RSC showcase navigation' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/');
+  await expect(page.getByRole('link', { name: 'Dashboard' })).toHaveAttribute('href', '/dashboard');
+  await expect(page.getByRole('link', { name: 'Source' })).toHaveAttribute(
+    'href',
+    'https://github.com/shakacode/react-on-rails-starter-tanstack',
+  );
+  await expect(page.locator('footer').getByText(/Commit [0-9a-f]{7}/i)).toBeVisible();
 
   const rspackFallback = page.getByText('RSC manifests are not available for this build.');
 
