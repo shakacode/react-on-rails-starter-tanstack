@@ -37,4 +37,24 @@ RSpec.describe "Deployment revision", type: :request do
     expect(response.body).to include("fedcba9")
     expect(response.body).to include("#{ApplicationHelper::GITHUB_REPO_URL}/commit/#{sha}")
   end
+
+  it "passes the deployed commit into the public RSC showcase shell" do
+    get rsc_showcase_path
+
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include("fedcba9")
+    expect(response.body).to include("#{ApplicationHelper::GITHUB_REPO_URL}/commit/#{sha}")
+  end
+
+  it "renders the deployed commit in the lower-level RSC demo footer" do
+    allow_any_instance_of(HelloServerController) # rubocop:disable RSpec/AnyInstance
+      .to receive(:rsc_client_references_available?).and_return(false)
+
+    get hello_server_path
+
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include("Commit")
+    expect(response.body).to include("fedcba9")
+    expect(response.body).to include("#{ApplicationHelper::GITHUB_REPO_URL}/commit/#{sha}")
+  end
 end

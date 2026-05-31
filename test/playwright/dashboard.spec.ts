@@ -89,12 +89,18 @@ test('authenticated dashboard hydrates client routes and project mutations', asy
   await expect(page).toHaveURL('/dashboard');
   await expect(shell.getByRole('heading', { name: 'Rails-owned app shell with React where it pays off' })).toBeVisible();
   await expect(shell.locator('.metric-card')).toHaveCount(4);
+  await expect(page.locator('body')).not.toContainText('Your email is verified.');
   expect(documentRequests).toBe(documentRequestsBeforeClientRoutes);
 
   await page.getByRole('button', { name: 'Rendering mode details' }).click();
-  await expect(page.getByRole('dialog', { name: 'Rendering on this page' })).toBeVisible();
+  const renderingDialog = page.getByRole('dialog', { name: 'Rendering on this page' });
+  await expect(renderingDialog).toBeVisible();
+  await expect(
+    renderingDialog.getByRole('heading', { name: 'The public RSC showcase (/rsc-showcase) - RSC composed inside TanStack.' }),
+  ).toBeVisible();
+  await expect(renderingDialog.getByRole('link', { name: 'Open RSC showcase' })).toHaveAttribute('href', '/rsc-showcase');
   await page.keyboard.press('Escape');
-  await expect(page.getByRole('dialog', { name: 'Rendering on this page' })).toBeHidden();
+  await expect(renderingDialog).toBeHidden();
 
   await page.getByRole('link', { name: 'Create project' }).click();
   await expect(page).toHaveURL('/projects/new');

@@ -89,6 +89,8 @@ RSpec.describe "HelloServer RSC route", type: :request do
       expect(response).to have_http_status(:ok)
       # The shared demo shell stays intact so the page never looks broken.
       expect(response.body).to include("React Server Components Demo")
+      expect(response.body).to include("Return to the starter home page")
+      expect(response.body).to include("Open the RSC showcase")
     end
 
     it "explains the limitation honestly and links to SPIKE.md" do
@@ -108,6 +110,13 @@ RSpec.describe "HelloServer RSC route", type: :request do
       # The client component placeholder is only emitted by the streaming island,
       # which the fallback intentionally skips.
       expect(response.body).not_to include("HelloServer-react-component")
+    end
+
+    it "keeps deployed revision wayfinding on the standalone demo surface" do
+      get hello_server_path
+
+      expect(parsed_response.at_css("footer.demo-footer")).not_to be_nil
+      expect(response.body).to include("Rails streams this page through React on Rails Pro.")
     end
   end
 end

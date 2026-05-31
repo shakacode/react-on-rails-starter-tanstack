@@ -8,7 +8,12 @@ class RscShowcaseController < ApplicationController
       initialPath: request.path,
       rscAvailable: rsc_client_references_available?,
       rscPayloadPath: ReactOnRailsPro.configuration.rsc_payload_generation_url_path,
-      rscComponentName: "RscShowcaseServerPanel"
+      rscComponentName: "RscShowcaseServerPanel",
+      build: {
+        commitSha: deployed_commit_sha,
+        commitLabel: deployed_commit_short_sha,
+        commitUrl: deployed_commit_url
+      }
     }
   end
 

@@ -10,7 +10,7 @@ import {
   createRouter,
   useRouter,
 } from '@tanstack/react-router';
-import { RefreshCw, Route, Server, ShieldCheck } from 'lucide-react';
+import { ExternalLink, RefreshCw, Route, Server, ShieldCheck } from 'lucide-react';
 import RSCRoute from 'react-on-rails-pro/RSCRoute';
 import wrapServerComponentRenderer from 'react-on-rails-pro/wrapServerComponentRenderer/client';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -24,6 +24,11 @@ type RscShowcaseAppProps = {
   rscAvailable: boolean;
   rscPayloadPath: string;
   rscComponentName: string;
+  build: {
+    commitSha: string | null;
+    commitLabel: string | null;
+    commitUrl: string | null;
+  };
 };
 
 type RscRouteData = {
@@ -41,6 +46,11 @@ const defaultProps: RscShowcaseAppProps = {
   rscAvailable: false,
   rscPayloadPath: 'rsc_payload/',
   rscComponentName: 'RscShowcaseServerPanel',
+  build: {
+    commitSha: null,
+    commitLabel: null,
+    commitUrl: null,
+  },
 };
 
 function buildRscRouteData(props: RscShowcaseAppProps): RscRouteData | null {
@@ -144,6 +154,30 @@ function ShowcasePage({ appProps, routeData }: { appProps: RscShowcaseAppProps; 
 
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-8 sm:px-6 lg:py-12">
+      <nav className="flex flex-wrap items-center justify-between gap-3" aria-label="RSC showcase navigation">
+        <a className="text-sm font-semibold text-foreground underline-offset-4 hover:underline" href="/">
+          RoR x TanStack
+        </a>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button asChild variant="ghost" size="sm">
+            <a href="/">Home</a>
+          </Button>
+          <Button asChild variant="ghost" size="sm">
+            <a href="/dashboard">Dashboard</a>
+          </Button>
+          <Button asChild variant="secondary" size="sm">
+            <a
+              href="https://github.com/shakacode/react-on-rails-starter-tanstack"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Source
+              <ExternalLink className="size-3.5" aria-hidden="true" />
+            </a>
+          </Button>
+        </div>
+      </nav>
+
       <header className="grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1.4fr)_minmax(18rem,0.6fr)] lg:items-end">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
@@ -205,6 +239,30 @@ function ShowcasePage({ appProps, routeData }: { appProps: RscShowcaseAppProps; 
       ) : (
         <RspackFallback />
       )}
+
+      <footer className="flex flex-col gap-2 border-t border-border pt-5 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+        <span>Rails serves the route; React on Rails Pro streams the RSC payload.</span>
+        {appProps.build.commitLabel ? (
+          <span>
+            Commit{' '}
+            {appProps.build.commitUrl ? (
+              <a
+                href={appProps.build.commitUrl}
+                className="font-mono text-foreground underline-offset-4 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+                title={appProps.build.commitSha ?? appProps.build.commitLabel}
+              >
+                {appProps.build.commitLabel}
+              </a>
+            ) : (
+              <code className="font-mono text-foreground" title={appProps.build.commitSha ?? appProps.build.commitLabel}>
+                {appProps.build.commitLabel}
+              </code>
+            )}
+          </span>
+        ) : null}
+      </footer>
     </div>
   );
 }

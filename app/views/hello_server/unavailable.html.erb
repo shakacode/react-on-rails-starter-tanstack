@@ -2,6 +2,7 @@
     missing or unreachable at runtime. Keeps the demo shell intact and replaces the
     interactive island with a clear, on-brand notice so a visitor never sees a blank
     or broken surface. %>
+<% content_for(:title) { "React Server Components Demo" } %>
 <%= render "hello_server/styles" %>
 
 <div class="ror-demo-page">
@@ -26,4 +27,5 @@
   </section>
 
   <%= render "hello_server/cards" %>
+  <%= render "hello_server/revision_footer" %>
 </div>
