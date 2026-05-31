@@ -1,5 +1,29 @@
 # Customizing
 
+## Related React On Rails Docs
+
+- [15-minute quick start](https://reactonrails.com/docs/getting-started/quick-start/)
+  for the generator defaults this starter extends.
+- [Render-functions and `railsContext`](https://reactonrails.com/docs/core-concepts/render-functions-and-railscontext/)
+  for passing Rails-owned request context into React render functions.
+- [Using React Router](https://reactonrails.com/docs/building-features/react-router/)
+  for router guidance and why TanStack Router is the SSR-oriented choice here.
+- [React on Rails Pro installation](https://reactonrails.com/docs/pro/installation/)
+  for the Pro imports and Node renderer setup behind this starter.
+
+## Route Extension Diagram
+
+```mermaid
+flowchart LR
+  Url["New full-page URL"] --> RailsRoute["Add Rails route\nto dashboard#show"]
+  RailsRoute --> Props["Pass paths, user, API links\nfrom DashboardController"]
+  Props --> TanStackRoute["Add TanStack route\nin DashboardApp.tsx"]
+  TanStackRoute --> DataNeed{"Needs server data?"}
+  DataNeed -- "Yes" --> Api["Add scoped Rails JSON API\nand use apiFetch"]
+  DataNeed -- "No" --> ClientOnly["Render client-only route state"]
+  Api --> Query["Use TanStack Query keys\nand invalidation"]
+```
+
 ## Rename The App
 
 Update the Rails module name in `config/application.rb`, database names in `config/database.yml`, and package metadata in `package.json`.

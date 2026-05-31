@@ -21,6 +21,61 @@ typed client routes, URL-owned state, server-backed tables, query caching,
 classic Rails coexistence, and a path to React Server Components without moving
 the app to Next.js.
 
+## Related React On Rails Docs
+
+- [Documentation guide](https://reactonrails.com/docs/) for the canonical React
+  on Rails docs map and alternatives-oriented entry points.
+- [React on Rails Pro](https://reactonrails.com/docs/pro/) for why Pro is the
+  rendering tier used when Rails needs Node-rendered React, streaming SSR, and
+  RSC.
+- [Render-functions and `railsContext`](https://reactonrails.com/docs/core-concepts/render-functions-and-railscontext/)
+  for the request-context handoff that differs from Inertia's page-props
+  protocol.
+- [React server rendering](https://reactonrails.com/docs/core-concepts/react-server-rendering/)
+  and [client vs. server rendering](https://reactonrails.com/docs/core-concepts/client-vs-server-rendering/)
+  for the SSR baseline behind the authenticated TanStack shell.
+- [Using React Router](https://reactonrails.com/docs/building-features/react-router/)
+  for the React on Rails router guidance; this starter uses TanStack Router for
+  the first-class SSR/dehydration path.
+- [React Server Components in React on Rails Pro](https://reactonrails.com/docs/pro/react-server-components/),
+  [RSC rendering flow](https://reactonrails.com/docs/pro/react-server-components/rendering-flow/),
+  and [Rspack compatibility](https://reactonrails.com/docs/pro/react-server-components/rspack-compatibility/)
+  for the RSC boundary that Inertia does not provide.
+
+## Ownership Diagram
+
+```mermaid
+flowchart TB
+  Rails["Rails\nroutes, sessions, auth, CSRF, models"] --> HtmlShell["Rails HTML shell"]
+  Rails --> JsonApi["Rails JSON API\nscoped records and validation"]
+  Rails --> Classic["Classic Rails views\n/classic/projects"]
+
+  HtmlShell --> RorPro["React on Rails Pro\nNode renderer"]
+  RorPro --> TanStack["TanStack Router\nroute tree and URL search state"]
+  TanStack --> Query["TanStack Query + Table\ncache, mutations, pagination"]
+  Query --> JsonApi
+
+  Rails --> Rsc["React Server Components\n/rsc-showcase and /hello_server"]
+  Rsc --> RorPro
+
+  Inertia["Inertia alternative"] --> PageObject["Rails controller returns\npage component + props"]
+  PageObject --> ClientSwap["Inertia client swaps pages\nand manages visits"]
+```
+
+## Decision Diagram
+
+```mermaid
+flowchart TD
+  Start["Rails product wants React"] --> Crud{"Mostly full-page CRUD\nand form workflows?"}
+  Crud -- "Yes" --> InertiaChoice["Inertia is often simpler\npage props from Rails controllers"]
+  Crud -- "No" --> ClientRouting{"Need typed client routes,\nURL-owned state, tables,\nor query caching?"}
+  ClientRouting -- "Yes" --> StarterChoice["React on Rails Pro + TanStack\nmatches this starter"]
+  ClientRouting -- "No" --> ClassicChoice["Classic Rails views\nplus small React mounts may be enough"]
+  StarterChoice --> RscNeed{"Need streamed RSC\nwithout moving to Next.js?"}
+  RscNeed -- "Yes" --> ProRsc["Use the Pro Node renderer\nand RSC payload/streaming routes"]
+  RscNeed -- "No" --> ProSsr["Use Pro SSR\nfor the authenticated shell"]
+```
+
 ## Inertia Owns Its Routing Model - TanStack Cannot Be A Peer
 
 Inertia routes are still Rails routes, but Inertia owns the browser visit model.
@@ -201,6 +256,13 @@ without turning Rails into a backend-only service.
 - [TanStack Router overview](https://tanstack.com/router/router/docs)
 - [TanStack Router data loading](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading)
 - [TanStack Router preloading](https://tanstack.com/router/latest/docs/framework/react/guide/preloading)
+- [React on Rails documentation guide](https://reactonrails.com/docs/)
+- [React on Rails Pro](https://reactonrails.com/docs/pro/)
+- [Render-functions and `railsContext`](https://reactonrails.com/docs/core-concepts/render-functions-and-railscontext/)
+- [React server rendering](https://reactonrails.com/docs/core-concepts/react-server-rendering/)
+- [React Server Components in React on Rails Pro](https://reactonrails.com/docs/pro/react-server-components/)
+- [React Server Components rendering flow](https://reactonrails.com/docs/pro/react-server-components/rendering-flow/)
+- [Rspack compatibility with React Server Components](https://reactonrails.com/docs/pro/react-server-components/rspack-compatibility/)
 - [React Server Components](https://react.dev/reference/rsc/server-components)
 - [React `use client`](https://react.dev/reference/rsc/use-client)
 - [Next.js Server and Client Components](https://nextjs.org/docs/app/getting-started/server-and-client-components)

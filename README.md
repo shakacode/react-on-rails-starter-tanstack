@@ -177,6 +177,10 @@ strict production CSP nonce issue for React's streaming bootstrap on
 
 ## Docs
 
+The docs below include local implementation pointers, Mermaid diagrams, and
+related ReactOnRails.com links so readers can jump from this starter to the
+canonical framework docs.
+
 - [Architecture](docs/01-architecture.md)
 - [React on Rails + TanStack vs Inertia](docs/02-vs-inertia.md)
 - [Customizing](docs/03-customizing.md)

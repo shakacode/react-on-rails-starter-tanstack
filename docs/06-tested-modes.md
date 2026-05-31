@@ -7,6 +7,28 @@ Shakapacker is intentionally not documented as `11.1.0` because public
 Rspack is the default local and deploy bundler in the checked-in matrix.
 Webpack has explicit opt-in bridge/comparison smokes below.
 
+## Related React On Rails Docs
+
+- [React server rendering](https://reactonrails.com/docs/core-concepts/react-server-rendering/)
+  for the SSR contract covered by the test matrix.
+- [React on Rails Pro](https://reactonrails.com/docs/pro/) for the Node
+  renderer, streaming, RSC, and Pro troubleshooting map.
+- [React Server Components in React on Rails Pro](https://reactonrails.com/docs/pro/react-server-components/)
+  and [RSC rendering flow](https://reactonrails.com/docs/pro/react-server-components/rendering-flow/)
+  for the bundle and payload paths covered by the RSC smokes.
+- [Rspack compatibility](https://reactonrails.com/docs/pro/react-server-components/rspack-compatibility/)
+  for the default bundler path this matrix protects.
+
+## Test Tier Diagram
+
+```mermaid
+flowchart LR
+  Smoke["Smoke\nfast local confidence"] --> Core["CI core\nquality, security, specs"]
+  Core --> Browser["Browser full\nPlaywright workflows"]
+  Browser --> Release["Release-impacting\nHMR, dev modes, production boot, RSC repro"]
+  Release --> Deploy["Deploy confidence\nstaging image and live footer"]
+```
+
 The tables below track the local and CI coverage expected before changing
 build, rendering, or routing behavior.
 

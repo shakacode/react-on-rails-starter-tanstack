@@ -22,6 +22,38 @@ bootstrap script is emitted without a nonce and is blocked by:
 script-src 'self' 'nonce-...'
 ```
 
+## Related React On Rails Docs
+
+- [Streaming SSR](https://reactonrails.com/docs/pro/streaming-ssr/) for the
+  `renderToPipeableStream` model and immediate hydration behavior.
+- [React Server Components in React on Rails Pro](https://reactonrails.com/docs/pro/react-server-components/)
+  for the Pro RSC feature overview and requirements.
+- [React Server Components rendering flow](https://reactonrails.com/docs/pro/react-server-components/rendering-flow/)
+  for the HTML stream plus embedded RSC payload lifecycle.
+- [Pro troubleshooting](https://reactonrails.com/docs/pro/troubleshooting/) for
+  the RSC hydration symptoms this spike narrows down.
+- [Upgrading React on Rails Pro](https://reactonrails.com/docs/pro/updating/)
+  for release notes that can remove local RSC payload template workarounds.
+
+## Nonce Flow Diagram
+
+```mermaid
+sequenceDiagram
+  participant Rails
+  participant View as Rails view helper
+  participant Pro as React on Rails Pro
+  participant React as React renderToPipeableStream
+  participant Browser
+
+  Rails->>View: Generate railsContext.cspNonce
+  View->>Browser: Pack script tags include nonce
+  View->>Pro: stream_react_component with railsContext
+  Pro->>Browser: RSC payload injection scripts include nonce
+  Pro->>React: Start HTML stream
+  React-->>Browser: Inline streaming bootstrap needs same nonce
+  Note over React,Browser: Current upstream gap: bootstrap nonce is missing
+```
+
 ## Evidence
 
 With the RSC manifests present, `/hello_server` renders and exposes the

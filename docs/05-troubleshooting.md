@@ -1,5 +1,33 @@
 # Troubleshooting
 
+## Related React On Rails Docs
+
+- [React on Rails documentation guide](https://reactonrails.com/docs/) for the
+  canonical docs map.
+- [Pro troubleshooting](https://reactonrails.com/docs/pro/troubleshooting/) for
+  Node renderer, license, RSC payload, and hydration issues.
+- [React server rendering](https://reactonrails.com/docs/core-concepts/react-server-rendering/)
+  for the baseline SSR failure modes.
+- [React Server Components in React on Rails Pro](https://reactonrails.com/docs/pro/react-server-components/)
+  and [Rspack compatibility](https://reactonrails.com/docs/pro/react-server-components/rspack-compatibility/)
+  for RSC bundle and manifest checks.
+
+## Troubleshooting Flow
+
+```mermaid
+flowchart TD
+  Symptom["Symptom"] --> Doctor["Run bin/doctor or focused bin/test command"]
+  Doctor --> Setup{"Local setup problem?"}
+  Setup -- "Postgres, ports, pnpm" --> LocalFix["Apply local fix\nthen rerun doctor"]
+  Setup -- "No" --> Surface{"Which surface fails?"}
+  Surface -- "Dashboard SSR" --> Renderer["Check Node renderer port,\nProcfile, and server bundle"]
+  Surface -- "RSC route" --> Rsc["Check RSC manifests,\nRspack config, and CSP"]
+  Surface -- "Auth/mail" --> Rails["Check Rails logs,\nletter_opener, and throttles"]
+  Renderer --> Smoke["Run dev-modes or production-boot smoke"]
+  Rsc --> Smoke
+  Rails --> Specs["Run request or Playwright specs"]
+```
+
 ## `bin/doctor` Fails
 
 Run `bin/doctor` first. Each failed check prints the problem, likely cause, and a concrete fix command.

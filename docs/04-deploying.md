@@ -1,5 +1,32 @@
 # Deploying
 
+## Related React On Rails Docs
+
+- [React on Rails Pro](https://reactonrails.com/docs/pro/) for the Pro feature
+  map and production license expectations.
+- [React on Rails Pro installation](https://reactonrails.com/docs/pro/installation/)
+  for the Node renderer package and runtime setup.
+- [Streaming SSR](https://reactonrails.com/docs/pro/streaming-ssr/) for the
+  renderer behavior that makes a separate Node workload necessary.
+- [Pro troubleshooting](https://reactonrails.com/docs/pro/troubleshooting/) for
+  renderer, license, cache, and RSC payload deployment failures.
+
+## Deployment Diagram
+
+```mermaid
+flowchart TB
+  Main["Push to main"] --> Workflow["cpflow-deploy-staging.yml"]
+  Workflow --> Build["Build Docker image\nRspack assets + server/RSC bundles"]
+  Build --> Commit["Persist GIT_COMMIT\nfor deployed footer"]
+  Build --> Release["Run Control Plane release script\nmigrate and optional demo seed"]
+  Release --> Rails["Rails workload\nHTTP app server"]
+  Release --> Renderer["React on Rails Pro renderer\ncleartext HTTP/2"]
+  Release --> Worker["Solid Queue worker"]
+  Rails --> RendererRequest["Server-side render requests"]
+  RendererRequest --> Renderer
+  Rails --> Browser["Public HTTPS traffic\nthrough Control Plane"]
+```
+
 Production needs three process types:
 
 ```Procfile
