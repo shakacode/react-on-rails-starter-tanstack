@@ -76,13 +76,13 @@ renderToPipeableStream(reactRenderedElement, {
 After upgrading Pro, the regression should be verified by running the Rspack
 default under production CSP and clicking `/hello_server`'s `LikeButton` from
 `0 likes` to `1 like` with no browser CSP console errors. The Webpack bridge can
-remain as a comparison check while it is still wired for deploy.
+remain as an optional comparison check.
 
 ## Safe Interim
 
 Keep the strict CSP. Do not add `unsafe-inline` for `/hello_server`.
 
-For the relaunch demo, use the TanStack-loader RSC composition path as the public
+For the public demo, use the TanStack-loader RSC composition path as the public
 centerpiece because it fetches the RSC payload as data and does not depend on
 React's inline streaming bootstrap. Keep `/hello_server` as the lower-level
 streaming reference route and document that its client island remains

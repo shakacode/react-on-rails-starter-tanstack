@@ -177,8 +177,8 @@
                { label: "TypeScript" },
                { label: "Tailwind v4" },
                { label: "shadcn/ui" },
-               { label: "Rspack local default" },
-               { label: "Webpack deploy bridge" }
+               { label: "Rspack default" },
+               { label: "Webpack optional comparison" }
              ].each do |chip| %>
             <li class="inline-flex items-center rounded-full border px-3 py-1 text-sm <%= chip[:accent] ? 'border-emerald-500/40 bg-emerald-500/10 font-medium text-emerald-700 dark:text-emerald-300' : 'border-border bg-card text-muted-foreground' %>">
               <%= chip[:label] %>
@@ -319,10 +319,10 @@
           <% end %>
         </div>
 
-        <p class="mt-8 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-800 dark:text-amber-200">
-          <strong>Honest status:</strong> Rspack remains the local default. The Webpack deploy bridge
-          emits the RSC manifests today; the official relaunch stays anchored to upstream Rspack RSC
-          support. See
+        <p class="mt-8 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-800 dark:text-emerald-200">
+          <strong>Honest status:</strong> Rspack is the default for local development and deployed
+          asset builds. The RSC showcase uses React on Rails Pro's RSCRoute path on Rspack; Webpack
+          remains documented only as an optional comparison check. See
           <a href="<%= github_source_url('SPIKE.md') %>" target="_blank" rel="noreferrer noopener" class="font-medium underline underline-offset-4">SPIKE.md</a>.
         </p>
       </div>

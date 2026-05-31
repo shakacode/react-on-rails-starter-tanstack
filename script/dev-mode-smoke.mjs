@@ -749,7 +749,7 @@ async function smokeHelloServerRoute() {
   }
 
   if (missingManifests.length > 0 && status >= 500 && routeBodyShowsKnownRscManifestGap(body)) {
-    console.log(JSON.stringify({ ...result, outcome: 'blocked-by-rspack-rsc-manifests' }, null, 2));
+    console.log(JSON.stringify({ ...result, outcome: 'missing-rsc-manifests' }, null, 2));
     return;
   }
 

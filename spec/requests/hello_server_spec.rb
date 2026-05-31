@@ -3,10 +3,9 @@
 require "rails_helper"
 
 # The /hello_server route demonstrates React Server Components. Its interactive client
-# island depends on the RSC client/server manifests, which the current Rspack build does
-# not emit (a documented AMBER limitation, see SPIKE.md). When the manifests are missing
-# the controller must degrade to an honest, server-rendered fallback rather than streaming
-# into a 500 that reads as broken to a visitor.
+# island depends on the RSC client/server manifests. When the manifests are missing or
+# unreachable at runtime, the controller must degrade to an honest, server-rendered
+# fallback rather than streaming into a 500 that reads as broken to a visitor.
 RSpec.describe "HelloServer RSC route", type: :request do
   def parsed_response
     Nokogiri::HTML(response.body)
@@ -62,7 +61,7 @@ RSpec.describe "HelloServer RSC route", type: :request do
       get hello_server_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Known Rspack limitation")
+      expect(response.body).to include("RSC manifests unavailable")
     end
 
     it "treats missing dev-server manifest URLs as unavailable" do
@@ -74,11 +73,11 @@ RSpec.describe "HelloServer RSC route", type: :request do
       get hello_server_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Known Rspack limitation")
+      expect(response.body).to include("RSC manifests unavailable")
     end
   end
 
-  context "when the RSC client-reference manifests are missing (Rspack limitation)" do
+  context "when the RSC client-reference manifests are missing" do
     before do
       allow_any_instance_of(HelloServerController) # rubocop:disable RSpec/AnyInstance
         .to receive(:rsc_client_references_available?).and_return(false)
@@ -96,7 +95,7 @@ RSpec.describe "HelloServer RSC route", type: :request do
       get hello_server_path
 
       body = response.body
-      expect(body).to include("Known Rspack limitation")
+      expect(body).to include("RSC manifests unavailable")
       expect(body).to include("interactive island is not live")
       spike_link = parsed_response.at_css("[data-rsc-fallback] a[href*='SPIKE.md']")
       expect(spike_link).not_to be_nil
