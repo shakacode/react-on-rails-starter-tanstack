@@ -173,7 +173,7 @@ inside one Rails app.
 ## Limitations And Current State
 
 This starter intentionally keeps Rspack as the local and deploy default.
-`react-on-rails-rsc@19.0.5-rc.2` provides the Rspack plugin path that emits the
+`react-on-rails-rsc@19.0.5-rc.3` provides the Rspack plugin path that emits the
 RSC client-reference manifests required by React on Rails Pro. That status is
 tracked in [SPIKE.md](../SPIKE.md), and the small reproduction remains available
 through `pnpm run repro:rspack-rsc`.
@@ -217,7 +217,7 @@ bin/dev
 ```
 
 Use `demo@example.com / password` to sign in. Visit `/dashboard` for the
-TanStack surface, `/projects` for a full-page load into the TanStack project
+authenticated overview, `/projects` for the focused TanStack Table and project
 routes, `/classic/projects` for the Rails CRUD surface, `/rsc-showcase` for the
 RSC + TanStack route on Rspack, and `/hello_server` for the lower-level RSC
 streaming demo.

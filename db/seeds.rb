@@ -20,6 +20,7 @@ else
     project.assign_attributes(
       description: "Sample #{status} project for the TanStack dashboard and table flows.",
       status: status,
+      created_at: (index + 14).days.ago,
       last_activity_at: (index + 1).days.ago
     )
     project.save!

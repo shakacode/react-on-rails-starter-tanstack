@@ -66,8 +66,11 @@ test('Rails-owned TanStack routes direct-load and hydrate across the route matri
       assertRoute: async (routePage) => {
         const shell = dashboardShell(routePage);
         await expect(shell.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
+        await expect(shell.getByRole('heading', { name: 'Rails-owned app shell with React where it pays off' })).toBeVisible();
         await expect(shell.locator('.metric-card')).toHaveCount(4);
+        await expect(shell.getByRole('link', { name: 'View projects' })).toHaveAttribute('href', '/projects');
         await expect(routePage.locator('body')).not.toContainText('Loading projects...');
+        await expect(routePage.locator('body')).not.toContainText('Project list');
       },
     },
     {
@@ -75,6 +78,7 @@ test('Rails-owned TanStack routes direct-load and hydrate across the route matri
       assertRoute: async (routePage) => {
         const shell = dashboardShell(routePage);
         await expect(shell.getByRole('heading', { name: 'Projects' })).toBeVisible();
+        await expect(shell.getByRole('heading', { name: 'Project list' })).toBeVisible();
         await expect(routePage.getByLabel('Status')).toBeVisible();
         await expect(routePage.locator('body')).not.toContainText('Loading projects...');
       },

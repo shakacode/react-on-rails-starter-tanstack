@@ -2,7 +2,7 @@
 
 This starter begins from `create-react-on-rails-app --rsc --rspack` and is launched on the React on Rails Pro `17.0.0-rc.0` RC stack with Shakapacker `10.1.0`.
 
-Shakapacker remains on `10.1.0` because public `11.1.0` artifacts are not visible in the registries this starter consumes. Rspack is the checked-in local and deploy default. `react-on-rails-rsc@19.0.5-rc.2` provides the Rspack RSC manifest support this starter needs, while Webpack remains an opt-in bridge/comparison path.
+Shakapacker remains on `10.1.0` because public `11.1.0` artifacts are not visible in the registries this starter consumes. Rspack is the checked-in local and deploy default. `react-on-rails-rsc@19.0.5-rc.3` provides the Rspack RSC manifest support this starter needs, while Webpack remains an opt-in bridge/comparison path.
 
 - Rails owns the public routes, auth routes, API routes, and the HTML shells.
 - Shakapacker uses Rspack for the default local client, server, and RSC bundles,
@@ -27,7 +27,7 @@ The JSON API under `/api/projects` supports status filtering, sorting, paginatio
 
 ## Authenticated Dashboard
 
-`/dashboard` is a Rails route that renders `DashboardApp` through `react_component` with React on Rails Pro prerendering enabled. The Rails view keeps the HTML shell and no-JavaScript fallback, while TanStack Router owns the authenticated client-side surface after hydration.
+`/dashboard` is a Rails route that renders `DashboardApp` through `react_component` with React on Rails Pro prerendering enabled. The Rails view keeps the HTML shell and no-JavaScript fallback, while TanStack Router owns the authenticated client-side surface after hydration. The dashboard route is an overview; `/projects` is the focused table and project-workspace route.
 
 The dashboard uses:
 
@@ -57,7 +57,7 @@ Vite, file-based routing, Hotwire, or Stimulus.
 Rspack is the active bundler in `config/shakapacker.yml`. Development disables client lazy compilation at the config top level and at `experiments.lazyCompilation`, uses live reload by default for this RC stack, and gates TanStack devtools behind `localStorage["tanstack-devtools"] = "1"` to avoid dev-server overlay requests from optional chunks. Explicit HMR mode enables React Fast Refresh through Shakapacker's Rspack wiring, while static and production-assets dev modes remain free of Rspack dev-server clients.
 
 The public React Server Components path is green on the local Rspack default
-with `react-on-rails-rsc@19.0.5-rc.2`. The Rspack client, server, and
+with `react-on-rails-rsc@19.0.5-rc.3`. The Rspack client, server, and
 server-only RSC bundles compile and emit the React client/server manifests
 expected by the React on Rails RSC client-reference path. The Webpack bridge
 remains documented in [RSC Webpack Bundler Spike](09-rsc-webpack-bundler-spike.md)

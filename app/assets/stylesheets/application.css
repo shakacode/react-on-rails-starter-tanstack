@@ -336,6 +336,74 @@
   margin-top: 18px;
 }
 
+.overview-hero [data-slot="card-description"] {
+  max-width: 72ch;
+  line-height: 1.55;
+}
+
+.overview-route-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.overview-route-heading h2,
+.overview-route-card h3 {
+  margin: 0;
+  line-height: 1.2;
+}
+
+.overview-route-heading h2 {
+  font-size: 1.25rem;
+}
+
+.overview-route-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.overview-route-card {
+  min-height: 245px;
+  justify-content: space-between;
+  border-radius: 8px;
+  border-color: var(--auth-line);
+}
+
+.overview-route-card [data-slot="card-header"] {
+  gap: 14px;
+}
+
+.overview-route-card h3 {
+  font-size: 1rem;
+}
+
+.overview-route-card [data-slot="card-description"] {
+  line-height: 1.5;
+}
+
+.overview-route-card [data-slot="card-footer"] {
+  margin-top: auto;
+}
+
+.overview-route-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid color-mix(in oklab, var(--primary) 30%, var(--border));
+  border-radius: 8px;
+  background: color-mix(in oklab, var(--primary) 9%, var(--card));
+  color: var(--auth-primary-hover);
+}
+
+.overview-route-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+}
+
 .demo-portfolio {
   display: grid;
   gap: 14px;
@@ -666,6 +734,10 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .overview-route-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .rendering-mode-grid {
     grid-template-columns: 1fr;
   }
@@ -677,6 +749,7 @@
 
 @media (max-width: 560px) {
   .demo-portfolio-grid,
+  .overview-route-cards,
   .metric-grid {
     grid-template-columns: 1fr;
   }

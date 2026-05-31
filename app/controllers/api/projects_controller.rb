@@ -99,7 +99,7 @@ module Api
         completed = Current.user.projects.completed.where.not(last_activity_at: nil)
         return 0.0 if completed.empty?
 
-        seconds = completed.average("EXTRACT(EPOCH FROM (last_activity_at - created_at))").to_f
+        seconds = completed.average(Arel.sql("GREATEST(EXTRACT(EPOCH FROM (last_activity_at - created_at)), 0)")).to_f
         (seconds / 1.day).round(1)
       end
 

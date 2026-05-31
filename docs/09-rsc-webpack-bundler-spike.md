@@ -1,7 +1,7 @@
 # RSC Webpack Bundler Spike
 
 > Status update: this is now historical bridge documentation.
-> `react-on-rails-rsc@19.0.5-rc.2` adds `RSCRspackPlugin`, and the default
+> `react-on-rails-rsc@19.0.5-rc.3` adds `RSCRspackPlugin`, and the default
 > Rspack build now emits both RSC client-reference manifests. Webpack remains
 > wired as an opt-in bridge/comparison path, so this file records the bridge
 > evidence and comparison path.
@@ -49,7 +49,7 @@ manifest:
 
 - `pnpm run repro:rspack-rsc` with `SHAKAPACKER_ASSETS_BUNDLER=webpack
   REQUIRE_RSC_MANIFESTS=true` → `"status": "ready"`, both manifests present,
-  exit 0. (Before `react-on-rails-rsc@19.0.5-rc.2`, the same gate failed on
+  exit 0. (Before `react-on-rails-rsc@19.0.5-rc.3`, the same gate failed on
   Rspack.)
 - `SHAKAPACKER_ASSETS_BUNDLER=webpack REQUIRE_RSC_MANIFESTS=true node
   script/dev-mode-smoke.mjs static hello-server` → full stack boots; the Node
@@ -64,13 +64,13 @@ manifest:
   test/playwright/rsc_showcase.spec.ts` → `/rsc-showcase` fetches the Pro RSC
   payload through its TanStack Router loader, renders the RSC island, and keeps
   the route-owned client island interactive.
-- The Rspack track has since changed: with `react-on-rails-rsc@19.0.5-rc.2`,
+- The Rspack track has since changed: with `react-on-rails-rsc@19.0.5-rc.3`,
   the default-bundler repro reports `"status": "ready"` with both manifests
   present.
 
-## Why Webpack was needed before `react-on-rails-rsc@19.0.5-rc.2`
+## Why Webpack was needed before `react-on-rails-rsc@19.0.5-rc.3`
 
-Before `react-on-rails-rsc@19.0.5-rc.2`, `RSCWebpackPlugin` was hard-wired to
+Before `react-on-rails-rsc@19.0.5-rc.3`, `RSCWebpackPlugin` was hard-wired to
 Webpack internals
 (`require('webpack/lib/dependencies/ModuleDependency')`,
 `require('webpack/lib/Template')`, etc.). Rspack does not expose those modules,
@@ -125,7 +125,7 @@ With `RSCRspackPlugin`, Rspack now has its own manifest-generation path.
 
 | Dimension            | Rspack (default)         | Webpack (RSC-capable)               |
 | -------------------- | ------------------------ | ----------------------------------- |
-| Interactive RSC      | ✅ manifests emitted with `react-on-rails-rsc@19.0.5-rc.2` | ✅ manifests emitted, island renders |
+| Interactive RSC      | ✅ manifests emitted with `react-on-rails-rsc@19.0.5-rc.3` | ✅ manifests emitted, island renders |
 | Clean prod build     | ~2.8 s                   | ~8.3 s (≈3× slower)                 |
 | Client JS total      | ~2.6 MB                  | ~2.6 MB (comparable)                |
 | Dev server / HMR     | `@rspack/plugin-react-refresh` | `@pmmmwh/react-refresh-webpack-plugin`; dashboard and `/hello_server` HMR smokes pass |

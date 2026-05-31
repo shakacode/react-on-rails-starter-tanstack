@@ -238,15 +238,17 @@ RSpec.describe "Projects", type: :request do
     it "returns dashboard metrics" do
       sign_in(user)
       project = create(:project, user: user)
-      create(:project, :completed, user: user, updated_at: 2.days.ago)
+      create(:project, :completed, user: user, created_at: 4.days.ago, last_activity_at: 1.day.ago, updated_at: 2.days.ago)
+      create(:project, :completed, user: user, created_at: 1.day.ago, last_activity_at: 2.days.ago, updated_at: 2.days.ago)
 
       get metrics_api_project_path(project)
 
       expect(response).to have_http_status(:ok)
       expect(json.keys).to contain_exactly("total", "active_count", "completed_this_week", "avg_cycle_time")
-      expect(json["total"]).to eq(2)
+      expect(json["total"]).to eq(3)
       expect(json["active_count"]).to eq(1)
-      expect(json["completed_this_week"]).to eq(1)
+      expect(json["completed_this_week"]).to eq(2)
+      expect(json["avg_cycle_time"]).to eq(1.5)
     end
   end
 end
