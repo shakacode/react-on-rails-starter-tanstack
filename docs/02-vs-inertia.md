@@ -90,11 +90,10 @@ renderer such as React on Rails Pro. That is an architectural inference, not a
 claim about Inertia's roadmap.
 
 The Rspack status is also intentionally conservative. Rspack remains the local
-default, and `react-on-rails-rsc@19.0.5-rc.2` emits the RSC client-reference
-manifests required by React on Rails Pro. The status is tracked in
-[SPIKE.md](../SPIKE.md) and [Tested Modes](06-tested-modes.md). The Webpack
-bridge remains the current deploy path until the Docker build ARG is explicitly
-flipped.
+and deploy default, and `react-on-rails-rsc@19.0.5-rc.2` emits the RSC
+client-reference manifests required by React on Rails Pro. The status is tracked
+in [SPIKE.md](../SPIKE.md) and [Tested Modes](06-tested-modes.md). The Webpack
+bridge remains an opt-in comparison path.
 
 ## TanStack Router RSC Is Not TanStack Start Parity
 

@@ -2,14 +2,14 @@
 
 This starter begins from `create-react-on-rails-app --rsc --rspack` and is launched on the React on Rails Pro `17.0.0-rc.0` RC stack with Shakapacker `10.1.0`.
 
-Shakapacker remains on `10.1.0` because public `11.1.0` artifacts are not visible in the registries this starter consumes. Rspack remains the checked-in local default. `react-on-rails-rsc@19.0.5-rc.2` provides the Rspack RSC manifest support this starter needs, while Webpack remains the current deploy bridge until the Docker build ARG is explicitly flipped.
+Shakapacker remains on `10.1.0` because public `11.1.0` artifacts are not visible in the registries this starter consumes. Rspack is the checked-in local and deploy default. `react-on-rails-rsc@19.0.5-rc.2` provides the Rspack RSC manifest support this starter needs, while Webpack remains an opt-in bridge/comparison path.
 
 - Rails owns the public routes, auth routes, API routes, and the HTML shells.
 - Shakapacker uses Rspack for the default local client, server, and RSC bundles,
   including RSC client-reference manifest generation.
 - The Webpack bridge uses `SHAKAPACKER_ASSETS_BUNDLER=webpack` and
-  `config/webpack/` to emit the RSC client-reference manifests required by the
-  deployed RSC demo while the deploy bridge remains selected.
+  `config/webpack/` as an opt-in comparison path for the same RSC
+  client-reference manifests.
 - React on Rails Pro provides the Node renderer, TanStack SSR integration, and RSC streaming path.
 - SolidQueue is installed by Rails and runs as a separate worker process in development and production.
 
@@ -59,4 +59,4 @@ with `react-on-rails-rsc@19.0.5-rc.2`. The Rspack client, server, and
 server-only RSC bundles compile and emit the React client/server manifests
 expected by the React on Rails RSC client-reference path. The Webpack bridge
 remains documented in [RSC Webpack Bundler Spike](09-rsc-webpack-bundler-spike.md)
-as the current deploy bridge and historical comparison path.
+as an opt-in bridge and historical comparison path.

@@ -12,11 +12,11 @@ code first and then update the docs or this file in the same change.
 - This is a Rails 8 starter using React on Rails Pro, TanStack Router, TanStack
   Query, TanStack Table, Rspack, pnpm, TypeScript, React 19, Tailwind v4, and
   shadcn/ui primitives.
-- Rspack is the active local Shakapacker bundler. Use `config/shakapacker.yml`
-  and `config/rspack/` as the source of truth for default local bundling
-  behavior. Webpack is the deploy/RSC bridge selected by
-  `SHAKAPACKER_ASSETS_BUNDLER=webpack` or the `.controlplane/Dockerfile` build
-  ARG until the deploy default is explicitly flipped.
+- Rspack is the active Shakapacker bundler for local development and the
+  deployed image. Use `config/shakapacker.yml`, `config/rspack/`, and the
+  `.controlplane/Dockerfile` `SHAKAPACKER_ASSETS_BUNDLER=rspack` build ARG as
+  the source of truth for default bundling behavior. Webpack remains an opt-in
+  bridge/comparison path via `SHAKAPACKER_ASSETS_BUNDLER=webpack`.
 - `/dashboard`, `/settings...`, and `/projects...` are Rails routes that render
   the TanStack dashboard shell through `DashboardController#show`.
 - `/classic/projects` remains a classic Rails CRUD surface to demonstrate a
@@ -239,9 +239,8 @@ Rules:
 
 - Keep this starter on Rspack unless the task explicitly asks to evaluate
   Webpack.
-- Keep Webpack as the deploy/RSC bridge until the deploy default is explicitly
-  flipped. Reverting or switching the deployed build should remain a one-line
-  Docker build ARG change.
+- Keep Rspack as the deploy/RSC default. Switching the deployed build to Webpack
+  for comparison should remain a one-line Docker build ARG change.
 - `bin/shakapacker` refreshes React on Rails generated packs before invoking
   Shakapacker so ignored files under `app/javascript/**/generated` do not stay
   stale after branch switches. Only use

@@ -74,9 +74,8 @@ Webpack made interactive RSC work: the Webpack build emitted both RSC
 client-reference manifests, the Node renderer loaded them, and `/hello_server`
 rendered end-to-end with `REQUIRE_RSC_MANIFESTS=true`.
 
-- Rspack remains the committed default in `config/shakapacker.yml`; Webpack
-  remains the current deploy bridge via `.controlplane/Dockerfile` until that
-  one-line build ARG is explicitly flipped. Webpack is also opt-in locally via
+- Rspack remains the committed default in `config/shakapacker.yml` and
+  `.controlplane/Dockerfile`. Webpack is opt-in via
   `SHAKAPACKER_ASSETS_BUNDLER=webpack` or `bin/shakapacker --bundler webpack`,
   with configs in `config/webpack/`.
 - The original root cause of the Rspack gap is resolved by
@@ -87,8 +86,7 @@ rendered end-to-end with `REQUIRE_RSC_MANIFESTS=true`.
   composes the Flight tree beside a client island. This is not TanStack Start
   parity; it keeps the starter on Rails + React on Rails Pro + bare
   `@tanstack/react-router`.
-- The full app was previously verified on Webpack as a bridge. That bridge
-  remains the deploy default for now, while Rspack manifest generation is ready
-  for the separate deploy-default flip. A `config/swc.config.js` (automatic JSX
+- The full app was previously verified on Webpack as a bridge. That bridge now
+  remains as an opt-in comparison path. A `config/swc.config.js` (automatic JSX
   runtime) remains for the Webpack path.
 - Full details, evidence, full-app verification, deploy wiring, and the go/no-go: `docs/09-rsc-webpack-bundler-spike.md`.

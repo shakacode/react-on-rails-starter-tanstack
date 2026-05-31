@@ -84,16 +84,11 @@ ENV RAILS_ENV=production
 # build) — NOT at runtime — so this canNOT be set via a Control Plane GVC env
 # var. It must be baked into the build.
 #
-# `webpack` is required for interactive React Server Components: only the
-# Webpack build runs react-on-rails-rsc's RSCWebpackPlugin and emits the two
-# RSC client-reference manifests (public/packs/react-client-manifest.json and
-# ssr-generated/react-server-client-manifest.json). Rspack (the repo default in
-# config/shakapacker.yml, kept for fast local DX) cannot emit them yet.
-#
-# To revert the deploy to Rspack: change the default below to `rspack` (or build
-# with `--build-arg SHAKAPACKER_ASSETS_BUNDLER=rspack`). One-line, fully
-# reversible. See docs/09-rsc-webpack-bundler-spike.md.
-ARG SHAKAPACKER_ASSETS_BUNDLER=webpack
+# `rspack` is the repo and deploy default. `react-on-rails-rsc@19.0.5-rc.2`
+# emits the RSC client-reference manifests on Rspack. The Webpack bridge remains
+# available as an opt-in comparison path with:
+#   --build-arg SHAKAPACKER_ASSETS_BUNDLER=webpack
+ARG SHAKAPACKER_ASSETS_BUNDLER=rspack
 ENV SHAKAPACKER_ASSETS_BUNDLER=${SHAKAPACKER_ASSETS_BUNDLER}
 
 # compiling assets requires any value for ENV of SECRET_KEY_BASE
