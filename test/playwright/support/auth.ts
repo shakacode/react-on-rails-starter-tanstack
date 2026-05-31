@@ -62,7 +62,7 @@ export function seedUser(options: SeedUserOptions) {
 }
 
 export async function submitSignInForm(page: Page, email: string, options: SignInOptions = {}) {
-  const { expectedURL = '/', password = testPassword } = options;
+  const { expectedURL = '/dashboard', password = testPassword } = options;
 
   await page.getByLabel('Email').fill(email);
   await page.getByLabel('Password').fill(password);
