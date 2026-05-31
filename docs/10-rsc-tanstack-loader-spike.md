@@ -38,7 +38,7 @@ Browser verification against `http://127.0.0.1:3400/rsc-showcase` confirmed:
 
 ## Rspack Default Behavior
 
-Rspack remains the local default in `config/shakapacker.yml`.
+Rspack remains the default in `config/shakapacker.yml` and the deploy image.
 `react-on-rails-rsc@19.0.5-rc.2` emits the RSC client-reference manifests on
 Rspack, so `/rsc-showcase` fetches the payload on the default path. The route
 still checks manifest availability before the loader fetches the payload, so it

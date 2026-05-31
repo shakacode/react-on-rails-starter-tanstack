@@ -69,13 +69,13 @@ classic Rails CRUD coexist in one app.
 
 ## Stack and Pinned Versions
 
-Rspack remains the local default Shakapacker bundler. Use
-`config/shakapacker.yml` and `config/rspack/` as the source of truth for the
-default development path. The Rspack RSC plugin in
+Rspack is the default Shakapacker bundler for local development and the
+deployed image. Use `config/shakapacker.yml`, `config/rspack/`, and the
+`.controlplane/Dockerfile` build ARG as the source of truth for the default
+path. The Rspack RSC plugin in
 `react-on-rails-rsc@19.0.5-rc.2` emits the client/server manifests the Pro RSC
-client-reference path needs. Webpack remains the current deploy bridge through
-the one-line Docker build ARG in `.controlplane/Dockerfile` until the deploy
-default is explicitly flipped.
+client-reference path needs. Webpack remains an opt-in bridge/comparison path
+via `SHAKAPACKER_ASSETS_BUNDLER=webpack`.
 
 | Component | Version |
 | --- | --- |
@@ -161,8 +161,8 @@ See [SPIKE.md](SPIKE.md) and the
 [RSC Webpack Bundler Spike](docs/09-rsc-webpack-bundler-spike.md) for the
 current RSC status. Rspack builds now emit the React Server Components
 client/server manifests expected by the Pro RSC path, and `/rsc-showcase` runs
-on the default local Rspack bundler. The Webpack bridge remains documented and
-kept as the current deploy bridge. The remaining known RSC limitation is the
+on the default Rspack bundler. The Webpack bridge remains documented as an
+opt-in comparison path. The remaining known RSC limitation is the
 strict production CSP nonce issue for React's streaming bootstrap on
 `/hello_server`.
 

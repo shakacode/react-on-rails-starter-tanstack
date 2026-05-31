@@ -4,8 +4,8 @@ This starter keeps the TanStack dashboard on Rspack and the launch RC stack:
 React on Rails Pro `17.0.0-rc.0` with Shakapacker `10.1.0`.
 Shakapacker is intentionally not documented as `11.1.0` because public
 `11.1.0` artifacts are not visible in the registries consumed by the starter.
-Rspack is the default local bundler in the checked-in matrix. Webpack is the
-current deploy bridge and has explicit bridge/comparison smokes below.
+Rspack is the default local and deploy bundler in the checked-in matrix.
+Webpack has explicit opt-in bridge/comparison smokes below.
 
 The tables below track the local and CI coverage expected before changing
 build, rendering, or routing behavior.

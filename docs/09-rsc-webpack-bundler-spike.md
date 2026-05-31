@@ -3,8 +3,8 @@
 > Status update: this is now historical bridge documentation.
 > `react-on-rails-rsc@19.0.5-rc.2` adds `RSCRspackPlugin`, and the default
 > Rspack build now emits both RSC client-reference manifests. Webpack remains
-> wired as the current deploy bridge until the Docker build ARG is explicitly
-> flipped, so this file still records the bridge evidence and comparison path.
+> wired as an opt-in bridge/comparison path, so this file records the bridge
+> evidence and comparison path.
 
 ## Question
 
@@ -199,24 +199,24 @@ All run with `SHAKAPACKER_ASSETS_BUNDLER=webpack` on a clean production build
 | Playwright (full) | `SHAKAPACKER_ASSETS_BUNDLER=webpack pnpm exec playwright test` | ✅ landing, auth, dashboard, route matrix, CSP, a11y |
 | Production boot (true `RAILS_ENV=production` server + Node renderer) | `node script/production-boot-smoke.mjs` | ✅ "Production boot smoke passed" |
 
-## Wiring the deployed build to Webpack
+## Optional Webpack Build Wiring
 
 The bundler is selected at `assets:precompile` time **inside the Docker image
 build** (`.controlplane/Dockerfile`), not at runtime — a Control Plane GVC env
-var will NOT change it. The build is wired with a build ARG defaulting to
-`webpack`, set as an `ENV` immediately before the precompile steps:
+var will NOT change it. The deployed build now defaults to `rspack`, set as an
+`ENV` immediately before the precompile steps:
 
 ```dockerfile
-ARG SHAKAPACKER_ASSETS_BUNDLER=webpack
+ARG SHAKAPACKER_ASSETS_BUNDLER=rspack
 ENV SHAKAPACKER_ASSETS_BUNDLER=${SHAKAPACKER_ASSETS_BUNDLER}
 ```
 
-- `config/shakapacker.yml` keeps `assets_bundler: rspack` as the repo default, so
-  local DX (`bin/dev`) stays on fast Rspack. Only the deployed image overrides it.
+- `config/shakapacker.yml` keeps `assets_bundler: rspack` as the repo default,
+  so local DX (`bin/dev`) and the deployed image both stay on Rspack.
 - The webpack toolchain deps are already in the lockfile, so the Dockerfile's
   `pnpm install --frozen-lockfile` installs them with no Docker change.
-- **Reverting to Rspack is one line**: change the ARG default to `rspack`, or
-  build with `--build-arg SHAKAPACKER_ASSETS_BUNDLER=rspack`. No other change.
+- **Opting into Webpack remains one line**: build with
+  `--build-arg SHAKAPACKER_ASSETS_BUNDLER=webpack`. No other change.
 
 ## Remaining hacks and whether they are load-bearing
 

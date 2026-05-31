@@ -172,15 +172,15 @@ inside one Rails app.
 
 ## Limitations And Current State
 
-This starter intentionally keeps Rspack as the local default.
+This starter intentionally keeps Rspack as the local and deploy default.
 `react-on-rails-rsc@19.0.5-rc.2` provides the Rspack plugin path that emits the
 RSC client-reference manifests required by React on Rails Pro. That status is
 tracked in [SPIKE.md](../SPIKE.md), and the small reproduction remains available
 through `pnpm run repro:rspack-rsc`.
 
-The Webpack bridge is still documented and wired for deploy until the deploy
-default is explicitly flipped, but `/rsc-showcase` now works on the default
-local Rspack path. The checked smoke coverage in [Tested Modes](06-tested-modes.md)
+The Webpack bridge is still documented and available as an opt-in comparison
+path, but `/rsc-showcase` now works on the default Rspack path. The checked
+smoke coverage in [Tested Modes](06-tested-modes.md)
 keeps both bundler paths visible so neither silently regresses.
 
 This is also why the thesis here is framed as surface-aware rendering rather
