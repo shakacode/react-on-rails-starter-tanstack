@@ -68,5 +68,5 @@ if (process.env.REQUIRE_RSC_MANIFESTS === 'true' && missingManifests.length > 0)
 }
 
 if (missingManifests.length > 0) {
-  console.log('Rspack/RSC client-boundary repro is present, but manifest generation remains blocked upstream.');
+  console.log('Rspack/RSC client-boundary repro is present, but RSC manifests are missing from this build.');
 }
