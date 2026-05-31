@@ -516,8 +516,8 @@ async function submitDemoSignIn(page, state) {
     const redirectPath = new URL(redirectLocation, baseURL).pathname;
     state.status.signInRedirectPath = redirectPath;
 
-    if (redirectPath !== '/') {
-      throw new Error(`Sign-in POST redirected to ${redirectLocation} instead of /`);
+    if (redirectPath !== '/dashboard') {
+      throw new Error(`Sign-in POST redirected to ${redirectLocation} instead of /dashboard`);
     }
   }
 }
