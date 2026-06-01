@@ -26,7 +26,7 @@ async function loadBridgeNotes() {
   return [
     'Rails still owns the route, session, CSP, and component payload endpoint.',
     'React on Rails Pro renders the Server Component payload through the exported RSCRoute helper.',
-    'TanStack Router owns the route data and composes the payload with route-level client UI.',
+    'TanStack Router owns the route data and keeps this payload demo separate from the /hello_server streaming client island.',
   ];
 }
 
@@ -58,14 +58,14 @@ const RscShowcaseServerPanel = async ({
       <div className="grid gap-5 p-5">
         <section className="rounded-md border border-emerald-300 bg-emerald-50 p-4 text-emerald-950 dark:border-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-50">
           <p className="text-xs font-semibold uppercase text-emerald-700 dark:text-emerald-300">
-            Zero client JS proof
+            Server payload proof
           </p>
           <h3 className="mt-2 text-lg font-semibold tracking-normal">
             The server panel code stays out of the browser bundle.
           </h3>
           <p className="mt-2 text-sm text-emerald-900/80 dark:text-emerald-100/80">
-            Rails and Pro rendered these notes into the RSC payload. The only JavaScript that hydrates here is at
-            explicit <code className="rounded bg-emerald-100 px-1 py-0.5 dark:bg-emerald-900">use client</code> islands.
+            Rails and Pro rendered these notes into the RSC payload. Any client interactivity is explicit
+            and visible, instead of being mixed into the lower-level streaming reference.
           </p>
           <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-3">
             <div className="rounded border border-emerald-200 bg-white/70 p-3 dark:border-emerald-800 dark:bg-emerald-950/50">
@@ -73,8 +73,8 @@ const RscShowcaseServerPanel = async ({
               <dd className="mt-1 text-xl font-semibold">0 KB</dd>
             </div>
             <div className="rounded border border-emerald-200 bg-white/70 p-3 dark:border-emerald-800 dark:bg-emerald-950/50">
-              <dt className="text-emerald-700 dark:text-emerald-300">Hydrating boundaries</dt>
-              <dd className="mt-1 text-xl font-semibold">Client islands only</dd>
+              <dt className="text-emerald-700 dark:text-emerald-300">Client boundary</dt>
+              <dd className="mt-1 text-xl font-semibold">Called out</dd>
             </div>
             <div className="rounded border border-emerald-200 bg-white/70 p-3 dark:border-emerald-800 dark:bg-emerald-950/50">
               <dt className="text-emerald-700 dark:text-emerald-300">Transport</dt>

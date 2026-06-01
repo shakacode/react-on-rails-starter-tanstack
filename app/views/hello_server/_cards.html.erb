@@ -1,19 +1,33 @@
 <%# Shared explainer cards for the React Server Components demo (streaming and fallback views). %>
 <section class="grid">
   <article class="card">
-    <h2>What this page shows</h2>
+    <h2>What works here</h2>
     <ul>
       <li>
         <strong>Async on the server.</strong>
         HelloServer can await data directly during render without pushing that fetch to the client.
       </li>
       <li>
-        <strong>Small client footprint.</strong>
-        Only the interactive LikeButton island needs browser JavaScript.
+        <strong>Server stream first.</strong>
+        The server-rendered content is the working demo. The LikeButton is the separate client-reference edge case.
       </li>
       <li>
         <strong>Streaming output.</strong>
         stream_react_component streams HTML as the server component tree resolves.
+      </li>
+    </ul>
+  </article>
+
+  <article class="card">
+    <h2>What is intentionally separate</h2>
+    <ul>
+      <li>
+        <strong>Interactive client references.</strong>
+        The LikeButton path is visibly marked as limited while the upstream streaming hydration support settles.
+      </li>
+      <li>
+        <strong>Public RSC composition.</strong>
+        Use <a href="/rsc-showcase">/rsc-showcase</a> for the RSC payload route that composes server content beside ordinary client React.
       </li>
     </ul>
   </article>

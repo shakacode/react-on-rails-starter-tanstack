@@ -48,12 +48,14 @@ Each route demonstrates a deliberate rendering choice, not a fallback:
 - **`/rsc-showcase`** is the public RSC + TanStack centerpiece. A bare TanStack
   Router loader fetches a React on Rails Pro RSC payload from Rails, decodes the
   Flight stream, and composes that server-streamed tree beside ordinary client
-  React. It runs on the default Rspack bundler with
-  `react-on-rails-rsc@19.0.5-rc.3`.
+  React. It now includes an in-app status panel that separates the working RSC
+  payload route from the lower-level streaming client-island limitation. It runs
+  on the default Rspack bundler with `react-on-rails-rsc@19.0.5-rc.3`.
 - **`/hello_server`** demonstrates streaming React Server Components. The demo
   keeps an interactive `LikeButton` client island inside a server-rendered
-  tree. On Rspack the route renders end to end; under the strict production CSP
-  the client island still waits on the upstream streaming nonce fix. See
+  tree, but labels that island as the separate client-reference edge case. On
+  Rspack the route renders end to end; under the strict production CSP the
+  client island still waits on the upstream streaming nonce fix. See
   [SPIKE.md](SPIKE.md) and
   [RSC Streaming And CSP Nonces](docs/11-rsc-csp-nonce-spike.md).
 - **`/dashboard`, `/settings...`, and `/projects...`** are Rails full-page

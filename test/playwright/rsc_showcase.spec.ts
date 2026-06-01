@@ -9,7 +9,7 @@ test('public RSC showcase route loads the TanStack composition surface', async (
   await page.goto('/rsc-showcase');
 
   await expect(
-    page.getByRole('heading', { name: 'Server-streamed RSC composed inside a TanStack route on Rails' }),
+    page.getByRole('heading', { name: 'Working RSC payloads with the client-reference limit called out' }),
   ).toBeVisible();
   await expect(page.getByRole('navigation', { name: 'RSC showcase navigation' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/');
@@ -19,6 +19,10 @@ test('public RSC showcase route loads the TanStack composition surface', async (
     'https://github.com/shakacode/react-on-rails-starter-tanstack',
   );
   await expect(page.locator('footer').getByText(/Commit [0-9a-f]{7}/i)).toBeVisible();
+  await expect(page.getByRole('region', { name: 'RSC capability status' })).toBeVisible();
+  await expect(page.getByText('RSC payload route')).toBeVisible();
+  await expect(page.getByText('Streaming RSC shell')).toBeVisible();
+  await expect(page.getByText('Streaming client island')).toBeVisible();
 
   const rspackFallback = page.getByText('RSC manifests are not available for this build.');
 
@@ -28,7 +32,7 @@ test('public RSC showcase route loads the TanStack composition surface', async (
   }
 
   await expect(page.getByText('RSC streamed by Rails, consumed by a TanStack route')).toBeVisible();
-  await expect(page.getByText('Zero client JS proof')).toBeVisible();
+  await expect(page.getByText('Server payload proof')).toBeVisible();
   await expect(page.getByText('Server panel JS shipped')).toBeVisible();
   await expect(page.getByText('Payload helper')).toBeVisible();
 
