@@ -25,7 +25,7 @@ Shakapacker remains on `10.1.0` because public `11.1.0` artifacts are not visibl
 
 The diagram below shows ownership at a high level. The request, route,
 rendering, and asset build handoffs are expanded in
-[Architecture Flow Diagrams](13-architecture-flows.md).
+[Architecture Flow Diagrams](14-architecture-flows.md).
 
 ```mermaid
 flowchart TB

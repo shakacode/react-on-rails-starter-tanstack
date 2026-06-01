@@ -17,7 +17,7 @@ page-props protocol.
 
 For the concrete Rails request, TanStack full-page route, RSC rendering, and
 Rspack/Shakapacker asset handoffs, see
-[Architecture Flow Diagrams](13-architecture-flows.md).
+[Architecture Flow Diagrams](14-architecture-flows.md).
 
 The tradeoff is real. Inertia is simpler when the product is mostly full-page
 CRUD. React on Rails Pro plus TanStack is more explicit when the product needs
