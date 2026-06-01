@@ -25,6 +25,37 @@ test.beforeAll(() => {
   });
 });
 
+test('dashboard and projects direct loads expose distinct route surfaces', async ({ page }) => {
+  await signIn(page, email);
+
+  await page.goto('/dashboard');
+  await expect(page).toHaveURL('/dashboard');
+
+  const dashboardRoute = page.locator('main.tanstack-shell > .tanstack-stack');
+  await expect(dashboardRoute).toBeVisible();
+  await expect(dashboardRoute.getByRole('heading', { name: 'Rails-owned app shell with React where it pays off' })).toBeVisible();
+  await expect(dashboardRoute.getByRole('heading', { name: 'Pick the surface you want to inspect' })).toBeVisible();
+  await expect(dashboardRoute.locator('.metric-card')).toHaveCount(4);
+  await expect(dashboardRoute.getByRole('heading', { name: 'Workspace controls' })).toHaveCount(0);
+  await expect(dashboardRoute.getByRole('heading', { name: 'Project list' })).toHaveCount(0);
+  await expect(page.locator('body')).not.toContainText('Loading route...');
+  await expect(page.locator('body')).not.toContainText('Loading projects...');
+
+  await page.goto('/projects');
+  await expect(page).toHaveURL('/projects');
+
+  const projectsRoute = page.locator('main.tanstack-shell > .tanstack-stack');
+  await expect(projectsRoute).toBeVisible();
+  await expect(projectsRoute.getByRole('heading', { name: 'Workspace controls' })).toBeVisible();
+  await expect(projectsRoute.getByRole('heading', { name: 'Project list' })).toBeVisible();
+  await expect(page.getByLabel('Status')).toBeVisible();
+  await expect(projectsRoute.getByRole('link', { name: 'Playwright Project 1' })).toBeVisible();
+  await expect(projectsRoute.getByRole('heading', { name: 'Rails-owned app shell with React where it pays off' })).toHaveCount(0);
+  await expect(projectsRoute.locator('.metric-card')).toHaveCount(0);
+  await expect(page.locator('body')).not.toContainText('Loading route...');
+  await expect(page.locator('body')).not.toContainText('Loading projects...');
+});
+
 test('protected TanStack route returns to URL-backed table state after sign in', async ({ page }) => {
   await page.goto('/projects?status=paused&sort=name&dir=desc');
   await expect(page).toHaveURL('/session/new');
