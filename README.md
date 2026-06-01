@@ -186,6 +186,7 @@ related ReactOnRails.com links so readers can jump from this starter to the
 canonical framework docs.
 
 - [Architecture](docs/01-architecture.md)
+- [Architecture Flow Diagrams](docs/14-architecture-flows.md)
 - [React on Rails + TanStack vs Inertia](docs/02-vs-inertia.md)
 - [Customizing](docs/03-customizing.md)
 - [Deploying](docs/04-deploying.md)
