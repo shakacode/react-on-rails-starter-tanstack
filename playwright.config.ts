@@ -6,9 +6,18 @@ const rendererUrl = `http://127.0.0.1:${rendererPort}`;
 
 export default defineConfig({
   testDir: './test/playwright',
+  snapshotPathTemplate: '{testDir}/__screenshots__/{testFilePath}/{arg}{ext}',
   timeout: 30_000,
   expect: {
     timeout: 5_000,
+    toHaveScreenshot: {
+      animations: 'disabled',
+      caret: 'hide',
+      maxDiffPixelRatio: 0.05,
+      scale: 'css',
+      stylePath: './test/playwright/support/visual-snapshot.css',
+      threshold: 0.3,
+    },
   },
   use: {
     baseURL: `http://127.0.0.1:${port}`,

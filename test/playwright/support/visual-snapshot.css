@@ -1,0 +1,28 @@
+*, *::before, *::after {
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+  caret-color: transparent !important;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+footer .font-mono {
+  background: rgb(229 231 235) !important;
+  border-radius: 2px !important;
+  color: transparent !important;
+}
+
+.break-all,
+article > div:first-child p.text-slate-600 {
+  background: rgb(229 231 235) !important;
+  border-radius: 2px !important;
+  color: transparent !important;
+}
