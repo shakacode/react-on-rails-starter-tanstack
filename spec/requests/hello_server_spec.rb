@@ -88,7 +88,7 @@ RSpec.describe "HelloServer RSC route", type: :request do
 
       expect(response).to have_http_status(:ok)
       # The shared demo shell stays intact so the page never looks broken.
-      expect(response.body).to include("React Server Components Demo")
+      expect(response.body).to include("Streaming React Server Components Demo")
       expect(response.body).to include("Return to the starter home page")
       expect(response.body).to include("Open the RSC showcase")
     end
@@ -98,7 +98,7 @@ RSpec.describe "HelloServer RSC route", type: :request do
 
       body = response.body
       expect(body).to include("RSC manifests unavailable")
-      expect(body).to include("interactive island is not live")
+      expect(body).to include("client-reference path is unavailable")
       spike_link = parsed_response.at_css("[data-rsc-fallback] a[href*='SPIKE.md']")
       expect(spike_link).not_to be_nil
       expect(spike_link["href"]).to include("github.com/shakacode/react-on-rails-starter-tanstack")

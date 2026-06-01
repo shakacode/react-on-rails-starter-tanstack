@@ -10,13 +10,12 @@
 
   <section class="notice" data-rsc-fallback>
     <p class="badge">RSC manifests unavailable</p>
-    <h2>The interactive island is not live on this build</h2>
+    <h2>The client-reference path is unavailable on this build</h2>
     <p>
-      The async server component above renders fine on the server, but its interactive
-      client island (the <code>LikeButton</code>) is intentionally not wired up here. The
-      React Server Components client/server manifests that the client-reference path needs
-      at runtime were not available to this request, so rather than ship a blank or broken
-      widget we are showing this honest note instead.
+      The server-streamed RSC page shell still works, but the interactive client island
+      (the <code>LikeButton</code>) is intentionally not wired up here. The React Server
+      Components client-reference runtime was not available to this request, so rather
+      than ship a blank or broken widget we are showing this honest note instead.
     </p>
     <p>
       This fallback is a deployment/runtime guard, not the expected public-demo path.
