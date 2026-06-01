@@ -6,6 +6,7 @@
   "scripts": {
     "test:playwright": "playwright test",
     "test:router-shim": "node script/test-tanstack-router-store-shim.mjs",
+    "test:live-deployed": "node script/live-deployed-smoke.mjs",
     "test:dev-modes": "node script/dev-mode-smoke.mjs dev && node script/dev-mode-smoke.mjs static && node script/dev-mode-smoke.mjs prod",
     "test:hmr": "node script/dev-mode-smoke.mjs hmr",
     "test:webpack-hmr": "SHAKAPACKER_ASSETS_BUNDLER=webpack node script/dev-mode-smoke.mjs hmr",

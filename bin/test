@@ -4,7 +4,7 @@ set -euo pipefail
 usage() {
   cat >&2 <<'USAGE'
 Usage:
-  bin/test [all|ci|smoke|quality|security|doctor|typecheck|router-shim|dev-modes|hmr|webpack-hmr|webpack-hmr-rsc|hello-server-rsc|rsc-repro|production-precompile|production-boot|release|a11y]
+  bin/test [all|ci|smoke|quality|security|doctor|typecheck|router-shim|live-deployed|dev-modes|hmr|webpack-hmr|webpack-hmr-rsc|hello-server-rsc|rsc-repro|production-precompile|production-boot|release|a11y]
   bin/test rspec [rspec-args...]
   bin/test playwright [playwright-args...]
   bin/test playwright-smoke [playwright-args...]
@@ -56,6 +56,14 @@ run_playwright_smoke() {
 run_playwright_full() {
   prepare_test_database
   run pnpm exec playwright test "$@"
+}
+
+run_live_deployed_smoke() {
+  if (($# > 0)); then
+    run pnpm run test:live-deployed -- "$@"
+  else
+    run pnpm run test:live-deployed
+  fi
 }
 
 run_smoke() {
@@ -123,6 +131,9 @@ case "$command" in
     ;;
   router-shim)
     run pnpm run test:router-shim
+    ;;
+  live-deployed|deployed-smoke|live-smoke)
+    run_live_deployed_smoke "$@"
     ;;
   rspec)
     run_rspec "$@"
