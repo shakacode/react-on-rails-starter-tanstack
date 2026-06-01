@@ -137,12 +137,26 @@ Next.js can run RSC because it owns the JavaScript server. That is exactly the
 tradeoff.
 
 If a team moves a Rails product surface to Next.js, the React server is no
-longer Rails. The app may still call Rails APIs, but the React side must now
-reconstruct application concerns that Rails already owned: data loading
-contracts, authorization boundaries, session behavior, cache behavior, error
-handling, deployment, observability, and background job integration. Over time,
-the team either duplicates Rails concepts in the JavaScript server or turns
-Rails into an API service behind the React app.
+longer Rails. The app may still call Rails APIs, but each application concern
+Rails already owned now needs a replacement on the JavaScript side:
+
+- **Data layer.** Active Record gives way to a Node ORM such as Prisma or
+  Drizzle, and the models, validations, scopes, and associations migrate with
+  it.
+- **Background jobs.** Solid Queue, Sidekiq, or GoodJob give way to a Node job
+  runner such as BullMQ or Inngest.
+- **Mailers.** Action Mailer rendering, previews, and delivery hooks get
+  rebuilt against a JavaScript mail stack.
+- **Sessions and auth.** Devise or Rails 8's generated authentication gives way
+  to a Node auth library such as Auth.js or Lucia, including signup,
+  verification, password reset, and session rotation.
+- **Admin tooling.** ActiveAdmin, Avo, or Trestle become custom React pages, or
+  you keep a Rails app running just for them and now operate two runtimes.
+
+Around those pieces sit the cross-cutting concerns Rails also handled:
+authorization boundaries, cache behavior, error handling, deployment, and
+observability. Over time the team either duplicates these Rails concepts in the
+JavaScript server or turns Rails into an API service behind the React app.
 
 That can be correct. A greenfield product with a JavaScript-first team may
 prefer that trade. A product whose data model does not look like Rails may not
@@ -180,9 +194,9 @@ TanStack surface.
 
 The rendering-mode drawer in the dashboard is the product explanation of this
 same architecture. Its source is `RenderingModeDrawer` in
-`app/javascript/src/Dashboard/ror_components/DashboardApp.tsx`. When the launch
-screenshot from issue #37 lands, this document should add it here rather than
-linking to a missing image.
+`app/javascript/src/Dashboard/ror_components/DashboardApp.tsx`.
+
+![Rendering mode drawer](images/rendering-mode-drawer.png)
 
 ## How Pro Makes It Work
 
