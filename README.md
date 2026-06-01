@@ -12,6 +12,8 @@ instead of moving the whole app to a JavaScript server framework.
 
 **Live demo: [starter.reactonrails.com](https://starter.reactonrails.com)** —
 sign in with `demo@example.com` / `password`.
+Use the [Demo Evaluator Checklist](docs/13-demo-evaluator-checklist.md) for a
+route-by-route reviewer pass through the live surfaces.
 
 ![Rendering mode drawer](docs/images/rendering-mode-drawer.png)
 
@@ -46,12 +48,14 @@ Each route demonstrates a deliberate rendering choice, not a fallback:
 - **`/rsc-showcase`** is the public RSC + TanStack centerpiece. A bare TanStack
   Router loader fetches a React on Rails Pro RSC payload from Rails, decodes the
   Flight stream, and composes that server-streamed tree beside ordinary client
-  React. It runs on the default Rspack bundler with
-  `react-on-rails-rsc@19.0.5-rc.3`.
+  React. It now includes an in-app status panel that separates the working RSC
+  payload route from the lower-level streaming client-island limitation. It runs
+  on the default Rspack bundler with `react-on-rails-rsc@19.0.5-rc.3`.
 - **`/hello_server`** demonstrates streaming React Server Components. The demo
   keeps an interactive `LikeButton` client island inside a server-rendered
-  tree. On Rspack the route renders end to end; under the strict production CSP
-  the client island still waits on the upstream streaming nonce fix. See
+  tree, but labels that island as the separate client-reference edge case. On
+  Rspack the route renders end to end; under the strict production CSP the
+  client island still waits on the upstream streaming nonce fix. See
   [SPIKE.md](SPIKE.md) and
   [RSC Streaming And CSP Nonces](docs/11-rsc-csp-nonce-spike.md).
 - **`/dashboard`, `/settings...`, and `/projects...`** are Rails full-page
@@ -182,6 +186,7 @@ related ReactOnRails.com links so readers can jump from this starter to the
 canonical framework docs.
 
 - [Architecture](docs/01-architecture.md)
+- [Architecture Flow Diagrams](docs/14-architecture-flows.md)
 - [React on Rails + TanStack vs Inertia](docs/02-vs-inertia.md)
 - [Customizing](docs/03-customizing.md)
 - [Deploying](docs/04-deploying.md)
@@ -193,6 +198,7 @@ canonical framework docs.
 - [RSC Payloads In A TanStack Route Loader](docs/10-rsc-tanstack-loader-spike.md)
 - [RSC Streaming And CSP Nonces](docs/11-rsc-csp-nonce-spike.md)
 - [Testing Upstream Branches](docs/12-upstream-branch-testing.md)
+- [Demo Evaluator Checklist](docs/13-demo-evaluator-checklist.md)
 - [Upgrading](UPGRADING.md)
 
 ## License

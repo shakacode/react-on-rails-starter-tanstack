@@ -40,6 +40,7 @@ build, rendering, or routing behavior.
 | CI core | `bin/ci` or `bin/test ci` | RuboCop, peer checks, Ruby/JS security audits, smoke tier. | Default CI core job and local confidence before opening a PR. |
 | Full | `bin/test all` | Quality checks, smoke tier, and the full Playwright browser suite. | Browser-facing app changes and dashboard data-flow changes. |
 | Release-impacting | `bin/test release` | Full tier plus security checks, dev-mode, HMR, production boot smoke, and Rspack/RSC repro checks. | Build, rendering, routing, Rspack, React on Rails Pro, or Node renderer changes. This is intentionally slower than the default tier. |
+| Live deployed | `bin/test live-deployed [base-url]` or `pnpm run test:live-deployed -- [base-url]` | Deployed site smoke against `https://starter.reactonrails.com` by default. | Post-deploy check for the public starter. Set `EXPECTED_DEPLOYED_COMMIT=<sha-or-prefix>` when the footer must match a known release SHA. |
 
 ## Coverage Matrix
 
@@ -64,10 +65,15 @@ build, rendering, or routing behavior.
 | `/hello_server` RSC route smoke | `bin/test hello-server-rsc` or `pnpm run test:hello-server-rsc` | RSC route sentinel | Boots the static-assets dev stack against `/hello_server` and verifies the route renders the demo shell with the RSC manifests available. Use `REQUIRE_RSC_MANIFESTS=true` when intentionally requiring interactive RSC client-reference manifests. |
 | Production precompile | `bin/test production-precompile` or `RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1 REACT_ON_RAILS_STARTER_TANSTACK_DATABASE_PASSWORD=dummy bin/rails assets:precompile` | Release-impacting checks | Confirms production Rspack client, server, and RSC bundles compile. The expected Pro license warning is non-fatal. |
 | Production boot smoke | `bin/test production-boot` or `node script/production-boot-smoke.mjs` | CI, release-impacting checks | Precompiles production assets with dummy secrets, prepares production-mode databases, starts `client/node-renderer.js` from compiled output, boots Rails in `RAILS_ENV=production`, checks `/up`, signs in as `demo@example.com / password`, and checks `/projects?status=active&sort=name&dir=asc` with `X-Forwarded-Proto: https`. |
+| Live deployed smoke | `bin/test live-deployed [base-url]` or `pnpm run test:live-deployed -- [base-url]` | Deploy confidence | Runs Playwright against `https://starter.reactonrails.com` by default, signs in as `demo@example.com / password`, verifies `/dashboard`, `/projects`, `/rsc-showcase`, `/hello_server`, and checks that each route exposes the same footer commit. |
 
 ## Notes
 
 - Use `demo@example.com / password` for authenticated browser checks.
+- The live deployed smoke accepts `EXPECTED_DEPLOYED_COMMIT=<sha-or-prefix>`
+  when a release check needs to prove the public footer has the expected
+  deployed commit. Without that variable it still requires a visible footer
+  commit and fails if the checked routes disagree.
 - `bin/dev`, `bin/dev static`, and `bin/dev prod` must start `client/node-renderer.js`; otherwise prerendered TanStack routes fail with a Node renderer connection error.
 - `bin/dev static` removes generated client packs before its Procfile starts,
   then the Rspack static build cleans and rewrites `public/packs`. This keeps
