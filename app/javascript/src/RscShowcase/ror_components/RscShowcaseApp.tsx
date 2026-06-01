@@ -10,7 +10,7 @@ import {
   createRouter,
   useRouter,
 } from '@tanstack/react-router';
-import { ExternalLink, RefreshCw, Route, Server, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, ExternalLink, RefreshCw, Route, Server, ShieldCheck, TriangleAlert } from 'lucide-react';
 import RSCRoute from 'react-on-rails-pro/RSCRoute';
 import wrapServerComponentRenderer from 'react-on-rails-pro/wrapServerComponentRenderer/client';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -108,6 +108,60 @@ function ClientSignalPanel({ className }: { className?: string }) {
   );
 }
 
+function RscStatusGrid({ appProps }: { appProps: RscShowcaseAppProps }) {
+  return (
+    <section className="grid gap-4 md:grid-cols-3" aria-label="RSC capability status">
+      <Card className="border-emerald-300/70 bg-emerald-50/70 shadow-sm dark:border-emerald-800 dark:bg-emerald-950/30">
+        <CardHeader className="space-y-3">
+          <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-200">
+            <CheckCircle2 className="size-4" aria-hidden="true" />
+            <span className="text-xs font-semibold uppercase">Working</span>
+          </div>
+          <CardTitle className="text-lg tracking-normal">RSC payload route</CardTitle>
+          <CardDescription>
+            This page fetches a React on Rails Pro RSC payload from Rails through <code>RSCRoute</code>
+            and composes it inside bare TanStack Router.
+          </CardDescription>
+        </CardHeader>
+      </Card>
+
+      <Card className="border-sky-300/70 bg-sky-50/70 shadow-sm dark:border-sky-800 dark:bg-sky-950/30">
+        <CardHeader className="space-y-3">
+          <div className="flex items-center gap-2 text-sky-800 dark:text-sky-200">
+            <Server className="size-4" aria-hidden="true" />
+            <span className="text-xs font-semibold uppercase">Working</span>
+          </div>
+          <CardTitle className="text-lg tracking-normal">Streaming RSC shell</CardTitle>
+          <CardDescription>
+            <a href="/hello_server" className="font-medium text-foreground underline-offset-4 hover:underline">
+              /hello_server
+            </a>{' '}
+            remains the lower-level <code>stream_react_component</code> reference for server-rendered RSC.
+          </CardDescription>
+        </CardHeader>
+      </Card>
+
+      <Card className="border-amber-300/70 bg-amber-50/80 shadow-sm dark:border-amber-800 dark:bg-amber-950/30">
+        <CardHeader className="space-y-3">
+          <div className="flex items-center gap-2 text-amber-800 dark:text-amber-200">
+            <TriangleAlert className="size-4" aria-hidden="true" />
+            <span className="text-xs font-semibold uppercase">Limited</span>
+          </div>
+          <CardTitle className="text-lg tracking-normal">Streaming client island</CardTitle>
+          <CardDescription>
+            The LikeButton on <code>/hello_server</code> is intentionally called out as a separate
+            client-reference edge case while the upstream streaming hydration path settles.
+          </CardDescription>
+        </CardHeader>
+      </Card>
+
+      <p className="sr-only">
+        RSC manifests are {appProps.rscAvailable ? 'available' : 'not available'} for this build.
+      </p>
+    </section>
+  );
+}
+
 function RspackFallback() {
   return (
     <Alert className="border-amber-300 bg-amber-50 text-amber-950 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-100">
@@ -190,12 +244,13 @@ function ShowcasePage({ appProps, routeData }: { appProps: RscShowcaseAppProps; 
             </Badge>
           </div>
           <h1 className="mt-5 max-w-4xl text-4xl font-semibold tracking-normal text-balance sm:text-5xl">
-            Server-streamed RSC composed inside a TanStack route on Rails
+            Working RSC payloads with the client-reference limit called out
           </h1>
           <p className="mt-4 max-w-3xl text-lg text-muted-foreground">
             The route loader chooses the server component and props, then React on Rails Pro&apos;s
-            RSCRoute helper fetches and renders the payload beside normal client React without adding
-            TanStack Start, Vite, Hotwire, or Stimulus.
+            RSCRoute helper fetches and renders the payload beside normal client React. The lower-level
+            streaming demo stays separate so its client island does not get confused with the working
+            RSC payload path.
           </p>
         </div>
 
@@ -229,6 +284,8 @@ function ShowcasePage({ appProps, routeData }: { appProps: RscShowcaseAppProps; 
         </Card>
       </header>
 
+      <RscStatusGrid appProps={appProps} />
+
       {appProps.rscAvailable && routeData ? (
         <div className="grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_22rem]">
           <Suspense fallback={<LoadingPanel />}>
@@ -241,7 +298,7 @@ function ShowcasePage({ appProps, routeData }: { appProps: RscShowcaseAppProps; 
       )}
 
       <footer className="flex flex-col gap-2 border-t border-border pt-5 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-        <span>Rails serves the route; React on Rails Pro streams the RSC payload.</span>
+        <span>Rails serves this route; React on Rails Pro fetches the RSC payload; /hello_server keeps the streaming reference.</span>
         {appProps.build.commitLabel ? (
           <span>
             Commit{' '}
