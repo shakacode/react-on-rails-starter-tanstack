@@ -23,6 +23,10 @@ Shakapacker remains on `10.1.0` because public `11.1.0` artifacts are not visibl
 
 ## System Diagram
 
+The diagram below shows ownership at a high level. The request, route,
+rendering, and asset build handoffs are expanded in
+[Architecture Flow Diagrams](13-architecture-flows.md).
+
 ```mermaid
 flowchart TB
   Browser["Browser request"] --> Rails["Rails app server"]
