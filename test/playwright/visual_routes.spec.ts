@@ -80,7 +80,7 @@ test.describe('route visual screenshots @visual', () => {
         path: '/rsc-showcase',
         screenshot: 'public-rsc-showcase.png',
         assertReady: async (routePage) => {
-          await expect(routePage.getByRole('heading', { name: 'Server-streamed RSC composed inside a TanStack route on Rails' })).toBeVisible();
+          await expect(routePage.getByRole('heading', { name: 'Working RSC payloads with the client-reference limit called out' })).toBeVisible();
           await expect(routePage.getByText(/RSC streamed by Rails|RSC manifests are not available/)).toBeVisible();
         },
       },
