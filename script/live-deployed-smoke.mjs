@@ -238,8 +238,10 @@ async function smokeProjects(page) {
 
 async function smokeRscShowcase(page) {
   const response = await gotoRoute(page, '/rsc-showcase');
+  const headingPattern = /Server-streamed RSC composed inside a TanStack route on Rails|Working RSC payloads with the client-reference limit called out/;
+
   await waitForVisible(
-    page.getByRole('heading', { name: 'Server-streamed RSC composed inside a TanStack route on Rails' }),
+    page.locator('h1').filter({ hasText: headingPattern }),
     'RSC showcase heading',
   );
   await waitForVisible(page.getByRole('navigation', { name: 'RSC showcase navigation' }), 'RSC showcase navigation');
