@@ -12,6 +12,8 @@ instead of moving the whole app to a JavaScript server framework.
 
 **Live demo: [starter.reactonrails.com](https://starter.reactonrails.com)** —
 sign in with `demo@example.com` / `password`.
+Use the [Demo Evaluator Checklist](docs/13-demo-evaluator-checklist.md) for a
+route-by-route reviewer pass through the live surfaces.
 
 ![Rendering mode drawer](docs/images/rendering-mode-drawer.png)
 
@@ -193,6 +195,7 @@ canonical framework docs.
 - [RSC Payloads In A TanStack Route Loader](docs/10-rsc-tanstack-loader-spike.md)
 - [RSC Streaming And CSP Nonces](docs/11-rsc-csp-nonce-spike.md)
 - [Testing Upstream Branches](docs/12-upstream-branch-testing.md)
+- [Demo Evaluator Checklist](docs/13-demo-evaluator-checklist.md)
 - [Upgrading](UPGRADING.md)
 
 ## License
