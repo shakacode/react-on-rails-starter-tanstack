@@ -45,8 +45,19 @@ apps:
   react-on-rails-starter-tanstack-review-pr:
     <<: *common
     match_if_app_name_starts_with: true
-    # Keep setup-app image-free for the first review-app deploy. Database setup
-    # runs from release_script.sh after GitHub Actions builds the Docker image.
+    setup_app_templates:
+      - app-review
+      - rails
+      - worker
+      - renderer
+    additional_workloads: []
+    shared_secret_grants:
+      - name: database
+        secret_name: react-on-rails-starter-tanstack-staging-pg
+        policy_name: react-on-rails-starter-tanstack-staging-database-policy
+    # Uses the staging shared Postgres GVC instead of creating per-review
+    # Postgres workloads. Database setup runs from release_script.sh after
+    # GitHub Actions builds the Docker image.
 
   react-on-rails-starter-tanstack-production:
     <<: *production
