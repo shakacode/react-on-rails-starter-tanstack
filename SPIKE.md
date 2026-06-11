@@ -15,7 +15,7 @@ The remaining limitation is separate from the bundler: `/hello_server`'s client
 island still waits on the upstream React on Rails Pro streaming CSP nonce fix in
 strict production CSP mode. See `docs/11-rsc-csp-nonce-spike.md`.
 
-The app was bootstrapped with `create-react-on-rails-app --rsc --rspack --package-manager pnpm` and the launch stack targets React on Rails Pro `17.0.0-rc.0` with Shakapacker `10.1.0`. Shakapacker stays on `10.1.0` because public `11.1.0` artifacts are not visible in the registries consumed by the starter. The Rails/Rspack/React on Rails Pro setup passes `react_on_rails:doctor` with the expected warning that both Rspack and Webpack configs are present.
+The app was bootstrapped with `create-react-on-rails-app --rsc --rspack --package-manager pnpm` and the current release stack targets React on Rails Pro `17.0.0-rc.2` with Shakapacker `10.1.0`. Shakapacker stays on `10.1.0` because public `11.1.0` artifacts are not visible in the registries consumed by the starter. The Rails/Rspack/React on Rails Pro setup passes `react_on_rails:doctor` with the expected warning that both Rspack and Webpack configs are present.
 
 ## Validation Goals
 
@@ -27,7 +27,7 @@ The app was bootstrapped with `create-react-on-rails-app --rsc --rspack --packag
 ## What Worked
 
 - Rails 8.1 app scaffolded with PostgreSQL and SolidQueue.
-- React on Rails and React on Rails Pro launch stack: `17.0.0.rc.0`.
+- React on Rails and React on Rails Pro release stack: `17.0.0.rc.2`.
 - Shakapacker launch stack: `10.1.0`.
 - Rspack builds complete successfully and emit the RSC client-reference
   manifests with `react-on-rails-rsc@19.0.5-rc.2`.
@@ -45,10 +45,10 @@ manifests present.
 Current stance:
 
 - Keep Rspack as the bundler.
-- Keep the React on Rails Pro `17.0.0-rc.0` and Shakapacker `10.1.0` launch stack.
+- Keep the React on Rails Pro `17.0.0-rc.2` and Shakapacker `10.1.0` release stack.
 - Keep the Rspack/RSC client boundary repro in `pnpm run repro:rspack-rsc`.
 - Keep direct Rspack packages aligned with the Shakapacker Rspack 2 adapter: `@rspack/core` / `@rspack/cli` `2.0.4` and `@rspack/dev-server` `2.0.1`.
-- Keep `react-on-rails-rsc` on `19.0.5-rc.2` or newer when requiring Rspack RSC
+- Keep `react-on-rails-rsc` on `19.0.5-rc.7` or newer when requiring Rspack RSC
   client-reference manifests.
 
 Impact:
