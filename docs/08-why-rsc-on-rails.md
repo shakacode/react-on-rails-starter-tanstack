@@ -226,7 +226,7 @@ inside one Rails app.
 ## Limitations And Current State
 
 This starter intentionally keeps Rspack as the local and deploy default.
-`react-on-rails-rsc@19.0.5-rc.3` provides the Rspack plugin path that emits the
+`react-on-rails-rsc@19.0.5-rc.7` provides the Rspack plugin path that emits the
 RSC client-reference manifests required by React on Rails Pro. That status is
 tracked in [SPIKE.md](../SPIKE.md), and the small reproduction remains available
 through `pnpm run repro:rspack-rsc`.

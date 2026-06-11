@@ -10,19 +10,15 @@ RSpec.describe "Content Security Policy", type: :request do
 
       def content_security_policy_nonce(*) = "streaming-test-nonce"
     end
-    render_options = Struct.new(
-      :client_props,
-      :dom_id,
-      :react_component_name,
-      :trace,
-      :store_dependencies,
-      keyword_init: true
-    ).new(
-      client_props: { name: "React on Rails Pro" },
-      dom_id: "HelloServer-react-component-1",
+    render_options = ReactOnRails::ReactComponent::RenderOptions.new(
       react_component_name: "HelloServer",
-      trace: false,
-      store_dependencies: nil
+      options: {
+        id: "HelloServer-react-component-1",
+        props: { name: "React on Rails Pro" },
+        render_mode: :html_streaming,
+        store_dependencies: nil,
+        trace: false
+      }
     )
     helper = helper_class.with_empty_template_cache.new(ActionView::LookupContext.new([]), {}, nil)
 
