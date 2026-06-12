@@ -123,7 +123,7 @@ GEM
       logger (~> 1.5)
     concurrent-ruby (1.3.6)
     connection_pool (3.0.2)
-    console (1.35.1)
+    console (1.36.0)
       fiber-annotation
       fiber-local (~> 1.1)
       json
@@ -170,7 +170,7 @@ GEM
     jbuilder (2.15.1)
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
-    json (2.19.7)
+    json (2.19.9)
     jwt (3.2.0)
       base64
     kamal (2.11.0)
@@ -215,7 +215,7 @@ GEM
       drb (~> 2.0)
       prism (~> 1.5)
     msgpack (1.8.0)
-    net-imap (0.6.4)
+    net-imap (0.6.4.1)
       date
       net-protocol
     net-pop (0.1.2)
@@ -272,7 +272,7 @@ GEM
       protocol-hpack (~> 1.4)
       protocol-http (~> 0.62)
     protocol-url (0.4.0)
-    psych (5.3.1)
+    psych (5.4.0)
       date
       stringio
     public_suffix (7.0.5)
@@ -328,14 +328,14 @@ GEM
       erb
       psych (>= 4.0.0)
       tsort
-    react_on_rails (17.0.0.rc.2)
+    react_on_rails (17.0.0.rc.3)
       addressable
       connection_pool
       execjs (~> 2.5)
       rails (>= 5.2)
       rainbow (~> 3.0)
       shakapacker (>= 6.0)
-    react_on_rails_pro (17.0.0.rc.2)
+    react_on_rails_pro (17.0.0.rc.3)
       addressable
       async (>= 2.29)
       async-http (~> 0.95)
@@ -343,7 +343,7 @@ GEM
       io-endpoint (~> 0.17.0)
       jwt (>= 2.5, < 4)
       rainbow
-      react_on_rails (= 17.0.0.rc.2)
+      react_on_rails (= 17.0.0.rc.3)
     regexp_parser (2.12.0)
     reline (0.6.3)
       io-console (~> 0.5)
@@ -453,7 +453,7 @@ GEM
       bindex (>= 0.4.0)
       railties (>= 8.0.0)
     websocket (1.2.11)
-    websocket-driver (0.8.0)
+    websocket-driver (0.8.1)
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -491,8 +491,8 @@ DEPENDENCIES
   puma (>= 5.0)
   rack-attack (~> 6.8)
   rails (~> 8.1.3)
-  react_on_rails (= 17.0.0.rc.2)
-  react_on_rails_pro (= 17.0.0.rc.2)
+  react_on_rails (= 17.0.0.rc.3)
+  react_on_rails_pro (= 17.0.0.rc.3)
   rspec-rails (~> 8.0)
   rubocop-rails-omakase
   selenium-webdriver
