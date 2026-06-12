@@ -1,7 +1,7 @@
 # Tested Modes
 
 This starter keeps the TanStack dashboard on Rspack and the launch RC stack:
-React on Rails Pro `17.0.0-rc.2` with Shakapacker `10.1.0`.
+React on Rails Pro `17.0.0-rc.3` with Shakapacker `10.1.0`.
 Shakapacker is intentionally not documented as `11.1.0` because public
 `11.1.0` artifacts are not visible in the registries consumed by the starter.
 Rspack is the default local and deploy bundler in the checked-in matrix.

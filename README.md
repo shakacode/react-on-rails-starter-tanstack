@@ -83,7 +83,7 @@ via `SHAKAPACKER_ASSETS_BUNDLER=webpack`.
 
 | Component | Version |
 | --- | --- |
-| React on Rails / Pro | `17.0.0.rc.2` |
+| React on Rails / Pro | `17.0.0.rc.3` |
 | Shakapacker / Shakapacker Rspack | `10.1.0` |
 | React | `19.0.6` |
 | Rails | `8.1.x` |
