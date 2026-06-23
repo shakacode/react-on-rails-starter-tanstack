@@ -98,6 +98,9 @@ importers:
       react-on-rails-rsc:
         specifier: 19.2.0-rc.3
         version: 19.2.0-rc.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.107.2)
+      react-server-dom-webpack:
+        specifier: 19.2.7
+        version: 19.2.7(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.107.2)
       rspack-manifest-plugin:
         specifier: 5.2.1
         version: 5.2.1(@rspack/core@2.0.4)

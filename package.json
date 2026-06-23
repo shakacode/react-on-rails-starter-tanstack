@@ -47,6 +47,7 @@
     "react-on-rails-pro": "17.0.0-rc.6",
     "react-on-rails-pro-node-renderer": "17.0.0-rc.6",
     "react-on-rails-rsc": "19.2.0-rc.3",
+    "react-server-dom-webpack": "19.2.7",
     "rspack-manifest-plugin": "5.2.1",
     "sass": "1.99.0",
     "sass-loader": "16.0.7",
