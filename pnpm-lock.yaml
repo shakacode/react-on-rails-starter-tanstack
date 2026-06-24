@@ -91,13 +91,13 @@ importers:
         version: 19.2.7(react@19.2.7)
       react-on-rails-pro:
         specifier: 17.0.0-rc.6
-        version: 17.0.0-rc.6(@tanstack/react-router@1.170.16(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react-on-rails-rsc@19.2.0-rc.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.107.2))(react@19.2.7)
+        version: 17.0.0-rc.6(@tanstack/react-router@1.170.16(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react-on-rails-rsc@19.2.0-rc.4(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.107.2))(react@19.2.7)
       react-on-rails-pro-node-renderer:
         specifier: 17.0.0-rc.6
         version: 17.0.0-rc.6
       react-on-rails-rsc:
-        specifier: 19.2.0-rc.3
-        version: 19.2.0-rc.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.107.2)
+        specifier: 19.2.0-rc.4
+        version: 19.2.0-rc.4(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.107.2)
       react-server-dom-webpack:
         specifier: 19.2.7
         version: 19.2.7(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.107.2)
@@ -2980,8 +2980,8 @@ packages:
       react-on-rails-rsc:
         optional: true
 
-  react-on-rails-rsc@19.2.0-rc.3:
-    resolution: {integrity: sha512-lthw7rRbPdUOeZQMVR2rH1FdA3sp7wiZfMljmld1c/2epYtA7SYLLhg7jTn9FcVEIjWLZiyzC7GkNrNnLB4IOQ==}
+  react-on-rails-rsc@19.2.0-rc.4:
+    resolution: {integrity: sha512-Jm9822vmAvXPbQ3gyx8B5RwbGcmxEXZ1eMEoVxd3rsnnxuZ7B35dr11Ygy2FBPPq4v5sJa/PFWGir/m8Cg1b9Q==}
     peerDependencies:
       react: ^19.2.7
       react-dom: ^19.2.7
@@ -6411,16 +6411,16 @@ snapshots:
       lockfile: 1.0.4
       pino: 10.3.1
 
-  react-on-rails-pro@17.0.0-rc.6(@tanstack/react-router@1.170.16(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react-on-rails-rsc@19.2.0-rc.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.107.2))(react@19.2.7):
+  react-on-rails-pro@17.0.0-rc.6(@tanstack/react-router@1.170.16(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react-on-rails-rsc@19.2.0-rc.4(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.107.2))(react@19.2.7):
     dependencies:
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
       react-on-rails: 17.0.0-rc.6(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
     optionalDependencies:
       '@tanstack/react-router': 1.170.16(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      react-on-rails-rsc: 19.2.0-rc.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.107.2)
+      react-on-rails-rsc: 19.2.0-rc.4(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.107.2)
 
-  react-on-rails-rsc@19.2.0-rc.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.107.2):
+  react-on-rails-rsc@19.2.0-rc.4(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.107.2):
     dependencies:
       acorn-loose: 8.5.2
       neo-async: 2.6.2
