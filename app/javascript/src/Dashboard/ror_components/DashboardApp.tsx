@@ -80,6 +80,10 @@ type DashboardAppProps = {
     projectsPath: string;
     metricsProjectId: number | null;
   };
+  initialProjects: {
+    params: { status: string; sort: string; dir: 'asc' | 'desc'; page: number };
+    response: ProjectsResponse;
+  } | null;
   links: {
     dashboard: string;
     settings: string;
@@ -835,11 +839,24 @@ function ProjectsTable({
   updateSearch: (next: Partial<DashboardSearch>) => void;
 }) {
   // REFERENCE PATTERN: tanstack-table — see AGENTS.md
-  const { api } = useDashboardProps();
+  const { api, initialProjects } = useDashboardProps();
   const status = search.status ?? '';
   const sort = search.sort ?? 'last_activity_at';
   const dir = search.dir ?? 'desc';
   const page = search.page ?? 1;
+
+  // SSR seed (see `ssr-query-hydration` in DashboardController): use the
+  // Rails-rendered first page as initialData only when it matches this query's
+  // key, so first paint shows rows with no spinner. TanStack Query owns
+  // freshness from there. Any other filter/sort/page fetches normally.
+  const initialData =
+    initialProjects &&
+    initialProjects.params.status === status &&
+    initialProjects.params.sort === sort &&
+    initialProjects.params.dir === dir &&
+    initialProjects.params.page === page
+      ? initialProjects.response
+      : undefined;
 
   const projectsQuery = useQuery({
     queryKey: ['projects', status, sort, dir, page],
@@ -854,6 +871,7 @@ function ProjectsTable({
 
       return apiFetch<ProjectsResponse>(`${api.projectsPath}?${params.toString()}`);
     },
+    initialData,
   });
 
   const columns = useMemo<ColumnDef<Project>[]>(

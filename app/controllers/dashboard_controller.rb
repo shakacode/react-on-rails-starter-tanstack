@@ -12,6 +12,7 @@ class DashboardController < AuthenticatedController
         projectsPath: api_projects_path,
         metricsProjectId: Current.user.projects.recent.first&.id
       },
+      initialProjects: initial_projects,
       links: {
         dashboard: dashboard_path,
         settings: settings_path,
@@ -27,4 +28,32 @@ class DashboardController < AuthenticatedController
       }
     }
   end
+
+  private
+
+    # REFERENCE PATTERN: ssr-query-hydration — see AGENTS.md
+    # SSR seed for the TanStack Query projects table. per_page: 8 mirrors
+    # ProjectsTable's client query so the seeded cache entry matches its query
+    # key (['projects', status, sort, dir, page]) exactly. ProjectsQuery keeps the
+    # filtering/sorting/pagination identical to Api::ProjectsController, so the
+    # seed equals what a later refetch returns.
+    def initial_projects
+      query = ProjectsQuery.new(
+        Current.user.projects,
+        status: params[:status],
+        sort: params[:sort],
+        dir: params[:dir],
+        page: params[:page],
+        per_page: 8
+      )
+      result = query.result
+
+      {
+        params: query.normalized_params,
+        response: {
+          projects: result[:records].map { |project| ProjectSerializer.one(project) },
+          meta: result[:meta]
+        }
+      }
+    end
 end
