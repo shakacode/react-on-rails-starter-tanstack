@@ -12,7 +12,7 @@ class DashboardController < AuthenticatedController
         projectsPath: api_projects_path,
         metricsProjectId: Current.user.projects.recent.first&.id
       },
-      initialProjects: initial_projects,
+      initialProjects: projects_table_initial_load? ? initial_projects : nil,
       links: {
         dashboard: dashboard_path,
         settings: settings_path,
@@ -32,6 +32,14 @@ class DashboardController < AuthenticatedController
   private
 
     # REFERENCE PATTERN: ssr-query-hydration — see AGENTS.md
+    # Only seed on the initial full-page load of the /projects table route. Seeding
+    # on other dashboard routes (/dashboard, /projects/new, /settings) would let a
+    # mutation made before ProjectsTable ever mounts leave a stale seed that the
+    # table later adopts as fresh initialData (30s staleTime). See PR #174 review.
+    def projects_table_initial_load?
+      request.path == projects_path
+    end
+
     # SSR seed for the TanStack Query projects table. per_page: 8 mirrors
     # ProjectsTable's client query so the seeded cache entry matches its query
     # key (['projects', status, sort, dir, page]) exactly. ProjectsQuery keeps the

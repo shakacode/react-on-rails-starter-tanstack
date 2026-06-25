@@ -140,7 +140,9 @@ Rules:
   via `ProjectsQuery`, and consume it as `useQuery({ initialData })` in
   `ProjectsTable` only when the seeded params match the live query key. Keep the
   seed's `per_page` (8) and ordering identical to the client query, or the seed is
-  discarded on first render. Shared `ProjectsQuery` + `ProjectSerializer` guarantee
+  discarded on first render. Gate the seed to the `/projects` table route
+  (`request.path == projects_path`) so a mutation made before the table mounts
+  cannot leave a stale seed for a later `/projects` visit. Shared `ProjectsQuery` + `ProjectSerializer` guarantee
   the seed equals a later refetch.
 
 ## 6. Mailer Patterns

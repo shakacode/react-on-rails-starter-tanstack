@@ -40,4 +40,14 @@ RSpec.describe "Dashboard projects SSR seed", type: :request do
     expect(response).to have_http_status(:ok)
     expect(response.body).not_to include("Other user project")
   end
+
+  it "does not seed projects on non-table dashboard routes" do
+    create(:project, user:, name: "Unseeded Project")
+
+    get dashboard_path
+
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include("TANSTACK_SSR_SHELL")
+    expect(response.body).not_to include("Unseeded Project")
+  end
 end
