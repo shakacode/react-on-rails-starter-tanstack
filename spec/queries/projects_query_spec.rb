@@ -26,7 +26,7 @@ RSpec.describe ProjectsQuery do
       create(:project, :active, user:, name: "Active one")
       create(:project, :paused, user:, name: "Paused one")
 
-      expect(names(ProjectsQuery.new(user.projects, status: "active").result)).to eq(["Active one"])
+      expect(names(ProjectsQuery.new(user.projects, status: "active").result)).to eq([ "Active one" ])
       expect(ProjectsQuery.new(user.projects, status: "active").normalized_params[:status]).to eq("active")
 
       bogus = ProjectsQuery.new(user.projects, status: "bogus")
@@ -77,7 +77,7 @@ RSpec.describe ProjectsQuery do
       )
       result = ProjectsQuery.from_params(user.projects, params).result
 
-      expect(names(result)).to eq(["Only paused"])
+      expect(names(result)).to eq([ "Only paused" ])
       expect(result[:meta][:per_page]).to eq(5)
     end
   end
