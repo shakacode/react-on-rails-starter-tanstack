@@ -125,7 +125,7 @@ Canonical examples:
   mutations, invalidation, loading states, and error states.
 
 Reference marker IDs: `json-api-controller`, `csrf-json-fetch`,
-`query-client-defaults`.
+`query-client-defaults`, `ssr-query-hydration`.
 
 Rules:
 
@@ -136,6 +136,14 @@ Rules:
   the user-facing workflow when changing dashboard data flows.
 - Keep URL state and server-backed table state in sync for filter, sort, and
   pagination behavior.
+- SSR-seed the projects table from `DashboardController#show` (`initial_projects`)
+  via `ProjectsQuery`, and consume it as `useQuery({ initialData })` in
+  `ProjectsTable` only when the seeded params match the live query key. Keep the
+  seed's `per_page` (8) and ordering identical to the client query, or the seed is
+  discarded on first render. Gate the seed to the `/projects` table route
+  (`request.path == projects_path`) so a mutation made before the table mounts
+  cannot leave a stale seed for a later `/projects` visit. Shared `ProjectsQuery` + `ProjectSerializer` guarantee
+  the seed equals a later refetch.
 
 ## 6. Mailer Patterns
 
@@ -390,6 +398,7 @@ exactly one source comment.
 | `form` | `app/views/projects/_form.html.erb` |
 | `csrf-json-fetch` | `app/javascript/lib/apiFetch.ts` |
 | `query-client-defaults` | `app/javascript/lib/queryClient.ts` |
+| `ssr-query-hydration` | `app/controllers/dashboard_controller.rb` |
 | `mailer` | `app/mailers/email_verification_mailer.rb` |
 | `mailer-preview` | `test/mailers/previews/email_verification_mailer_preview.rb` |
 | `tanstack-table` | `app/javascript/src/Dashboard/ror_components/DashboardApp.tsx` |
