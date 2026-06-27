@@ -92,20 +92,20 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    database: react_on_rails_starter_tanstack_production
+    database: <%= ENV.fetch("DATABASE_NAME", "react_on_rails_starter_tanstack_production") %>
     username: react_on_rails_starter_tanstack
     host: <%= ENV.fetch("DATABASE_HOST", "localhost") %>
     port: <%= ENV.fetch("DATABASE_PORT", 5432) %>
     password: <%= ENV["REACT_ON_RAILS_STARTER_TANSTACK_DATABASE_PASSWORD"] %>
   cache:
     <<: *primary_production
-    database: react_on_rails_starter_tanstack_production_cache
+    database: <%= ENV.fetch("CACHE_DATABASE_NAME", "react_on_rails_starter_tanstack_production_cache") %>
     migrations_paths: db/cache_migrate
   queue:
     <<: *primary_production
-    database: react_on_rails_starter_tanstack_production_queue
+    database: <%= ENV.fetch("QUEUE_DATABASE_NAME", "react_on_rails_starter_tanstack_production_queue") %>
     migrations_paths: db/queue_migrate
   cable:
     <<: *primary_production
-    database: react_on_rails_starter_tanstack_production_cable
+    database: <%= ENV.fetch("CABLE_DATABASE_NAME", "react_on_rails_starter_tanstack_production_cable") %>
     migrations_paths: db/cable_migrate

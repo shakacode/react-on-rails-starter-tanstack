@@ -1,10 +1,10 @@
 # Control Plane Handoff
 
-Last updated: 2026-05-28 UTC.
+Last updated: 2026-06-04 UTC.
 
 This handoff summarizes the Control Plane Flow rollout for this repo after the
 original [PR #11](https://github.com/shakacode/react-on-rails-starter-tanstack/pull/11)
-merge and the follow-up cpflow 5.0.4 release maintenance.
+merge and the follow-up cpflow 5.1.1 release maintenance.
 
 ## Related React On Rails Docs
 
@@ -66,12 +66,14 @@ gh workflow run cpflow-deploy-staging.yml
 The public demo account (`demo@example.com / password`) is seeded only when
 `ALLOW_DEMO_SEED=true` is set on the staging GVC; see
 [04-deploying.md](04-deploying.md). The production org
-(`shakacode-open-source-examples-production`) does not run this starter.
+(`shakacode-open-source-examples-production`) does not run this starter. The
+production promotion parity check ignores `ALLOW_DEMO_SEED` by default so this
+staging-only flag should not be copied to production.
 
 ## Current State
 
 - `main` includes the cpflow GitHub Actions wrappers pinned to
-  `shakacode/control-plane-flow@v5.0.4`.
+  `shakacode/control-plane-flow@v5.1.1`.
 - PR #11 merged with squash commit
   `85a2bff7cbeb8d89ae39ca1d9f1d4a64ffd49964`.
 - The PR review app deploy passed on commit
@@ -96,7 +98,7 @@ PR #11 did four things:
 - Updated generated cpflow GitHub Action wrappers and docs from `v5.0.1` to
   `v5.0.2`.
 - Follow-up release maintenance updates the wrappers and current examples to
-  `v5.0.4` with `cpflow update-github-actions`.
+  `v5.1.1` with `cpflow update-github-actions`.
 - Documented the normal release-tag pinning workflow, plus the stricter
   full-SHA pinning path for organizations that require immutable GitHub Action
   refs.
@@ -149,6 +151,18 @@ Review apps use:
 - Review app prefix: `react-on-rails-starter-tanstack-review-pr`
 - Review app GVC shape:
   `react-on-rails-starter-tanstack-review-pr-<PR number>`
+- Shared database GVC/workload:
+  `staging-shared-postgres` / `postgres`, with internal network access already
+  open from generated review-app GVCs.
+- Review database names:
+  `{{APP_NAME}}_production`, `{{APP_NAME}}_production_cache`,
+  `{{APP_NAME}}_production_queue`, and `{{APP_NAME}}_production_cable` inside
+  the shared Postgres server.
+- Review app deletion:
+  the review app config intentionally has no `pre_deletion` database hook so
+  PR-close and stale cleanup can delete GVCs even when the first deploy failed
+  before any runnable image existed. Use a separate trusted shared-database
+  maintenance task if logical review database cleanup is needed.
 
 For review apps, the normal GitHub setup is only:
 
@@ -228,14 +242,14 @@ by the local Ruby gem alone. This repo intentionally uses release tags for the
 standard demo path:
 
 ```yaml
-uses: shakacode/control-plane-flow/.github/workflows/<workflow>.yml@v5.0.4
+uses: shakacode/control-plane-flow/.github/workflows/<workflow>.yml@v5.1.1
 ```
 
 Leave `CPFLOW_VERSION` unset for normal operation. If it is set, it must match
 the workflow tag without the leading `v`, for example:
 
 ```text
-CPFLOW_VERSION=5.0.4
+CPFLOW_VERSION=5.1.1
 ```
 
 For organizations that require immutable action refs, pin to the commit SHA

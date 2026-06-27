@@ -67,8 +67,9 @@ For production promotion later, configure a protected GitHub Environment named
 Protect the `production` environment with required reviewers, enable prevent
 self-review, and consider disabling administrator bypass. Only release managers
 or similarly trusted maintainers should be able to approve the promotion job.
-The generated caller passes `production_environment: production`; the upstream
-reusable workflow runs its production job in that environment, so GitHub injects
+Production promotion runs as a normal caller-repo workflow job with
+`environment: production`, then checks out the pinned `control-plane-flow`
+release for shared actions. That caller-owned job shape lets GitHub inject
 `CPLN_TOKEN_PRODUCTION` only after the environment approval gate passes. The
 production token is not exposed to ordinary review-app or staging runs.
 
@@ -90,7 +91,8 @@ Advanced optional variables:
 | --- | --- |
 | `REVIEW_APP_DEPLOYING_ICON_URL` | Cosmetic custom animated icon for review-app comments. Ignore this for the standard setup. |
 | `CPLN_CLI_VERSION` | Pin only when Control Plane CLI compatibility requires it. |
-| `CPFLOW_VERSION` | Runtime gem override. Normally leave unset. If set, it must match the workflow tag without the leading `v`, such as `5.0.4`. |
+| `CPFLOW_VERSION` | Runtime gem override. Normally leave unset. If set, it must match the workflow tag without the leading `v`, such as `5.1.1`. |
+| `PRODUCTION_ENV_PARITY_IGNORED_NAMES` | Space-separated staging-only GVC/workload env names ignored by production promotion parity checks. Defaults to `ALLOW_DEMO_SEED`. |
 
 ## Control Plane Setup
 
@@ -114,6 +116,11 @@ For review-app testing, the standard setup is:
 | Staging/review org | `shakacode-open-source-examples-staging` | The `CPLN_TOKEN_STAGING` service account must be able to create and update GVCs, workloads, images, identities, policies, and secrets in this org. |
 | Review app prefix | `react-on-rails-starter-tanstack-review-pr` | Review apps are named `react-on-rails-starter-tanstack-review-pr-<PR number>`. This is inferred from `.controlplane/controlplane.yml`. |
 | Review app secret dictionary | `react-on-rails-starter-tanstack-review-pr-secrets` | Shared by generated review apps because the PR app entry uses `match_if_app_name_starts_with: true`. |
+| Review database GVC/workload | `staging-shared-postgres` / `postgres` | Review apps use the existing shared staging Postgres workload instead of creating per-review Postgres resources. |
+| Review database names | `{{APP_NAME}}_production`, `{{APP_NAME}}_production_cache`, `{{APP_NAME}}_production_queue`, `{{APP_NAME}}_production_cable` | Keep each review app isolated inside the shared Postgres server. |
+| Review database secret dictionary | `react-on-rails-starter-tanstack-staging-pg` | Referenced from the review app template with `{{SHARED_SECRET_DATABASE}}` for database credentials. |
+| Review database policy | `react-on-rails-starter-tanstack-staging-database-policy` | Must exist before review app setup/deploy and must target only `react-on-rails-starter-tanstack-staging-pg`. The existing `react-on-rails-starter-tanstack-staging-pg-access` policy also targets `pg-script`, so it is not valid for `shared_secret_grants`. |
+| Review database network access | Shared `postgres` workload firewall | Must already allow internal traffic from generated review-app GVCs to `postgres.staging-shared-postgres.cpln.local:5432`; the review-app templates do not create or update the shared database workload. |
 
 For staging deploys later, also use:
 
@@ -149,9 +156,11 @@ For production promotion later, use a separate production org and token:
 Bootstrap production the same way before the first promotion, using the
 production org and production-only secret values.
 
-The demo PostgreSQL workload template creates app-scoped resources for
-review/staging demos: `<app-name>-pg`, `<app-name>-pg-script`,
-`<app-name>-pg-access`, `<app-name>-pg-vs`, and `<app-name>-pg-identity`.
+The demo PostgreSQL workload template still creates app-scoped resources for
+persistent staging/production-style apps: `<app-name>-pg`,
+`<app-name>-pg-script`, `<app-name>-pg-access`, `<app-name>-pg-vs`, and
+`<app-name>-pg-identity`. Review apps do not apply that template; they use
+`staging-shared-postgres` and the `database` shared secret grant instead.
 Replace the placeholder password before serious staging testing. For real
 production, prefer a managed database and update the `DATABASE_*` environment
 values accordingly.
@@ -163,12 +172,25 @@ with `NO_IMAGE_AVAILABLE` and block the workflow. Database preparation belongs
 in `.controlplane/release_script.sh`, which runs after the Docker image is
 built and before `cpflow deploy-image` updates the workloads.
 
+Review app deletion intentionally does not run a `pre_deletion` database hook.
+A failed first deploy can create the GVC before any runnable image exists, and
+delete/stale-cleanup must still be able to remove that GVC. Use a separate
+trusted shared-database maintenance task if logical review database cleanup is
+needed.
+
+The shared database credential is intentionally reused for the low-cost review
+app pattern. Only run trusted same-repo PR code with that shared credential; use
+per-review database roles or per-review Postgres resources for untrusted forks
+or stricter database-level isolation.
+
 Public demo review/staging apps can opt into the demo account by setting
 `ALLOW_DEMO_SEED=true` on the app GVC before deploy. The release script will
 then run `bin/rails db:seed` after `db:prepare`, creating the verified
 `demo@example.com / password` user. Leave `ALLOW_DEMO_SEED` unset for normal
 production-style deploys; the default seed file is intentionally a no-op in
-production unless the flag is explicitly set.
+production unless the flag is explicitly set. Production promotion ignores
+`ALLOW_DEMO_SEED` by default when checking staging/production environment
+variable parity.
 
 ## Control Plane App Secrets
 
@@ -206,7 +228,7 @@ bin/test-cpflow-github-flow ruby /path/to/control-plane-flow/bin/cpflow
 
 This repo is locked at runtime by the generated workflow wrapper GitHub ref, not
 by the gem alone. The wrappers currently point their `uses:` refs at the
-upstream `control-plane-flow` release tag `v5.0.4`. GitHub loads the reusable
+upstream `control-plane-flow` release tag `v5.1.1`. GitHub loads the reusable
 workflow from that tag, and the upstream workflow checks out its matching shared
 actions from the same workflow context. Downstream wrappers should not pass a
 duplicate `control_plane_flow_ref` input.
@@ -222,7 +244,7 @@ To move to a newer stable `cpflow` release when generated templates changed:
 
 1. Install or bundle the released `cpflow` gem.
 2. Run `cpflow update-github-actions`.
-3. Verify the generated wrappers point to the matching tag, such as `v5.0.4`.
+3. Verify the generated wrappers point to the matching tag, such as `v5.1.1`.
 4. Leave `CPFLOW_VERSION` unset, or set it to the same RubyGems version without
    the leading `v`. For prereleases, use dot syntax such as `5.0.0.rc.1`.
 5. Run `bin/test-cpflow-github-flow`.
@@ -231,7 +253,7 @@ If the generated files are already current and only the upstream tag needs to
 move, run:
 
 ```sh
-bin/pin-cpflow-github-ref v5.0.4
+bin/pin-cpflow-github-ref v5.1.1
 ```
 
 When testing unreleased `control-plane-flow` changes before a release, pin the
