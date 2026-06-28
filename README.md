@@ -178,6 +178,11 @@ strict production CSP nonce issue for React's streaming bootstrap on
   head-to-head comparison.
 - [React on Rails Pro](https://reactonrails.com/pro/) — the commercial Node
   renderer, TanStack SSR, and RSC integration point.
+- [Using TanStack Query](https://reactonrails.com/docs/building-features/tanstack-query) —
+  the canonical guide to the client-side server-state patterns this starter
+  demonstrates (CSRF fetch, query keys, first-paint `initialData` seeding, mutations).
+- [Using TanStack Router](https://reactonrails.com/docs/building-features/tanstack-router) —
+  the React on Rails Pro SSR boundary used here.
 
 ## Docs
 
