@@ -31,14 +31,14 @@ jobs:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/react_on_rails_starter_tanstack_test
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.0
         with:
           persist-credentials: false
 
       - name: Install system packages
         run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libpq-dev libvips
 
-      - uses: ruby/setup-ruby@v1
+      - uses: ruby/setup-ruby@v1.315.0
         with:
           bundler-cache: true
 
@@ -81,14 +81,14 @@ jobs:
       PORT: 3100
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.0
         with:
           persist-credentials: false
 
       - name: Install system packages
         run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libpq-dev libvips
 
-      - uses: ruby/setup-ruby@v1
+      - uses: ruby/setup-ruby@v1.315.0
         with:
           bundler-cache: true
 
@@ -137,14 +137,14 @@ jobs:
       CABLE_DATABASE_URL: "postgres://postgres:postgres@localhost:5432/react_on_rails_starter_tanstack_production_cable"
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.0
         with:
           persist-credentials: false
 
       - name: Install system packages
         run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libpq-dev libvips
 
-      - uses: ruby/setup-ruby@v1
+      - uses: ruby/setup-ruby@v1.315.0
         with:
           bundler-cache: true
 
@@ -173,7 +173,7 @@ jobs:
       - name: Install system packages
         run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libpq-dev libvips
 
-      - uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f
+      - uses: ruby/setup-ruby@0dafeac902942906541bc140009cdbf32665b601
         with:
           bundler-cache: true
 
@@ -222,7 +222,7 @@ jobs:
       - name: Install system packages
         run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libpq-dev libvips
 
-      - uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f
+      - uses: ruby/setup-ruby@0dafeac902942906541bc140009cdbf32665b601
         with:
           bundler-cache: true
 
