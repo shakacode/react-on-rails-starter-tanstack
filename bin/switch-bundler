@@ -6,7 +6,7 @@ require "json"
 
 # Script to switch between webpack and rspack bundlers
 class BundlerSwitcher
-  # Pinned to ^major.0.0 to prevent peer dependency conflicts from major version bumps.
+  # Pinned to peer-compatible ranges to prevent dependency conflicts from major version bumps.
   # Pre-1.0 packages are left bare since ^0.x pins to the minor version.
   # webpack-cli pinned to ^6 (not ^7) to stay within Shakapacker's supported peer range.
   WEBPACK_DEPS = {
@@ -15,8 +15,8 @@ class BundlerSwitcher
   }.freeze
 
   RSPACK_DEPS = {
-    dependencies: %w[@rspack/core@^1.0.0 rspack-manifest-plugin@^5.0.0],
-    dev_dependencies: %w[@rspack/cli@^1.0.0 @rspack/plugin-react-refresh@^1.0.0]
+    dependencies: %w[@rspack/core@^2.0.0 rspack-manifest-plugin@^5.2.2],
+    dev_dependencies: %w[@rspack/cli@^2.0.0 @rspack/dev-server@^2.0.0 @rspack/plugin-react-refresh@^2.0.0]
   }.freeze
 
   def initialize(target_bundler)
@@ -110,25 +110,25 @@ class BundlerSwitcher
 
     # Install dependencies using array form to prevent command injection
     success = case package_manager
-              when "yarn"
+    when "yarn"
                 system("yarn", "add", *deps[:dependencies])
-              when "pnpm"
+    when "pnpm"
                 system("pnpm", "add", *deps[:dependencies])
-              else
+    else
                 system("npm", "install", *deps[:dependencies])
-              end
+    end
 
     abort("❌ Failed to install dependencies") unless success
 
     # Install dev dependencies using array form to prevent command injection
     success = case package_manager
-              when "yarn"
+    when "yarn"
                 system("yarn", "add", "-D", *deps[:dev_dependencies])
-              when "pnpm"
+    when "pnpm"
                 system("pnpm", "add", "-D", *deps[:dev_dependencies])
-              else
+    else
                 system("npm", "install", "--save-dev", *deps[:dev_dependencies])
-              end
+    end
 
     abort("❌ Failed to install dev dependencies") unless success
 
