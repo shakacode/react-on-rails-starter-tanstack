@@ -2,7 +2,7 @@
 
 This spike verifies the default Rspack bundler can compose a React on Rails Pro
 React Server Component payload inside a plain `@tanstack/react-router` route
-with `react-on-rails-rsc@19.0.5-rc.7`. It does not use TanStack Start, Vite,
+with `react-on-rails-rsc@19.2.1-rc.0`. It does not use TanStack Start, Vite,
 file-based routing, Hotwire, or Stimulus.
 
 ## Related React On Rails Docs
@@ -53,6 +53,8 @@ sequenceDiagram
 - The route renders the exported `react-on-rails-pro/RSCRoute` helper, so React
   on Rails Pro owns the payload fetch, length-prefixed stream parser, and Flight
   rendering.
+- The route includes a provider-backed `prefetchServerComponent` action that
+  warms the same server component payload selected by the TanStack loader.
 - The local `app/views/react_on_rails_pro/rsc_payload.text.erb` override keeps
   the helper output trim-safe so the streamed response does not add a blank line
   between length-prefixed chunks. Track removing this override against
@@ -81,7 +83,7 @@ Browser verification against `http://127.0.0.1:3400/rsc-showcase` confirmed:
 ## Rspack Default Behavior
 
 Rspack remains the default in `config/shakapacker.yml` and the deploy image.
-`react-on-rails-rsc@19.0.5-rc.7` emits the RSC client-reference manifests on
+`react-on-rails-rsc@19.2.1-rc.0` emits the RSC client-reference manifests on
 Rspack, so `/rsc-showcase` fetches the payload on the default path. The route
 still checks manifest availability before rendering `RSCRoute`, so it can render
 an honest fallback if a future dependency regression removes the manifests.

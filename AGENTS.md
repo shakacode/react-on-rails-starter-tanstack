@@ -27,9 +27,10 @@ code first and then update the docs or this file in the same change.
   shell and Pro RSC payload endpoint; a bare TanStack Router loader selects the
   server component and props, and the exported React on Rails Pro `RSCRoute`
   helper fetches/composes the RSC payload with client islands on the local
-  Rspack default.
+  Rspack default. The route also includes a provider-backed RSC prefetch action
+  through `prefetchServerComponent`.
 - `/hello_server` demonstrates streaming RSC. Rspack client-reference manifests
-  are available with `react-on-rails-rsc@19.0.5-rc.7`; the remaining strict
+  are available with `react-on-rails-rsc@19.2.1-rc.0`; the remaining strict
   production CSP hydration limitation is documented in
   `docs/11-rsc-csp-nonce-spike.md`.
 - The root path `/` is a public Rails landing page (`home#index`). It leads with
@@ -225,6 +226,9 @@ Rules:
   fetching/rendering. Do not recreate the Pro length-prefixed stream parser,
   import `react-on-rails-rsc/client.browser` directly from app code, or replace
   the payload with a bespoke JSON protocol when the goal is to demonstrate RSC.
+- Use `react-on-rails-pro/prefetchServerComponent` when exercising provider
+  cache prefetching for this route; keep it pointed at the same component name
+  and props selected by the route loader.
 - Keep `app/views/react_on_rails_pro/rsc_payload.text.erb` trim-safe. A trailing
   newline after the helper output creates a blank line between length-prefixed
   RSC chunks, which the current Pro client parser treats as malformed. Track
@@ -275,7 +279,7 @@ Rules:
 - Production-assets mode must run with optimized assets and the React on Rails
   Pro Node renderer.
 - Treat interactive RSC client-reference manifest generation on Rspack as
-  expected behavior with `react-on-rails-rsc@19.0.5-rc.7` or newer. Keep
+  expected behavior with `react-on-rails-rsc@19.2.1-rc.0` or newer. Keep
   `pnpm run repro:rspack-rsc` available as the small regression check.
 - When validating unreleased `react_on_rails` or `react_on_rails_rsc` branches,
   follow `docs/12-upstream-branch-testing.md`. Do not leave local path or git
