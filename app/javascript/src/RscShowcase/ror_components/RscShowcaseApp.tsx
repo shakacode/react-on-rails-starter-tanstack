@@ -115,7 +115,7 @@ function PayloadPrefetchButton({ routeData }: { routeData: RscRouteData | null }
   const label = {
     idle: 'Prefetch payload',
     loading: 'Prefetching payload',
-    ready: 'Provider cache warmed',
+    ready: 'Prefetch completed',
     error: 'Prefetch failed',
   }[status];
 
