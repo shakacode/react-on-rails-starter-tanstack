@@ -36,6 +36,17 @@ test('public RSC showcase route loads the TanStack composition surface', async (
   await expect(page.getByText('Server panel JS shipped')).toBeVisible();
   await expect(page.getByText('Payload helper')).toBeVisible();
 
+  const prefetchResponsePromise = page.waitForResponse((response) => {
+    const responseUrl = new URL(response.url());
+
+    return responseUrl.pathname.endsWith('/rsc_payload/RscShowcaseServerPanel') && response.request().method() === 'GET';
+  });
+  await page.getByRole('button', { name: 'Prefetch payload' }).click();
+  const prefetchResponse = await prefetchResponsePromise;
+
+  expect(prefetchResponse.ok()).toBeTruthy();
+  await expect(page.getByRole('button', { name: 'Prefetch completed' })).toBeVisible();
+
   await page.getByRole('button', { name: 'Hydrated island' }).click();
   await expect(page.getByText('2 client clicks inside the fetched RSC payload')).toBeVisible();
 

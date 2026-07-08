@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Suspense, useMemo, useState } from 'react';
+import React, { Suspense, useCallback, useMemo, useRef, useState } from 'react';
 import {
   Outlet,
   RouterProvider,
@@ -12,6 +12,7 @@ import {
 } from '@tanstack/react-router';
 import { CheckCircle2, ExternalLink, RefreshCw, Route, Server, ShieldCheck, TriangleAlert } from 'lucide-react';
 import RSCRoute from 'react-on-rails-pro/RSCRoute';
+import { prefetchServerComponent } from 'react-on-rails-pro/prefetchServerComponent';
 import wrapServerComponentRenderer from 'react-on-rails-pro/wrapServerComponentRenderer/client';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -80,6 +81,55 @@ function PayloadRenderer({ routeData }: { routeData: RscRouteData }) {
       componentName={routeData.componentName}
       componentProps={routeData.componentProps}
     />
+  );
+}
+
+type PrefetchStatus = 'idle' | 'loading' | 'ready' | 'error';
+
+function PayloadPrefetchButton({ routeData }: { routeData: RscRouteData | null }) {
+  const [status, setStatus] = useState<PrefetchStatus>('idle');
+  const inFlightRef = useRef<Promise<void> | null>(null);
+
+  const prefetchPayload = useCallback(() => {
+    if (!routeData) return Promise.resolve();
+    if (inFlightRef.current) return inFlightRef.current;
+
+    setStatus('loading');
+    const request = prefetchServerComponent(routeData.componentName, routeData.componentProps, {
+      skipIfEmbedded: false,
+    })
+      .then(() => {
+        setStatus('ready');
+      })
+      .catch(() => {
+        setStatus('error');
+      })
+      .finally(() => {
+        inFlightRef.current = null;
+      });
+
+    inFlightRef.current = request;
+    return request;
+  }, [routeData]);
+
+  const label = {
+    idle: 'Prefetch payload',
+    loading: 'Prefetching payload',
+    ready: 'Prefetch completed',
+    error: 'Prefetch failed',
+  }[status];
+
+  return (
+    <Button
+      type="button"
+      variant={status === 'error' ? 'destructive' : 'outline'}
+      className="mt-1"
+      disabled={!routeData || status === 'loading'}
+      onClick={() => void prefetchPayload()}
+    >
+      {status === 'loading' ? <RefreshCw className="size-4 animate-spin" aria-hidden="true" /> : null}
+      {label}
+    </Button>
   );
 }
 
@@ -280,6 +330,7 @@ function ShowcasePage({ appProps, routeData }: { appProps: RscShowcaseAppProps; 
               <RefreshCw className="size-4" aria-hidden="true" />
               Refetch payload
             </Button>
+            <PayloadPrefetchButton key={routeData?.requestPath ?? 'unavailable'} routeData={routeData} />
           </CardContent>
         </Card>
       </header>
