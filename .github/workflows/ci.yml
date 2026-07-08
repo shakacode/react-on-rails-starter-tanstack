@@ -31,7 +31,7 @@ jobs:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/react_on_rails_starter_tanstack_test
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.0
         with:
           persist-credentials: false
 
@@ -81,7 +81,7 @@ jobs:
       PORT: 3100
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.0
         with:
           persist-credentials: false
 
@@ -137,7 +137,7 @@ jobs:
       CABLE_DATABASE_URL: "postgres://postgres:postgres@localhost:5432/react_on_rails_starter_tanstack_production_cable"
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.0
         with:
           persist-credentials: false
 
