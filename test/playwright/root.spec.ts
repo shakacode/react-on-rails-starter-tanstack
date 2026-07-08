@@ -1,4 +1,9 @@
 import { expect, test } from '@playwright/test';
+import { preparePlaywrightAssets } from './support/rails';
+
+test.beforeAll(() => {
+  preparePlaywrightAssets();
+});
 
 test('Rails health endpoint responds', async ({ page }) => {
   const response = await page.goto('/up');
