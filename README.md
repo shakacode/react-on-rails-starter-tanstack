@@ -104,6 +104,11 @@ bin/dev static --no-open-browser --route=dashboard
 bin/dev prod --no-open-browser --route=dashboard
 ```
 
+`bin/setup` also installs the project-pinned Chromium binary used by the
+Playwright smoke checks. On a minimal Linux image, provision Playwright's
+system packages separately with `pnpm exec playwright install --with-deps chromium`
+when the image build has the required system-package privileges.
+
 `bin/dev` starts Rails, Rspack, Solid Queue, the React on Rails Pro Node
 renderer, and the RSC bundle watcher. Development defaults to live reload; use
 the HMR command only when testing HMR behavior.
