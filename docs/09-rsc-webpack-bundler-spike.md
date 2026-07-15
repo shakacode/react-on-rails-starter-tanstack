@@ -149,7 +149,7 @@ With `RSCRspackPlugin`, Rspack now has its own manifest-generation path.
 
 | Dimension            | Rspack (default)         | Webpack (RSC-capable)               |
 | -------------------- | ------------------------ | ----------------------------------- |
-| Interactive RSC      | ✅ manifests emitted with `react-on-rails-rsc@19.2.1-rc.0` | ✅ manifests emitted, island renders |
+| Interactive RSC      | ✅ manifests emitted with `react-on-rails-rsc@19.2.1-rc.1` | ✅ manifests emitted, island renders |
 | Clean prod build     | ~2.8 s                   | ~8.3 s (≈3× slower)                 |
 | Client JS total      | ~2.6 MB                  | ~2.6 MB (comparable)                |
 | Dev server / HMR     | `@rspack/plugin-react-refresh` | `@pmmmwh/react-refresh-webpack-plugin`; dashboard and `/hello_server` HMR smokes pass |

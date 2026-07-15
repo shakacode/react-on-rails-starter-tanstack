@@ -1,8 +1,8 @@
 # Architecture
 
-This starter begins from `create-react-on-rails-app --rsc --rspack` and currently targets the React on Rails Pro `17.0.0-rc.7` RC stack with React on Rails RSC `19.2.1-rc.0` and Shakapacker `10.2.0`.
+This starter begins from `create-react-on-rails-app --rsc --rspack` and currently targets the React on Rails Pro `17.0.0-rc.10` RC stack with React on Rails RSC `19.2.1-rc.1` and Shakapacker `10.2.0`.
 
-Shakapacker remains on `10.2.0` because the React on Rails 17 RC7 upgrade did not require a coupled Shakapacker bump. Rspack is the checked-in local and deploy default. `react-on-rails-rsc@19.2.1-rc.0` provides the Rspack RSC manifest support this starter needs, while Webpack remains an opt-in bridge/comparison path.
+Shakapacker remains on `10.2.0` because the React on Rails 17 RC10 upgrade did not require a coupled Shakapacker bump. Rspack is the checked-in local and deploy default. `react-on-rails-rsc@19.2.1-rc.1` provides the Rspack RSC manifest support this starter needs, while Webpack remains an opt-in bridge/comparison path.
 
 ## Related React On Rails Docs
 
@@ -104,7 +104,7 @@ Vite, file-based routing, Hotwire, or Stimulus.
 Rspack is the active bundler in `config/shakapacker.yml`. Development disables client lazy compilation at the config top level and at `experiments.lazyCompilation`, uses live reload by default for this RC stack, and gates TanStack devtools behind `localStorage["tanstack-devtools"] = "1"` to avoid dev-server overlay requests from optional chunks. Explicit HMR mode enables React Fast Refresh through Shakapacker's Rspack wiring, while static and production-assets dev modes remain free of Rspack dev-server clients.
 
 The public React Server Components path is green on the local Rspack default
-with `react-on-rails-rsc@19.2.1-rc.0`. The Rspack client, server, and
+with `react-on-rails-rsc@19.2.1-rc.1`. The Rspack client, server, and
 server-only RSC bundles compile and emit the React client/server manifests
 expected by the React on Rails RSC client-reference path. The Webpack bridge
 remains documented in [RSC Webpack Bundler Spike](09-rsc-webpack-bundler-spike.md)
