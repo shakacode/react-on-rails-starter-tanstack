@@ -90,14 +90,14 @@ importers:
         specifier: 19.2.7
         version: 19.2.7(react@19.2.7)
       react-on-rails-pro:
-        specifier: 17.0.0-rc.10
-        version: 17.0.0-rc.10(@tanstack/react-router@1.170.17(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react-on-rails-rsc@19.2.1-rc.1(@rspack/core@2.1.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.108.4))(react@19.2.7)
+        specifier: 17.0.0-rc.12
+        version: 17.0.0-rc.12(@tanstack/react-router@1.170.17(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react-on-rails-rsc@19.2.1(@rspack/core@2.1.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.108.4))(react@19.2.7)
       react-on-rails-pro-node-renderer:
-        specifier: 17.0.0-rc.10
-        version: 17.0.0-rc.10
+        specifier: 17.0.0-rc.12
+        version: 17.0.0-rc.12
       react-on-rails-rsc:
-        specifier: 19.2.1-rc.1
-        version: 19.2.1-rc.1(@rspack/core@2.1.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.108.4)
+        specifier: 19.2.1
+        version: 19.2.1(@rspack/core@2.1.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.108.4)
       react-server-dom-webpack:
         specifier: 19.2.7
         version: 19.2.7(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.108.4)
@@ -2950,8 +2950,8 @@ packages:
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
-  react-on-rails-pro-node-renderer@17.0.0-rc.10:
-    resolution: {integrity: sha512-80UtYZrs+EveZ0hF4Xs5NuVW0UXUqFOtWMzRsCvzD8XKmVBPHnyXbUi30GojAJulBKohQg68nRrsEzTVWl4aCg==}
+  react-on-rails-pro-node-renderer@17.0.0-rc.12:
+    resolution: {integrity: sha512-Dx+jJpvHo4o3TY4PXQXrlU6QfHjBFYPfF7XaEzQJ3i/WMSx1NXshtMFhzHGh5qAPFhdZwFIEoOObh7Ikf2EYmA==}
     engines: {node: '>=18.19.0'}
     peerDependencies:
       '@fastify/otel': '>=0.18.0 <1.0.0'
@@ -2992,14 +2992,14 @@ packages:
       '@sentry/tracing':
         optional: true
 
-  react-on-rails-pro@17.0.0-rc.10:
-    resolution: {integrity: sha512-Rk2whObHBFPr0+wf4ENXHFSqYsAXgiIGob/sgQGwZdweZwIRvF80wcNurQ4BMYbBB9XwaWQIgay+eC7+E+orYA==}
+  react-on-rails-pro@17.0.0-rc.12:
+    resolution: {integrity: sha512-2BahIzm71nLHp0x7A8Q+zS5Wdh5uIdvUUR/rzZNcJOe9GvcSQ4AWxBtpQkqu5ucQ0omdc4LvQAODo83+4bHZPg==}
     peerDependencies:
       '@tanstack/react-router': '>=1.139.0 <2.0.0'
       ioredis: '>= 5'
       react: '>= 16'
       react-dom: '>= 16'
-      react-on-rails-rsc: '>=19.2.1-rc.1 <20.0.0'
+      react-on-rails-rsc: '>=19.2.1 <20.0.0'
     peerDependenciesMeta:
       '@tanstack/react-router':
         optional: true
@@ -3008,8 +3008,8 @@ packages:
       react-on-rails-rsc:
         optional: true
 
-  react-on-rails-rsc@19.2.1-rc.1:
-    resolution: {integrity: sha512-ZwfZ2THm95Oo6a9cihkpK6SCEnEuZk298+q0DYACHImRXGlMXOzS5xwWl7jrB4FOYRWY576HC9sF7yRwO5wTrA==}
+  react-on-rails-rsc@19.2.1:
+    resolution: {integrity: sha512-PQ+Ly+cCA3flJ4EJMczSv0rD6boP0wcXCLmaSfj3HOt+7XxP7DkJyu5IiEGb86vIQjMwaTPs68XN9wlnnx+pUw==}
     peerDependencies:
       '@rspack/core': ^1.0.0 || ^2.0.0
       react: ^19.2.7
@@ -3019,8 +3019,8 @@ packages:
       '@rspack/core':
         optional: true
 
-  react-on-rails@17.0.0-rc.10:
-    resolution: {integrity: sha512-3W0xVwNxcNEyVX/Ayhiv0uybpRM1Rh4xonam9hPmDnbImDg6FJOyRO9q1IsD9Xu0hQCX15xKi9+LHu1VPzk94A==}
+  react-on-rails@17.0.0-rc.12:
+    resolution: {integrity: sha512-/Y4+ohGT+bnlkLx5txd6EjnjOa5rssNPgPAqWITjR9ruCMAHA1Pf0QmYabAzihIsswB2SOdDp71CVbseirE/kw==}
     peerDependencies:
       react: '>= 16'
       react-dom: '>= 16'
@@ -6417,7 +6417,7 @@ snapshots:
 
   react-is@16.13.1: {}
 
-  react-on-rails-pro-node-renderer@17.0.0-rc.10:
+  react-on-rails-pro-node-renderer@17.0.0-rc.12:
     dependencies:
       '@fastify/formbody': 8.0.2
       '@fastify/multipart': 9.4.0
@@ -6427,16 +6427,16 @@ snapshots:
       lockfile: 1.0.4
       pino: 10.3.1
 
-  react-on-rails-pro@17.0.0-rc.10(@tanstack/react-router@1.170.17(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react-on-rails-rsc@19.2.1-rc.1(@rspack/core@2.1.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.108.4))(react@19.2.7):
+  react-on-rails-pro@17.0.0-rc.12(@tanstack/react-router@1.170.17(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react-on-rails-rsc@19.2.1(@rspack/core@2.1.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.108.4))(react@19.2.7):
     dependencies:
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
-      react-on-rails: 17.0.0-rc.10(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react-on-rails: 17.0.0-rc.12(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
     optionalDependencies:
       '@tanstack/react-router': 1.170.17(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      react-on-rails-rsc: 19.2.1-rc.1(@rspack/core@2.1.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.108.4)
+      react-on-rails-rsc: 19.2.1(@rspack/core@2.1.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.108.4)
 
-  react-on-rails-rsc@19.2.1-rc.1(@rspack/core@2.1.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.108.4):
+  react-on-rails-rsc@19.2.1(@rspack/core@2.1.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(webpack@5.108.4):
     dependencies:
       acorn-loose: 8.5.2
       neo-async: 2.6.2
@@ -6448,7 +6448,7 @@ snapshots:
     optionalDependencies:
       '@rspack/core': 2.1.2
 
-  react-on-rails@17.0.0-rc.10(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
+  react-on-rails@17.0.0-rc.12(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)

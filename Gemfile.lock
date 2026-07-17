@@ -332,21 +332,21 @@ GEM
       prism (>= 1.6.0)
       rbs (>= 4.0.0)
       tsort
-    react_on_rails (17.0.0.rc.10)
+    react_on_rails (17.0.0.rc.12)
       addressable
       connection_pool
       execjs (~> 2.5)
       rails (>= 5.2)
       rainbow (~> 3.0)
       shakapacker (>= 6.0)
-    react_on_rails_pro (17.0.0.rc.10)
+    react_on_rails_pro (17.0.0.rc.12)
       async (>= 2.29)
       async-http (~> 0.95)
       execjs (~> 2.9)
       io-endpoint (~> 0.17.0)
       jwt (>= 2.5, < 4)
       nokogiri (>= 1.12, < 2)
-      react_on_rails (= 17.0.0.rc.10)
+      react_on_rails (= 17.0.0.rc.12)
     regexp_parser (2.12.0)
     reline (0.6.3)
       io-console (~> 0.5)
@@ -493,8 +493,8 @@ DEPENDENCIES
   puma (>= 5.0)
   rack-attack (~> 6.8)
   rails (~> 8.1.3)
-  react_on_rails (= 17.0.0.rc.10)
-  react_on_rails_pro (= 17.0.0.rc.10)
+  react_on_rails (= 17.0.0.rc.12)
+  react_on_rails_pro (= 17.0.0.rc.12)
   rspec-rails (~> 8.0)
   rubocop-rails-omakase
   selenium-webdriver
