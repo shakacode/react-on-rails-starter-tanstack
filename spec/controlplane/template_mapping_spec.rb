@@ -23,7 +23,7 @@ RSpec.describe "Control Plane template mappings" do
     grants.first.fetch("secret_name")
   end
 
-  def review_database_reference
+  def review_database_mapping
     env = load_yaml(".controlplane/templates/app-review.yml").dig("spec", "env")
     mappings = env.select do |mapping|
       name = mapping.fetch("name").downcase
@@ -31,16 +31,24 @@ RSpec.describe "Control Plane template mappings" do
     end
 
     expect(mappings.length == 1).to be(true), "expected exactly one disposable database credential mapping"
-
-    match = mappings.first.fetch("value").match(%r{\Acpln://secret/([^/]+)\z})
-    expect(!match.nil?).to be(true), "expected a repository-managed credential reference"
-    match[1]
+    mappings.first
   end
 
-  it "maps the disposable database credential to its declared shared grant target" do
-    mapping_matches_grant = review_database_reference == shared_grant_target
+  def review_database_reference(mapping)
+    match = mapping.fetch("value").match(%r{\Acpln://secret/([^/.]+)\.([^/.]+)\z})
+    expect(!match.nil?).to be(true), "expected a repository-managed dictionary-field reference"
+    { target: match[1], field: match[2] }
+  end
+
+  it "maps the disposable database credential to its declared shared grant target and field" do
+    mapping = review_database_mapping
+    reference = review_database_reference(mapping)
+    mapping_matches_grant = reference.fetch(:target) == shared_grant_target
+    mapping_matches_field = reference.fetch(:field) == mapping.fetch("name").split("_").last.downcase
 
     expect(mapping_matches_grant).to be(true),
                                      "disposable database credential must match its declared shared grant target"
+    expect(mapping_matches_field).to be(true),
+                                     "disposable database credential must select its declared dictionary field"
   end
 end
