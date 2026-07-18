@@ -16,7 +16,7 @@ spec:
     - name: CABLE_DATABASE_NAME
       value: "{{APP_NAME}}_production_cable"
     - name: REACT_ON_RAILS_STARTER_TANSTACK_DATABASE_PASSWORD
-      value: "cpln://secret/{{SHARED_SECRET_DATABASE}}.password"
+      value: "cpln://secret/{{APP_NAME}}-pg.password"
     - name: RAILS_ENV
       value: production
     - name: NODE_ENV
