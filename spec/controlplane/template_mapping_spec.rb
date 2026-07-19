@@ -16,11 +16,15 @@ RSpec.describe "Control Plane template mappings" do
     matches.first
   end
 
-  def shared_grant_target
+  def shared_grant
     grants = review_app_config.fetch("shared_secret_grants")
 
     expect(grants.length == 1).to be(true), "expected exactly one disposable review app shared grant"
-    grants.first.fetch("secret_name")
+    grants.first
+  end
+
+  def shared_grant_placeholder(grant)
+    "{{SHARED_SECRET_#{grant.fetch('name').upcase}}}"
   end
 
   def review_database_mapping
@@ -34,21 +38,29 @@ RSpec.describe "Control Plane template mappings" do
     mappings.first
   end
 
-  def review_database_reference(mapping)
-    match = mapping.fetch("value").match(%r{\Acpln://secret/([^/.]+)\.([^/.]+)\z})
+  def review_database_reference(value)
+    match = value.match(%r{\Acpln://secret/([^/.]+)\.([^/.]+)\z})
     expect(!match.nil?).to be(true), "expected a repository-managed dictionary-field reference"
     { target: match[1], field: match[2] }
   end
 
-  it "maps the disposable database credential to its declared shared grant target and field" do
+  it "maps the disposable database credential through its declared shared grant placeholder" do
+    grant = shared_grant
     mapping = review_database_mapping
-    reference = review_database_reference(mapping)
-    mapping_matches_grant = reference.fetch(:target) == shared_grant_target
-    mapping_matches_field = reference.fetch(:field) == mapping.fetch("name").split("_").last.downcase
+    placeholder = shared_grant_placeholder(grant)
+    committed_reference = review_database_reference(mapping.fetch("value"))
+
+    expect(committed_reference.fetch(:target)).to eq(placeholder),
+                                                   "disposable database credential must use its shared grant placeholder"
+
+    rendered_value = mapping.fetch("value").gsub(placeholder, grant.fetch("secret_name"))
+    rendered_reference = review_database_reference(rendered_value)
+    mapping_matches_grant = rendered_reference.fetch(:target) == grant.fetch("secret_name")
+    mapping_matches_field = rendered_reference.fetch(:field) == mapping.fetch("name").split("_").last.downcase
 
     expect(mapping_matches_grant).to be(true),
-                                     "disposable database credential must match its declared shared grant target"
+                                     "renderer substitution must target the declared shared grant"
     expect(mapping_matches_field).to be(true),
-                                     "disposable database credential must select its declared dictionary field"
+                                     "renderer substitution must retain the declared dictionary field"
   end
 end
