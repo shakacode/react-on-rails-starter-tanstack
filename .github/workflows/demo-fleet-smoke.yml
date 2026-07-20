@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   smoke:
-    uses: shakacode/react_on_rails/.github/workflows/demo-fleet-smoke.yml@613c6c2a251a782328b26d68e7f23daa9b677497
+    uses: shakacode/react_on_rails/.github/workflows/demo-fleet-smoke.yml@4d6a3bd6047057675f70949a9e50c395dd54b353
     with:
       ruby-version: "3.4.6"
       node-version: "24"
