@@ -7,31 +7,53 @@ updates:
   - package-ecosystem: "bundler"
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
     open-pull-requests-limit: 5
     cooldown:
       default-days: 3
     groups:
+      react-on-rails:
+        patterns:
+          - "react_on_rails*"
       ruby:
         patterns:
           - "*"
+    # React on Rails final-line majors are intentionally promoted through the
+    # fleet validation process, not an automatic dependency PR.
+    ignore:
+      - dependency-name: "react_on_rails"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react_on_rails_pro"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
     open-pull-requests-limit: 5
     cooldown:
       default-days: 3
     groups:
+      react-on-rails:
+        patterns:
+          - "react-on-rails*"
       javascript:
         patterns:
           - "*"
+    # This app has no direct Babel dependency, so a Babel 8 ignore would be
+    # inert. Product-package majors require explicit fleet validation.
+    ignore:
+      - dependency-name: "react-on-rails-pro"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-on-rails-pro-node-renderer"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-on-rails-rsc"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
     open-pull-requests-limit: 5
     cooldown:
       default-days: 3

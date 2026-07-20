@@ -1,0 +1,31 @@
+name: Demo fleet smoke
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "23 14 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    uses: shakacode/react_on_rails/.github/workflows/demo-fleet-smoke.yml@613c6c2a251a782328b26d68e7f23daa9b677497
+    with:
+      ruby-version: "3.4.6"
+      node-version: "24"
+      install-command: >-
+        bundle config set path vendor/bundle && bundle install --jobs 4 --retry 3 &&
+        corepack enable && corepack pnpm@11.2.2 install --frozen-lockfile
+      test-command: pnpm run test:router-shim
+      build-command: >-
+        RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1
+        REACT_ON_RAILS_STARTER_TANSTACK_DATABASE_PASSWORD=dummy bin/rails assets:precompile
+      smoke-command: REQUIRE_RSC_MANIFESTS=true pnpm run repro:rspack-rsc
