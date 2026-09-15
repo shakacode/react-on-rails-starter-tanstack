@@ -33,6 +33,8 @@ gem "thruster", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", "~> 2.0"
+gem "json", "~> 2.21", ">= 2.21.2"
+gem "ruby-vips", "~> 2.0"
 gem "rack-attack", "~> 6.8"
 
 group :development, :test do
@@ -65,9 +67,9 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "react_on_rails", "17.0.0"
+gem "react_on_rails", "17.1.0.rc.5"
 
-gem "react_on_rails_pro", "17.0.0"
+gem "react_on_rails_pro", "17.1.0.rc.5"
 
 gem "shakapacker", "10.2.0"
 
