@@ -87,7 +87,7 @@ via `SHAKAPACKER_ASSETS_BUNDLER=webpack`.
 | React on Rails / Pro | `17.1.0` / `17.1.0` |
 | React on Rails RSC | `19.3.0` |
 | Shakapacker / Shakapacker Rspack | `10.2.0` |
-| React | `19.2.8` |
+| React | `19.3.0` |
 | Rails | `8.1.x` |
 | Language / tooling | TypeScript, pnpm |
 
