@@ -32,8 +32,8 @@ gem "kamal", require: false
 gem "thruster", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-gem "image_processing", "~> 2.0"
-gem "json", "~> 2.21", ">= 2.21.2"
+gem "image_processing", "~> 2.1"
+gem "json", "~> 3.0"
 gem "ruby-vips", "~> 2.0"
 gem "rack-attack", "~> 6.8"
 
@@ -71,6 +71,6 @@ gem "react_on_rails", "17.1.0"
 
 gem "react_on_rails_pro", "17.1.0"
 
-gem "shakapacker", "10.2.0"
+gem "shakapacker", "10.3.2"
 
 gem "rspec-rails", "~> 8.0", groups: [ :development, :test ]
