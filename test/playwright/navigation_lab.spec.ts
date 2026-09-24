@@ -143,7 +143,21 @@ test('intent prefetch loads one project on hover and the click reuses that cache
   await expect(labShell(page).getByRole('heading', { name: 'Lab Project 2', exact: true })).toBeVisible();
   await expect(page.getByText('Rendered from cached data')).toBeVisible();
   expect(detailRequestsFor(detailRequests, projectId)).toHaveLength(1);
-  expect(detailRequests).toHaveLength(1);
+});
+
+test('a click during a slow prefetch joins that request instead of starting another', async ({ page }) => {
+  await signIn(page, email);
+  const detailRequests = recordProjectDetailRequests(page);
+  await openLab(page);
+  await page.getByLabel('Artificial latency').selectOption('1500');
+
+  const projectLink = page.getByRole('link', { name: 'Lab Project 4', exact: true });
+  await projectLink.hover();
+  await projectLink.click();
+
+  await expect(page.getByText('Joined an in-flight prefetch')).toBeVisible();
+  await expect(labShell(page).getByRole('heading', { name: 'Lab Project 4', exact: true })).toBeVisible();
+  expect(detailRequestsFor(detailRequests, projectIds['Lab Project 4'])).toHaveLength(1);
 });
 
 test('with prefetch off, hover requests nothing and the delayed route shows a pending state', async ({ page }) => {

@@ -39,13 +39,13 @@ RSpec.describe "Instant Navigation Lab routes", type: :request do
     expect(response).to redirect_to(sent_email_verifications_path)
   end
 
-  it "keeps another user's project data out of the lab's JSON reads" do
+  it "ships no project data in the lab shell and scopes lab JSON reads to the signed-in user" do
     other_project = create(:project, user: create(:user, :verified))
     sign_in(user)
 
     get navigation_lab_project_path(other_project)
     expect(response).to have_http_status(:ok)
-    expect(response.body).not_to include(other_project.name)
+    expect(response.body).to include('"initialProjects":null')
 
     get api_project_path(other_project), as: :json
     expect(response).to have_http_status(:not_found)

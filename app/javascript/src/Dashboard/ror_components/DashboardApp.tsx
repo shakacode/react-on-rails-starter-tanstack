@@ -1579,9 +1579,14 @@ const labArrivalLabels = {
   network: 'Fetched after navigation',
 } as const;
 
-// Simulates a slow Rails response for lab requests only; aborts with the query.
+// Holds each lab response for the chosen latency before Query receives it, so
+// pending states are visible. Other dashboard routes never pass through here.
 const waitForLabLatency = (latencyMs: number, signal?: AbortSignal) =>
   new Promise<void>((resolve, reject) => {
+    if (signal?.aborted) {
+      reject(signal.reason);
+      return;
+    }
     if (latencyMs <= 0) {
       resolve();
       return;
@@ -1640,6 +1645,7 @@ function NavigationLabLayout() {
   const timer = useFocusTimer();
   const [prefetchEnabled, setPrefetchEnabled] = useState(true);
   const [latencyMs, setLatencyMs] = useState(0);
+  // fetchLabJson reads the ref so its identity, and the lab context, stay stable.
   const latencyMsRef = useRef(0);
   const [logEntries, setLogEntries] = useState<Array<{ id: number; message: string }>>([]);
   const nextLogIdRef = useRef(1);
