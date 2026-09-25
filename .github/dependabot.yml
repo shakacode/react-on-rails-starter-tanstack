@@ -25,6 +25,10 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: "react_on_rails_pro"
         update-types: ["version-update:semver-major"]
+      # json 3 breaks ActiveSupport 8.1's JSON.decode (JSON.parse arity), which
+      # fails every signed/encrypted cookie read. Revisit with a Rails upgrade.
+      - dependency-name: "json"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "npm"
     directory: "/"
@@ -49,6 +53,21 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: "react-on-rails-rsc"
         update-types: ["version-update:semver-major"]
+      # React on Rails Pro 17 (doctor and node renderer) supports only React
+      # 19.2.x, so React minors wait for the fleet React upgrade. react-refresh
+      # ships from the React repo with each React minor, so it moves with them.
+      - dependency-name: "react"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "react-server-dom-webpack"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "@types/react"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "@types/react-dom"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "react-refresh"
+        update-types: ["version-update:semver-minor"]
 
   - package-ecosystem: "github-actions"
     directory: "/"

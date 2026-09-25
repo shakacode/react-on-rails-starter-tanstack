@@ -228,7 +228,7 @@ bin/test-cpflow-github-flow ruby /path/to/control-plane-flow/bin/cpflow
 
 This repo is locked at runtime by the generated workflow wrapper GitHub ref, not
 by the gem alone. The wrappers currently point their `uses:` refs at the
-upstream `control-plane-flow` release tag `v5.2.0`. GitHub loads the reusable
+upstream `control-plane-flow` release tag `v5.3.0`. GitHub loads the reusable
 workflow from that tag, and the upstream workflow checks out its matching shared
 actions from the same workflow context. Downstream wrappers should not pass a
 duplicate `control_plane_flow_ref` input.
@@ -244,7 +244,7 @@ To move to a newer stable `cpflow` release when generated templates changed:
 
 1. Install or bundle the released `cpflow` gem.
 2. Run `cpflow update-github-actions`.
-3. Verify the generated wrappers point to the matching tag, such as `v5.2.0`.
+3. Verify the generated wrappers point to the matching tag, such as `v5.3.0`.
 4. Leave `CPFLOW_VERSION` unset, or set it to the same RubyGems version without
    the leading `v`. For prereleases, use dot syntax such as `5.0.0.rc.1`.
 5. Run `bin/test-cpflow-github-flow`.
@@ -253,7 +253,7 @@ If the generated files are already current and only the upstream tag needs to
 move, run:
 
 ```sh
-bin/pin-cpflow-github-ref v5.2.0
+bin/pin-cpflow-github-ref v5.3.0
 ```
 
 When testing unreleased `control-plane-flow` changes before a release, pin the
