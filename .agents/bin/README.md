@@ -1,7 +1,7 @@
-# Agent Workflow Scripts
+# Agent Scripts
 
-Standard entry points that portable agent-workflow skills call, so a skill can
-run `.agents/bin/<name>` in any repo without knowing this repo's specific
+Fixed entry points that [Shaka](https://github.com/shakacode/shaka) runs, so an
+agent can call `.agents/bin/<name>` without knowing this repo's specific
 commands. Each script is a thin, repo-owned wrapper. A script that is **absent**
 means that capability is n/a here.
 
@@ -10,9 +10,8 @@ means that capability is n/a here.
 | `setup` | Install dependencies and prepare the development database | `bin/setup` |
 | `validate` | Pre-push gate | `bin/test ci "$@"` |
 | `test` | Run tests, including test database preparation | `bin/test "$@"` |
-| `lint` | Lint / format | n/a |
-| `build` | Build / type-check | n/a |
-| `docs` | Docs checks | n/a |
-| `ci-detect` | CI change detector | n/a |
+| `validate-local` | Faster checks before local review (optional) | n/a |
+| `trigger-hosted-ci` | Start deferred hosted CI (optional) | n/a |
 
-Non-command policy lives in [`../agent-workflow.yml`](../agent-workflow.yml).
+Non-command policy lives in [`../agent-workflow.yml`](../agent-workflow.yml);
+see [`../shaka.md`](../shaka.md).

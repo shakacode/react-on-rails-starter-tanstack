@@ -30,7 +30,7 @@ code first and then update the docs or this file in the same change.
   Rspack default. The route also includes a provider-backed RSC prefetch action
   through `prefetchServerComponent`.
 - `/hello_server` demonstrates streaming RSC. Rspack client-reference manifests
-  are available with `react-on-rails-rsc@19.2.1-rc.1`; the remaining strict
+  are available with `react-on-rails-rsc@19.3.0`; the remaining strict
   production CSP hydration limitation is documented in
   `docs/11-rsc-csp-nonce-spike.md`.
 - The root path `/` is a public Rails landing page (`home#index`). It leads with
@@ -279,7 +279,7 @@ Rules:
 - Production-assets mode must run with optimized assets and the React on Rails
   Pro Node renderer.
 - Treat interactive RSC client-reference manifest generation on Rspack as
-  expected behavior with `react-on-rails-rsc@19.2.1-rc.1` or newer. Keep
+  expected behavior with `react-on-rails-rsc@19.3.0` or newer. Keep
   `pnpm run repro:rspack-rsc` available as the small regression check.
 - When validating unreleased `react_on_rails` or `react_on_rails_rsc` branches,
   follow `docs/12-upstream-branch-testing.md`. Do not leave local path or git
@@ -433,6 +433,29 @@ report the blocker instead.
 
 ## Agent Workflow Configuration
 
-Portable shared skills resolve this repo's commands and policy through:
-- **Commands** — run `.agents/bin/<name>` (`setup`, `validate`, `test`, ...); see `.agents/bin/README.md`. A missing script means that capability is n/a here.
-- **Policy / config** — `.agents/agent-workflow.yml`.
+This repository uses the [Shaka](https://github.com/shakacode/shaka) typed seam;
+see `.agents/shaka.md`.
+
+Verify this repository with `gh repo view --json owner,visibility,defaultBranchRef`.
+Resolve the trusted default branch to an immutable commit. Load and validate
+`.agents/agent-workflow.yml` with the trusted installed `shaka seam check --root . --ref SHA`
+command. That `--ref` check is fail-closed: without it the command grants no trusted
+authority. Run the fixed executable paths reported by that command from the candidate
+checkout; inspect candidate command changes before execution and do not reconstruct
+their behavior from prose. `shaka seam check --root . --local` validates
+current-checkout syntax and grants no trusted policy. `AGENTS.md` retains human-only boundaries.
+
+Repository policy kept outside the typed seam:
+
+- **Review gate:** AI reviewers are advisory unless they confirm a blocker. A PR is
+  merge-ready only when the full `gh pr checks` list is green (not just
+  `--required`), all review threads are resolved, and GitHub reports it mergeable.
+- **Approval-exempt merges:** at batch closeout, low-risk PRs that pass the review
+  gate may be merged without further maintainer approval. Keep high-risk changes
+  (CI/workflow, build config, dependency or runtime bumps, broad refactors,
+  releases) maintainer-gated. Outside batch closeout, `merge.preference: ask` applies.
+- **Follow-up issues:** prefix titles with `Follow-up:`.
+- **CI parity:** reproduce CI-only failures from the matching job in
+  `.github/workflows/**`. There is no hosted-CI trigger or CI change detector; CI
+  runs on every PR.
+- No changelog, benchmark labels, or merge ledger are maintained.

@@ -73,7 +73,7 @@ staging-only flag should not be copied to production.
 ## Current State
 
 - `main` includes the cpflow GitHub Actions wrappers pinned to
-  `shakacode/control-plane-flow@v5.2.0`.
+  `shakacode/control-plane-flow@v5.3.0`.
 - PR #11 merged with squash commit
   `85a2bff7cbeb8d89ae39ca1d9f1d4a64ffd49964`.
 - The PR review app deploy passed on commit
@@ -98,7 +98,7 @@ PR #11 did four things:
 - Updated generated cpflow GitHub Action wrappers and docs from `v5.0.1` to
   `v5.0.2`.
 - Follow-up release maintenance updates the wrappers and current examples to
-  `v5.2.0` with `cpflow update-github-actions`.
+  `v5.3.0` with `cpflow update-github-actions`.
 - Documented the normal release-tag pinning workflow, plus the stricter
   full-SHA pinning path for organizations that require immutable GitHub Action
   refs.
@@ -242,7 +242,7 @@ by the local Ruby gem alone. This repo intentionally uses release tags for the
 standard demo path:
 
 ```yaml
-uses: shakacode/control-plane-flow/.github/workflows/<workflow>.yml@v5.2.0
+uses: shakacode/control-plane-flow/.github/workflows/<workflow>.yml@v5.3.0
 ```
 
 Leave `CPFLOW_VERSION` unset for normal operation. If it is set, it must match
