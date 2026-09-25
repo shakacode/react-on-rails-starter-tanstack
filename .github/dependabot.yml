@@ -54,7 +54,8 @@ updates:
       - dependency-name: "react-on-rails-rsc"
         update-types: ["version-update:semver-major"]
       # React on Rails Pro 17 (doctor and node renderer) supports only React
-      # 19.2.x, so React minors wait for the fleet React upgrade.
+      # 19.2.x, so React minors wait for the fleet React upgrade. react-refresh
+      # ships from the React repo with each React minor, so it moves with them.
       - dependency-name: "react"
         update-types: ["version-update:semver-minor"]
       - dependency-name: "react-dom"

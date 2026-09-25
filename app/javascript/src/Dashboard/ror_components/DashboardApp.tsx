@@ -526,7 +526,7 @@ function RouteError({ error }: ErrorComponentProps) {
     <Alert className={panelClassName} variant="destructive">
       <AlertTitle>This section is unavailable</AlertTitle>
       <AlertDescription>
-        <p>{error instanceof Error ? error.message : String(error)}</p>
+        <p>{error instanceof Error ? error.message : null}</p>
         <Button className="mt-3" type="button" onClick={() => window.location.reload()}>
           Retry
         </Button>
