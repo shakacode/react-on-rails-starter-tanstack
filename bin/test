@@ -4,7 +4,7 @@ set -euo pipefail
 usage() {
   cat >&2 <<'USAGE'
 Usage:
-  bin/test [all|ci|smoke|quality|security|doctor|typecheck|router-shim|live-deployed|dev-modes|hmr|hello-server-rsc|rsc-repro|production-precompile|production-boot|release|a11y]
+  bin/test [all|ci|smoke|quality|security|doctor|typecheck|router-shim|live-deployed|dev-modes|hmr|hmr-rsc|hello-server-rsc|rsc-repro|production-precompile|production-boot|release|a11y]
   bin/test rspec [rspec-args...]
   bin/test playwright [playwright-args...]
   bin/test playwright-smoke [playwright-args...]
@@ -150,6 +150,9 @@ case "$command" in
   hmr)
     run pnpm run test:hmr
     ;;
+  hmr-rsc)
+    run pnpm run test:hmr-rsc
+    ;;
   hello-server-rsc|rsc-route|hello-server)
     run pnpm run test:hello-server-rsc
     ;;
@@ -167,6 +170,7 @@ case "$command" in
     run_security_checks
     run pnpm run test:dev-modes
     run pnpm run test:hmr
+    run pnpm run test:hmr-rsc
     run_production_boot_smoke
     run pnpm run repro:rspack-rsc
     ;;

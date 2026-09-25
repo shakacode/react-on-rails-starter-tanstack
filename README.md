@@ -76,7 +76,7 @@ classic Rails CRUD coexist in one app.
 
 Rspack is the default Shakapacker bundler for local development and the
 deployed image. Use `config/shakapacker.yml`, `config/rspack/`, and the
-`.controlplane/Dockerfile` build ARG as the source of truth for the default
+`.controlplane/Dockerfile` `SHAKAPACKER_ASSETS_BUNDLER` ENV as the source of truth for the default
 path. The Rspack RSC plugin in
 `react-on-rails-rsc@19.3.0` emits the client/server manifests the Pro RSC
 client-reference path needs. Rspack is the only configured bundler.

@@ -80,7 +80,7 @@ rendered end-to-end with `REQUIRE_RSC_MANIFESTS=true`.
   `config/swc.config.js`, and the Webpack HMR smokes) has been removed.
 - The original root cause of the Rspack gap is resolved by
   `react-on-rails-rsc`'s `RSCRspackPlugin`.
-- Tradeoff: the Webpack build is ~3× slower (~8 s vs ~3 s). Bundle size is comparable.
+- When the bridge existed, the Webpack build was ~3× slower (~8 s vs ~3 s) with comparable bundle size.
 - `/rsc-showcase` remains the public RSC + TanStack centerpiece: a bare
   TanStack Router loader fetches a React on Rails Pro RSC payload from Rails and
   composes the Flight tree beside a client island. This is not TanStack Start

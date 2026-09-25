@@ -14,7 +14,7 @@ code first and then update the docs or this file in the same change.
   shadcn/ui primitives.
 - Rspack is the active Shakapacker bundler for local development and the
   deployed image. Use `config/shakapacker.yml`, `config/rspack/`, and the
-  `.controlplane/Dockerfile` `SHAKAPACKER_ASSETS_BUNDLER=rspack` build ARG as
+  `.controlplane/Dockerfile` `SHAKAPACKER_ASSETS_BUNDLER=rspack` ENV as
   the source of truth for bundling behavior. Rspack is the only configured
   bundler; the former Webpack bridge (`config/webpack/`) was removed.
 - `/dashboard`, `/settings...`, and `/projects...` are Rails routes that render
