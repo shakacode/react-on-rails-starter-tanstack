@@ -7,3 +7,5 @@ review:
   - claude-review
 merge:
   preference: ask
+wip:
+  include_locations: false

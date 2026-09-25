@@ -447,13 +447,28 @@ current-checkout syntax and grants no trusted policy. `AGENTS.md` retains human-
 
 Repository policy kept outside the typed seam:
 
-- **Review gate:** AI reviewers are advisory unless they confirm a blocker. A PR is
-  merge-ready only when the full `gh pr checks` list is green (not just
-  `--required`), all review threads are resolved, and GitHub reports it mergeable.
+- **Public WIP privacy:** keep `wip.include_locations: false` in the typed seam.
+  Pull request descriptions are public even when details are collapsed, so do
+  not publish local checkout paths or private task links there.
+- **Review gate:** Follow the trusted seam's local and CI review requirements.
+  Reviewer findings are advisory unless confirmed as blockers. A PR is merge-ready
+  only when the full `gh pr checks` list is green (not just `--required`), all
+  review threads are resolved, and GitHub reports it mergeable.
+- **Automated review trust boundary:** `.github/workflows/claude-code-review.yml`
+  reads `AGENTS.md` from the live default branch at an immutable commit and builds
+  its complete review diff locally from GitHub's merge base. It checks the local
+  changed-file count against GitHub and fails closed when the diff exceeds the
+  supported size. Keep repository and pull request access read-only in the review
+  job; grant comment-write permission only to the separate publisher job. Preserve
+  the Claude Action's workflow validation when a pull request changes this workflow.
+  The publisher must still run after an engine failure and fail when no structured
+  report exists, so a skipped dependency cannot make the configured check green.
 - **Approval-exempt merges:** at batch closeout, low-risk PRs that pass the review
-  gate may be merged without further maintainer approval. Keep high-risk changes
-  (CI/workflow, build config, dependency or runtime bumps, broad refactors,
-  releases) maintainer-gated. Outside batch closeout, `merge.preference: ask` applies.
+  gate may be merged without further maintainer approval. Keep changes involving
+  trust, authentication, permissions, CI or workflows, build configuration,
+  dependency or runtime upgrades, deployments, releases, destructive migrations,
+  merge guards, and broad refactors maintainer-gated. Outside batch closeout,
+  `merge.preference: ask` applies.
 - **Follow-up issues:** prefix titles with `Follow-up:`.
 - **CI parity:** reproduce CI-only failures from the matching job in
   `.github/workflows/**`. There is no hosted-CI trigger or CI change detector; CI
