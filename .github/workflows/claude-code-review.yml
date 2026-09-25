@@ -11,7 +11,7 @@ on:
     #   - "src/**/*.jsx"
 
 jobs:
-  claude-review:
+  claude-review-engine:
     # Optional: Filter by PR author
     # if: |
     #   github.event.pull_request.user.login == 'external-contributor' ||
@@ -62,8 +62,8 @@ jobs:
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://code.claude.com/docs/en/cli-reference for available options
 
-  publish-review:
-    needs: claude-review
+  claude-review:
+    needs: claude-review-engine
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -75,7 +75,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          REVIEW_JSON: ${{ needs.claude-review.outputs.structured_output }}
+          REVIEW_JSON: ${{ needs.claude-review-engine.outputs.structured_output }}
         run: |
           python3 - <<'PY'
           import html
@@ -83,7 +83,12 @@ jobs:
           import os
           from pathlib import Path
 
-          report = json.loads(os.environ["REVIEW_JSON"])
+          review_json = os.environ.get("REVIEW_JSON", "").strip()
+          if not review_json:
+              raise SystemExit(
+                  "Claude Code Action emitted no structured review; check its step for a skipped run."
+              )
+          report = json.loads(review_json)
           findings = report["findings"]
           if len(findings) > 20:
               raise SystemExit("Claude review returned more than 20 findings")
