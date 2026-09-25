@@ -447,13 +447,16 @@ current-checkout syntax and grants no trusted policy. `AGENTS.md` retains human-
 
 Repository policy kept outside the typed seam:
 
-- **Review gate:** AI reviewers are advisory unless they confirm a blocker. A PR is
-  merge-ready only when the full `gh pr checks` list is green (not just
-  `--required`), all review threads are resolved, and GitHub reports it mergeable.
+- **Review gate:** Follow the trusted seam's local and CI review requirements.
+  Reviewer findings are advisory unless confirmed as blockers. A PR is merge-ready
+  only when the full `gh pr checks` list is green (not just `--required`), all
+  review threads are resolved, and GitHub reports it mergeable.
 - **Approval-exempt merges:** at batch closeout, low-risk PRs that pass the review
-  gate may be merged without further maintainer approval. Keep high-risk changes
-  (CI/workflow, build config, dependency or runtime bumps, broad refactors,
-  releases) maintainer-gated. Outside batch closeout, `merge.preference: ask` applies.
+  gate may be merged without further maintainer approval. Keep changes involving
+  trust, authentication, permissions, CI or workflows, build configuration,
+  dependency or runtime upgrades, deployments, releases, destructive migrations,
+  merge guards, and broad refactors maintainer-gated. Outside batch closeout,
+  `merge.preference: ask` applies.
 - **Follow-up issues:** prefix titles with `Follow-up:`.
 - **CI parity:** reproduce CI-only failures from the matching job in
   `.github/workflows/**`. There is no hosted-CI trigger or CI change detector; CI
