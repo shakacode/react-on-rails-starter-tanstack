@@ -54,10 +54,12 @@ jobs:
       - name: Run Claude Code Review
         id: claude-review
         uses: anthropics/claude-code-action@v1.0.226
-        env:
-          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          additional_permissions: |
+            contents: read
+            pull_requests: read
+            issues: read
           prompt: |
             Review pull request #${{ github.event.pull_request.number }} in ${{ github.repository }}.
             The base commit is ${{ github.event.pull_request.base.sha }} and the head commit is ${{ github.event.pull_request.head.sha }}.
