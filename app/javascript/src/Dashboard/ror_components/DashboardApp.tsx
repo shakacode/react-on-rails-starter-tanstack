@@ -1573,6 +1573,11 @@ const labLatencyOptions = [
   { value: 1_500, label: '1500 ms' },
 ] as const;
 
+// Lab detail entries get their own key so the lab's artificial latency never
+// reaches /projects/$projectId, which reads ['project', id]. A prefix
+// invalidation of ['project', id] still refreshes both entries.
+const labProjectQueryKey = (projectId: string) => ['project', projectId, 'navigation-lab'];
+
 const labArrivalLabels = {
   cache: 'Rendered from cached data',
   'in-flight': 'Joined an in-flight prefetch',
@@ -1776,7 +1781,7 @@ function NavigationLabProjectLink({ project }: { project: Project }) {
     if (!prefetchEnabled) return;
 
     void queryClient.prefetchQuery({
-      queryKey: ['project', projectId],
+      queryKey: labProjectQueryKey(projectId),
       queryFn: async ({ signal }) => {
         const response = await fetchLabJson<ProjectResponse>(projectPath(api.projectsPath, projectId), signal);
         logEvent(`Prefetched ${response.project.name}`);
@@ -1871,7 +1876,7 @@ function NavigationLabProjectDetail({ projectId }: { projectId: string }) {
   const { api } = useDashboardProps();
   const queryClient = useQueryClient();
   const { fetchLabJson, logEvent } = useNavigationLab();
-  const queryKey = ['project', projectId];
+  const queryKey = labProjectQueryKey(projectId);
   const [arrival] = useState<keyof typeof labArrivalLabels>(() => {
     if (queryClient.getQueryData(queryKey) !== undefined) return 'cache';
 

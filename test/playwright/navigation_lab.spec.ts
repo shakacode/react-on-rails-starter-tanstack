@@ -160,6 +160,24 @@ test('a click during a slow prefetch joins that request instead of starting anot
   expect(detailRequestsFor(detailRequests, projectIds['Lab Project 4'])).toHaveLength(1);
 });
 
+test('lab prefetches stay out of the ordinary project route cache', async ({ page }) => {
+  await signIn(page, email);
+  const detailRequests = recordProjectDetailRequests(page);
+  await openLab(page);
+  await page.getByLabel('Artificial latency').selectOption('1500');
+
+  const projectId = projectIds['Lab Project 2'];
+  await page.getByRole('link', { name: 'Lab Project 2', exact: true }).hover();
+  await expect.poll(() => detailRequestsFor(detailRequests, projectId).length).toBe(1);
+
+  await page.locator('nav[aria-label="Dashboard navigation"] a[href="/projects"]').click();
+  await page.getByRole('link', { name: 'Lab Project 2', exact: true }).click();
+  await expect(page).toHaveURL(`/projects/${projectId}`);
+  await expect(labShell(page).getByRole('heading', { name: 'Lab Project 2', exact: true })).toBeVisible();
+  // /projects/:id reads its own cache entry, so it neither joins nor reuses the delayed lab read.
+  expect(detailRequestsFor(detailRequests, projectId)).toHaveLength(2);
+});
+
 test('with prefetch off, hover requests nothing and the delayed route shows a pending state', async ({ page }) => {
   await signIn(page, email);
   const detailRequests = recordProjectDetailRequests(page);
@@ -199,9 +217,10 @@ test('rapid successive navigation never shows an earlier project under a later U
   await expect(page).toHaveURL(laterPath);
   await expect(labShell(page).getByRole('heading', { name: 'Lab Project 6', exact: true })).toBeVisible();
 
-  // Let the abandoned Lab Project 4 request settle, then confirm it did not replace the view.
+  // Let the abandoned Lab Project 4 read outlast its 1500 ms app-side latency, then
+  // confirm it did not replace the view. The network response alone settles too early.
   await expect.poll(() => detailRequestsFor(detailRequests, projectIds['Lab Project 4']).length).toBe(1);
-  await detailRequestsFor(detailRequests, projectIds['Lab Project 4'])[0].response();
+  await page.waitForTimeout(1_600);
   await expect(page).toHaveURL(laterPath);
   await expect(labShell(page).getByRole('heading', { name: 'Lab Project 4', exact: true })).toHaveCount(0);
   await expect(labShell(page).getByRole('heading', { name: 'Lab Project 6', exact: true })).toBeVisible();
