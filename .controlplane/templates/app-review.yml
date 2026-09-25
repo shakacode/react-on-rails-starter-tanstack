@@ -17,6 +17,8 @@ spec:
       value: "{{APP_NAME}}_production_cable"
     - name: REACT_ON_RAILS_STARTER_TANSTACK_DATABASE_PASSWORD
       value: "cpln://secret/{{SHARED_SECRET_DATABASE}}.password"
+    - name: ALLOW_DEMO_SEED
+      value: "true"
     - name: RAILS_ENV
       value: production
     - name: NODE_ENV
