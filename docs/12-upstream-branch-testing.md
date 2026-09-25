@@ -165,7 +165,6 @@ After swapping any upstream source, run the narrow checks first:
 bundle exec rails react_on_rails:doctor
 pnpm exec tsc --noEmit
 bin/shakapacker
-SHAKAPACKER_ASSETS_BUNDLER=webpack bin/shakapacker
 pnpm run repro:rspack-rsc
 ```
 

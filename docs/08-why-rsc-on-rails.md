@@ -231,10 +231,9 @@ RSC client-reference manifests required by React on Rails Pro. That status is
 tracked in [SPIKE.md](../SPIKE.md), and the small reproduction remains available
 through `pnpm run repro:rspack-rsc`.
 
-The Webpack bridge is still documented and available as an opt-in comparison
-path, but `/rsc-showcase` now works on the default Rspack path. The checked
-smoke coverage in [Tested Modes](06-tested-modes.md)
-keeps both bundler paths visible so neither silently regresses.
+`/rsc-showcase` works on Rspack, the starter's only configured bundler. The
+checked smoke coverage in [Tested Modes](06-tested-modes.md) keeps that path
+from silently regressing.
 
 This is also why the thesis here is framed as surface-aware rendering rather
 than "make every page RSC." React's RSC APIs are stable enough to build on, but

@@ -85,9 +85,8 @@ ENV RAILS_ENV=production
 # var. It must be baked into the build.
 #
 # `rspack` is the repo and deploy default. `react-on-rails-rsc@19.0.5-rc.5`
-# emits the RSC client-reference manifests on Rspack. The Webpack bridge remains
-# available as an opt-in comparison path with:
-#   --build-arg SHAKAPACKER_ASSETS_BUNDLER=webpack
+# emits the RSC client-reference manifests on Rspack. Rspack is the only
+# configured bundler; there is no `config/webpack/`.
 ARG SHAKAPACKER_ASSETS_BUNDLER=rspack
 ENV SHAKAPACKER_ASSETS_BUNDLER=${SHAKAPACKER_ASSETS_BUNDLER}
 

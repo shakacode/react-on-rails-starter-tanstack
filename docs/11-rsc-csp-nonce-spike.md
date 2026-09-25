@@ -107,8 +107,7 @@ renderToPipeableStream(reactRenderedElement, {
 
 After upgrading Pro, the regression should be verified by running the Rspack
 default under production CSP and clicking `/hello_server`'s `LikeButton` from
-`0 likes` to `1 like` with no browser CSP console errors. The Webpack bridge can
-remain as an optional comparison check.
+`0 likes` to `1 like` with no browser CSP console errors.
 
 ## Safe Interim
 

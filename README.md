@@ -79,8 +79,7 @@ deployed image. Use `config/shakapacker.yml`, `config/rspack/`, and the
 `.controlplane/Dockerfile` build ARG as the source of truth for the default
 path. The Rspack RSC plugin in
 `react-on-rails-rsc@19.3.0` emits the client/server manifests the Pro RSC
-client-reference path needs. Webpack remains an opt-in bridge/comparison path
-via `SHAKAPACKER_ASSETS_BUNDLER=webpack`.
+client-reference path needs. Rspack is the only configured bundler.
 
 | Component | Version |
 | --- | --- |
@@ -173,8 +172,7 @@ See [SPIKE.md](SPIKE.md) and the
 [RSC Webpack Bundler Spike](docs/09-rsc-webpack-bundler-spike.md) for the
 current RSC status. Rspack builds now emit the React Server Components
 client/server manifests expected by the Pro RSC path, and `/rsc-showcase` runs
-on the default Rspack bundler. The Webpack bridge remains documented as an
-opt-in comparison path. The remaining known RSC limitation is the
+on Rspack. The historical Webpack bridge has been removed. The remaining known RSC limitation is the
 strict production CSP nonce issue for React's streaming bootstrap on
 `/hello_server`.
 
