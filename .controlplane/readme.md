@@ -91,7 +91,7 @@ Advanced optional variables:
 | --- | --- |
 | `REVIEW_APP_DEPLOYING_ICON_URL` | Cosmetic custom animated icon for review-app comments. Ignore this for the standard setup. |
 | `CPLN_CLI_VERSION` | Pin only when Control Plane CLI compatibility requires it. |
-| `CPFLOW_VERSION` | Runtime gem override. Normally leave unset. If set, it must match the workflow tag without the leading `v`, such as `5.2.0`. |
+| `CPFLOW_VERSION` | Runtime gem override. Normally leave unset. If set, it must match the workflow tag without the leading `v`, such as `5.3.0`. |
 | `PRODUCTION_ENV_PARITY_IGNORED_NAMES` | Space-separated staging-only GVC/workload env names ignored by production promotion parity checks. Defaults to `ALLOW_DEMO_SEED`. |
 
 ## Control Plane Setup
