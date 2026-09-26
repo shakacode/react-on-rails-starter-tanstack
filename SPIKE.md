@@ -15,7 +15,7 @@ The remaining limitation is separate from the bundler: `/hello_server`'s client
 island still waits on the upstream React on Rails Pro streaming CSP nonce fix in
 strict production CSP mode. See `docs/11-rsc-csp-nonce-spike.md`.
 
-The app was bootstrapped with `create-react-on-rails-app --rsc --rspack --package-manager pnpm` and the current release stack targets React on Rails Pro `17.1.0`, React on Rails RSC `19.3.0`, and Shakapacker `10.2.0`. Shakapacker stays on `10.2.0` because the React on Rails 17.1.0 upgrade does not require a coupled Shakapacker bump. The Rails/Rspack/React on Rails Pro setup passes `react_on_rails:doctor` with the expected warning that both Rspack and Webpack configs are present.
+The app was bootstrapped with `create-react-on-rails-app --rsc --rspack --package-manager pnpm` and the current release stack targets React on Rails Pro `17.1.0`, React on Rails RSC `19.3.0`, and Shakapacker `10.2.0`. Shakapacker stays on `10.2.0` because the React on Rails 17.1.0 upgrade does not require a coupled Shakapacker bump. The Rails/Rspack/React on Rails Pro setup passes `react_on_rails:doctor`.
 
 ## Validation Goals
 
@@ -75,19 +75,17 @@ Webpack made interactive RSC work: the Webpack build emitted both RSC
 client-reference manifests, the Node renderer loaded them, and `/hello_server`
 rendered end-to-end with `REQUIRE_RSC_MANIFESTS=true`.
 
-- Rspack remains the committed default in `config/shakapacker.yml` and
-  `.controlplane/Dockerfile`. Webpack is opt-in via
-  `SHAKAPACKER_ASSETS_BUNDLER=webpack` or `bin/shakapacker --bundler webpack`,
-  with configs in `config/webpack/`.
+- Rspack is the only configured bundler in `config/shakapacker.yml` and
+  `.controlplane/Dockerfile`. The Webpack bridge (`config/webpack/`,
+  `config/swc.config.js`, and the Webpack HMR smokes) has been removed.
 - The original root cause of the Rspack gap is resolved by
   `react-on-rails-rsc`'s `RSCRspackPlugin`.
-- Tradeoff: the Webpack build is ~3× slower (~8 s vs ~3 s). Bundle size is comparable.
+- When the bridge existed, the Webpack build was ~3× slower (~8 s vs ~3 s) with comparable bundle size.
 - `/rsc-showcase` remains the public RSC + TanStack centerpiece: a bare
   TanStack Router loader fetches a React on Rails Pro RSC payload from Rails and
   composes the Flight tree beside a client island. This is not TanStack Start
   parity; it keeps the starter on Rails + React on Rails Pro + bare
   `@tanstack/react-router`.
-- The full app was previously verified on Webpack as a bridge. That bridge now
-  remains as an opt-in comparison path. A `config/swc.config.js` (automatic JSX
-  runtime) remains for the Webpack path.
-- Full details, evidence, full-app verification, deploy wiring, and the go/no-go: `docs/09-rsc-webpack-bundler-spike.md`.
+- The full app was previously verified on Webpack as a bridge before that
+  bridge was removed.
+- Historical details, evidence, and the go/no-go: `docs/09-rsc-webpack-bundler-spike.md`.

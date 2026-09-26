@@ -2,9 +2,11 @@
 
 > Status update: this is now historical bridge documentation.
 > `react-on-rails-rsc@19.0.5-rc.3` adds `RSCRspackPlugin`, and the default
-> Rspack build now emits both RSC client-reference manifests. Webpack remains
-> wired as an opt-in bridge/comparison path, so this file records the bridge
-> evidence and comparison path.
+> Rspack build now emits both RSC client-reference manifests. The Webpack bridge
+> described below (`config/webpack/`, `config/swc.config.js`, and the Webpack HMR
+> smokes) has since been removed, so `SHAKAPACKER_ASSETS_BUNDLER=webpack` no
+> longer has a config to build with. The commands and files below are kept only
+> as the historical record.
 
 ## Related React On Rails Docs
 
