@@ -2,14 +2,14 @@
 
 import fs from 'node:fs';
 import vm from 'node:vm';
-import ts from 'typescript';
+import { transformSync } from '@swc/core';
 
-const source = fs.readFileSync('app/javascript/lib/tanstackRouterStoreShim.ts', 'utf8');
-const { outputText } = ts.transpileModule(source, {
-  compilerOptions: {
-    module: ts.ModuleKind.CommonJS,
-    target: ts.ScriptTarget.ES2022,
-  },
+const filename = 'app/javascript/lib/tanstackRouterStoreShim.ts';
+const source = fs.readFileSync(filename, 'utf8');
+const { code: outputText } = transformSync(source, {
+  filename,
+  jsc: { parser: { syntax: 'typescript' }, target: 'es2022' },
+  module: { type: 'commonjs' },
 });
 
 const module = { exports: {} };

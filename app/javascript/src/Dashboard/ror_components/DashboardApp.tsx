@@ -12,6 +12,7 @@ import {
   createRouter,
   useRouter,
 } from '@tanstack/react-router';
+import type { ErrorComponentProps } from '@tanstack/react-router';
 import {
   QueryClientProvider,
   useMutation,
@@ -21,12 +22,8 @@ import {
 import type { UseMutationResult } from '@tanstack/react-query';
 import { serverRenderTanStackAppAsync } from 'react-on-rails-pro/tanstack-router';
 import type { TanStackRouterOptions } from 'react-on-rails-pro/tanstack-router';
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
+import { flexRender, tableFeatures, useTable } from '@tanstack/react-table';
+import type { ColumnDef } from '@tanstack/react-table';
 import {
   ArrowRight,
   ExternalLink,
@@ -158,6 +155,9 @@ const useDashboardProps = () => {
 
 const showTanStackDevtools = () =>
   typeof window !== 'undefined' && window.localStorage.getItem('tanstack-devtools') === '1';
+
+// The projects table only renders rows; sorting and paging happen server-side.
+const projectTableFeatures = tableFeatures({});
 
 const panelClassName = 'tanstack-panel border-border/70 bg-card/95 shadow-sm';
 const panelHeaderClassName = 'tanstack-panel-header gap-4 border-b border-border/60 pb-4';
@@ -545,12 +545,12 @@ function DashboardFooter() {
   );
 }
 
-function RouteError({ error }: { error: Error }) {
+function RouteError({ error }: ErrorComponentProps) {
   return (
     <Alert className={panelClassName} variant="destructive">
       <AlertTitle>This section is unavailable</AlertTitle>
       <AlertDescription>
-        <p>{error.message}</p>
+        <p>{error instanceof Error ? error.message : null}</p>
         <Button className="mt-3" type="button" onClick={() => window.location.reload()}>
           Retry
         </Button>
@@ -898,7 +898,7 @@ function ProjectsTable({
     initialData,
   });
 
-  const columns = useMemo<ColumnDef<Project>[]>(
+  const columns = useMemo<ColumnDef<typeof projectTableFeatures, Project>[]>(
     () => [
       {
         accessorKey: 'name',
@@ -938,10 +938,10 @@ function ProjectsTable({
     [],
   );
 
-  const table = useReactTable({
+  const table = useTable({
+    features: projectTableFeatures,
     data: projectsQuery.data?.projects ?? [],
     columns,
-    getCoreRowModel: getCoreRowModel(),
   });
 
   return (
@@ -1010,7 +1010,7 @@ function ProjectsTable({
                 ) : table.getRowModel().rows.length > 0 ? (
                   table.getRowModel().rows.map((row) => (
                     <TableRow key={row.id}>
-                      {row.getVisibleCells().map((cell) => (
+                      {row.getAllCells().map((cell) => (
                         <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                       ))}
                     </TableRow>
