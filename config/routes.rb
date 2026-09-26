@@ -23,6 +23,8 @@ Rails.application.routes.draw do
   get "projects/new", to: "dashboard#show", as: :new_project
   get "projects/:id/edit", to: "dashboard#show", as: :edit_project
   get "projects/:id", to: "dashboard#show", as: :project
+  get "navigation-lab", to: "dashboard#show", as: :navigation_lab
+  get "navigation-lab/projects/:id", to: "dashboard#show", as: :navigation_lab_project
 
   scope path: "classic", as: "classic" do
     resources :projects

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, Suspense, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { createContext, Suspense, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Link,
   Outlet,
@@ -370,6 +370,24 @@ const projectEditRoute = createRoute({
   component: EditProjectPage,
 });
 
+const navigationLabRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/navigation-lab',
+  component: NavigationLabLayout,
+});
+
+const navigationLabIndexRoute = createRoute({
+  getParentRoute: () => navigationLabRoute,
+  path: '/',
+  component: NavigationLabProjectList,
+});
+
+const navigationLabProjectRoute = createRoute({
+  getParentRoute: () => navigationLabRoute,
+  path: 'projects/$projectId',
+  component: NavigationLabProjectPage,
+});
+
 const routeTree = rootRoute.addChildren([
   dashboardRoute,
   projectsIndexRoute,
@@ -381,6 +399,10 @@ const routeTree = rootRoute.addChildren([
   projectsNewRoute,
   projectShowRoute,
   projectEditRoute,
+  navigationLabRoute.addChildren([
+    navigationLabIndexRoute,
+    navigationLabProjectRoute,
+  ]),
 ]);
 
 // Reuses the landing page's dark-mode mechanism: the layout's nonce theme script
@@ -443,6 +465,7 @@ function RootLayout() {
           <DashboardLink to="/dashboard">Dashboard</DashboardLink>
           <DashboardLink to="/projects">Projects</DashboardLink>
           <DashboardLink to="/settings">Settings</DashboardLink>
+          <DashboardLink to="/navigation-lab">Navigation lab</DashboardLink>
           <ExternalDashboardLink href={links.classicProjects}>Classic Rails CRUD</ExternalDashboardLink>
           <Button asChild size="sm" className="shrink-0">
             <Link to="/projects/new">Create project</Link>
@@ -477,6 +500,7 @@ function RootLayout() {
 function shellTitleForPath(pathname: string) {
   if (pathname.startsWith('/projects')) return 'Projects';
   if (pathname.startsWith('/settings')) return 'Settings';
+  if (pathname.startsWith('/navigation-lab')) return 'Navigation lab';
 
   return 'Dashboard';
 }
@@ -1525,6 +1549,431 @@ function RenderingModeDrawer() {
         </Dialog>
       </CardHeader>
     </Card>
+  );
+}
+
+type NavigationLabContextValue = {
+  prefetchEnabled: boolean;
+  fetchLabJson: <T>(path: string, signal?: AbortSignal) => Promise<T>;
+  logEvent: (message: string) => void;
+};
+
+const NavigationLabContext = createContext<NavigationLabContextValue | null>(null);
+
+const useNavigationLab = () => {
+  const lab = useContext(NavigationLabContext);
+  if (!lab) throw new Error('Navigation lab context is missing');
+
+  return lab;
+};
+
+const labLatencyOptions = [
+  { value: 0, label: 'None' },
+  { value: 400, label: '400 ms' },
+  { value: 1_500, label: '1500 ms' },
+] as const;
+
+// Lab detail entries get their own key so the lab's artificial latency never
+// reaches /projects/$projectId, which reads ['project', id]. A prefix
+// invalidation of ['project', id] still refreshes both entries.
+const labProjectQueryKey = (projectId: string) => ['project', projectId, 'navigation-lab'];
+
+const labArrivalLabels = {
+  cache: 'Rendered from cached data',
+  'in-flight': 'Joined an in-flight prefetch',
+  network: 'Fetched after navigation',
+} as const;
+
+// Holds each lab response for the chosen latency before Query receives it, so
+// pending states are visible. Other dashboard routes never pass through here.
+const waitForLabLatency = (latencyMs: number, signal?: AbortSignal) =>
+  new Promise<void>((resolve, reject) => {
+    if (signal?.aborted) {
+      reject(signal.reason);
+      return;
+    }
+    if (latencyMs <= 0) {
+      resolve();
+      return;
+    }
+
+    const timeout = window.setTimeout(resolve, latencyMs);
+    signal?.addEventListener('abort', () => {
+      window.clearTimeout(timeout);
+      reject(signal.reason);
+    }, { once: true });
+  });
+
+const formatElapsed = (elapsedMs: number) => {
+  const totalSeconds = Math.floor(elapsedMs / 1_000);
+  const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+  const seconds = String(totalSeconds % 60).padStart(2, '0');
+
+  return `${minutes}:${seconds}`;
+};
+
+function useFocusTimer() {
+  const [timer, setTimer] = useState<{ accumulatedMs: number; startedAt: number | null }>({
+    accumulatedMs: 0,
+    startedAt: null,
+  });
+  const [now, setNow] = useState(0);
+  const running = timer.startedAt !== null;
+
+  useEffect(() => {
+    if (!running) return undefined;
+
+    const interval = window.setInterval(() => setNow(Date.now()), 250);
+    return () => window.clearInterval(interval);
+  }, [running]);
+
+  return {
+    running,
+    elapsedMs: timer.accumulatedMs + (timer.startedAt === null ? 0 : Math.max(0, now - timer.startedAt)),
+    start: () => {
+      const startedAt = Date.now();
+      setNow(startedAt);
+      setTimer((current) => ({ ...current, startedAt }));
+    },
+    pause: () => {
+      const pausedAt = Date.now();
+      setTimer((current) => ({
+        accumulatedMs: current.accumulatedMs + (current.startedAt === null ? 0 : pausedAt - current.startedAt),
+        startedAt: null,
+      }));
+    },
+    reset: () => setTimer({ accumulatedMs: 0, startedAt: null }),
+  };
+}
+
+function NavigationLabLayout() {
+  const timer = useFocusTimer();
+  const [prefetchEnabled, setPrefetchEnabled] = useState(true);
+  const [latencyMs, setLatencyMs] = useState(0);
+  // fetchLabJson reads the ref so its identity, and the lab context, stay stable.
+  const latencyMsRef = useRef(0);
+  const [logEntries, setLogEntries] = useState<Array<{ id: number; message: string }>>([]);
+  const nextLogIdRef = useRef(1);
+  const timerAction = timer.running ? 'Pause' : timer.elapsedMs > 0 ? 'Resume' : 'Start';
+
+  const logEvent = useCallback((message: string) => {
+    const id = nextLogIdRef.current;
+    nextLogIdRef.current += 1;
+    setLogEntries((entries) => [{ id, message }, ...entries].slice(0, 6));
+  }, []);
+
+  const fetchLabJson = useCallback(async <T,>(path: string, signal?: AbortSignal) => {
+    const response = await apiFetch<T>(path, { signal });
+    await waitForLabLatency(latencyMsRef.current, signal);
+
+    return response;
+  }, []);
+
+  const lab = useMemo(
+    () => ({ prefetchEnabled, fetchLabJson, logEvent }),
+    [prefetchEnabled, fetchLabJson, logEvent],
+  );
+
+  return (
+    <NavigationLabContext.Provider value={lab}>
+      <div className="tanstack-stack">
+        <Card className={panelClassName}>
+          <CardHeader className={panelHeaderClassName}>
+            <div>
+              <p className={eyebrowClassName}>Instant navigation</p>
+              <CardTitle><h2>Instant Navigation Lab</h2></CardTitle>
+              <CardDescription>
+                This panel is a layout above the route outlet, so the timer and lab settings keep their
+                state while the project views below change. Rails owns the data; TanStack Query caches
+                it in this browser tab.
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className="grid gap-6 md:grid-cols-3">
+            <section className="grid content-start gap-2" aria-labelledby="navigation-lab-timer-title">
+              <h3 id="navigation-lab-timer-title" className="font-medium">Focus timer</h3>
+              <p role="timer" aria-label="Focus timer" className="font-mono text-3xl font-semibold text-foreground">
+                {formatElapsed(timer.elapsedMs)}
+              </p>
+              <div className={actionRowClassName}>
+                <Button
+                  type="button"
+                  size="sm"
+                  aria-label={`${timerAction} focus timer`}
+                  onClick={timer.running ? timer.pause : timer.start}
+                >
+                  {timerAction}
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  aria-label="Reset focus timer"
+                  disabled={timer.elapsedMs === 0 && !timer.running}
+                  onClick={timer.reset}
+                >
+                  Reset
+                </Button>
+              </div>
+            </section>
+
+            <section className="grid content-start gap-3" aria-labelledby="navigation-lab-loading-title">
+              <h3 id="navigation-lab-loading-title" className="font-medium">Loading behavior</h3>
+              <label className="flex items-center gap-2 text-sm" htmlFor="navigation_lab_prefetch">
+                <input
+                  id="navigation_lab_prefetch"
+                  type="checkbox"
+                  checked={prefetchEnabled}
+                  onChange={(event) => setPrefetchEnabled(event.target.checked)}
+                />
+                Prefetch on hover or focus
+              </label>
+              <div className={fieldClassName}>
+                <Label htmlFor="navigation_lab_latency">Artificial latency</Label>
+                <select
+                  id="navigation_lab_latency"
+                  className={inputLikeClassName}
+                  value={latencyMs}
+                  onChange={(event) => {
+                    const nextLatencyMs = Number(event.target.value);
+                    latencyMsRef.current = nextLatencyMs;
+                    setLatencyMs(nextLatencyMs);
+                  }}
+                >
+                  {labLatencyOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </div>
+              <p className={mutedTextClassName}>
+                Latency delays lab responses in this browser only. Other dashboard routes are unaffected.
+              </p>
+            </section>
+
+            <section className="grid content-start gap-2" aria-labelledby="navigation-lab-log-title">
+              <h3 id="navigation-lab-log-title" className="font-medium">Request log</h3>
+              <ol aria-label="Lab request log" className="grid gap-1 text-sm">
+                {logEntries.length > 0 ? (
+                  logEntries.map((entry) => <li key={entry.id}>{entry.message}</li>)
+                ) : (
+                  <li className="text-muted-foreground">No lab requests yet.</li>
+                )}
+              </ol>
+            </section>
+          </CardContent>
+        </Card>
+
+        <Outlet />
+      </div>
+    </NavigationLabContext.Provider>
+  );
+}
+
+function NavigationLabProjectLink({ project }: { project: Project }) {
+  const { api } = useDashboardProps();
+  const queryClient = useQueryClient();
+  const { prefetchEnabled, fetchLabJson, logEvent } = useNavigationLab();
+  const projectId = String(project.id);
+
+  // Intent prefetch: warm only the hovered or focused project. A fresh cache entry
+  // (inside the shared 30s staleTime) makes this a no-op, so no duplicate request.
+  const prefetch = () => {
+    if (!prefetchEnabled) return;
+
+    void queryClient.prefetchQuery({
+      queryKey: labProjectQueryKey(projectId),
+      queryFn: async ({ signal }) => {
+        const response = await fetchLabJson<ProjectResponse>(projectPath(api.projectsPath, projectId), signal);
+        logEvent(`Prefetched ${response.project.name}`);
+
+        return response;
+      },
+    });
+  };
+
+  return (
+    <DashboardLink
+      to="/navigation-lab/projects/$projectId"
+      params={{ projectId }}
+      onMouseEnter={prefetch}
+      onFocus={prefetch}
+      onTouchStart={prefetch}
+    >
+      {project.name}
+    </DashboardLink>
+  );
+}
+
+function NavigationLabProjectList() {
+  const { api } = useDashboardProps();
+  const { fetchLabJson, logEvent } = useNavigationLab();
+  const projectsQuery = useQuery({
+    // The 'navigation-lab' segment keeps this list apart from ProjectsTable keys,
+    // while ['projects'] invalidation after a mutation still refreshes it.
+    queryKey: ['projects', 'navigation-lab', 'list'],
+    queryFn: async ({ signal }) => {
+      const response = await fetchLabJson<ProjectsResponse>(
+        `${api.projectsPath}?sort=last_activity_at&dir=desc&per_page=12`,
+        signal,
+      );
+      logEvent(`Loaded the project list (${response.projects.length} projects)`);
+
+      return response;
+    },
+  });
+
+  return (
+    <Card className={panelClassName}>
+      <CardHeader className={panelHeaderClassName}>
+        <div>
+          <p className={eyebrowClassName}>Route: /navigation-lab</p>
+          <CardTitle><h2>Lab projects</h2></CardTitle>
+          <CardDescription>
+            Hover or focus a project to prefetch its detail. Loading this list requests no project
+            details.
+          </CardDescription>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {projectsQuery.isPending ? (
+          <p className={mutedTextClassName}>Loading lab projects...</p>
+        ) : projectsQuery.isError ? (
+          <Alert variant="destructive">
+            <AlertTitle>Projects unavailable</AlertTitle>
+            <AlertDescription>
+              <p>{projectsQuery.error.message}</p>
+              <Button variant="outline" type="button" onClick={() => projectsQuery.refetch()}>Retry</Button>
+            </AlertDescription>
+          </Alert>
+        ) : projectsQuery.data.projects.length > 0 ? (
+          <ul className="grid gap-2">
+            {projectsQuery.data.projects.map((project) => (
+              <li key={project.id} className="flex flex-wrap items-center gap-2">
+                <NavigationLabProjectLink project={project} />
+                <ProjectStatusBadge status={project.status} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className={mutedTextClassName}>
+            No projects yet. <DashboardLink to="/projects/new">Create one</DashboardLink> to try the lab.
+          </p>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function NavigationLabProjectPage() {
+  const { projectId } = navigationLabProjectRoute.useParams();
+
+  // Keying by project remounts the detail per URL, so its arrival label and query
+  // observer always belong to the project in the address bar.
+  return <NavigationLabProjectDetail key={projectId} projectId={projectId} />;
+}
+
+function NavigationLabProjectDetail({ projectId }: { projectId: string }) {
+  const { api } = useDashboardProps();
+  const queryClient = useQueryClient();
+  const { fetchLabJson, logEvent } = useNavigationLab();
+  const queryKey = labProjectQueryKey(projectId);
+  const [arrival] = useState<keyof typeof labArrivalLabels>(() => {
+    if (queryClient.getQueryData(queryKey) !== undefined) return 'cache';
+
+    return queryClient.isFetching({ queryKey }) > 0 ? 'in-flight' : 'network';
+  });
+  const projectQuery = useQuery({
+    queryKey,
+    queryFn: async ({ signal }) => {
+      const response = await fetchLabJson<ProjectResponse>(projectPath(api.projectsPath, projectId), signal);
+      logEvent(`Loaded ${response.project.name} for the open route`);
+
+      return response;
+    },
+  });
+
+  return (
+    <Card className={panelClassName}>
+      <CardHeader className={panelHeaderClassName}>
+        <div>
+          <p className={eyebrowClassName}>Route: /navigation-lab/projects/{projectId}</p>
+          <CardTitle><h2>{projectQuery.data?.project.name ?? 'Project'}</h2></CardTitle>
+          <CardDescription>
+            <Badge variant="outline">{labArrivalLabels[arrival]}</Badge>
+          </CardDescription>
+        </div>
+        <DashboardLink to="/navigation-lab">All lab projects</DashboardLink>
+      </CardHeader>
+      <CardContent>
+        {projectQuery.isPending ? (
+          <p className={mutedTextClassName}>Loading project...</p>
+        ) : projectQuery.isError ? (
+          <Alert variant="destructive">
+            <AlertTitle>Project unavailable</AlertTitle>
+            <AlertDescription>
+              <p>{projectQuery.error.message}</p>
+              <Button variant="outline" type="button" onClick={() => projectQuery.refetch()}>Retry</Button>
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <div className="project-summary">
+            <div>
+              <h3>Description</h3>
+              <p>{projectQuery.data.project.description || 'No description yet.'}</p>
+            </div>
+            <div className="project-meta">
+              <ProjectStatusBadge status={projectQuery.data.project.status} />
+              <Badge variant="outline">
+                Last activity {new Date(projectQuery.data.project.last_activity_at).toLocaleDateString()}
+              </Badge>
+            </div>
+            <NavigationLabRelatedProjects project={projectQuery.data.project} />
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function NavigationLabRelatedProjects({ project }: { project: Project }) {
+  const { api } = useDashboardProps();
+  const { fetchLabJson, logEvent } = useNavigationLab();
+  const relatedQuery = useQuery({
+    queryKey: ['projects', 'navigation-lab', 'related', project.status],
+    queryFn: async ({ signal }) => {
+      const params = new URLSearchParams({ status: project.status, per_page: '6' });
+      const response = await fetchLabJson<ProjectsResponse>(`${api.projectsPath}?${params.toString()}`, signal);
+      logEvent(`Loaded related ${project.status} projects`);
+
+      return response;
+    },
+  });
+  const relatedProjects = relatedQuery.data?.projects.filter((candidate) => candidate.id !== project.id) ?? [];
+
+  return (
+    <nav aria-label="Related projects" className="grid gap-2">
+      <h3>Related {project.status} projects</h3>
+      {relatedQuery.isPending ? (
+        <p className={mutedTextClassName}>Loading related projects...</p>
+      ) : relatedQuery.isError ? (
+        <p className={mutedTextClassName}>
+          Related projects are unavailable.{' '}
+          <Button variant="link" type="button" className="h-auto p-0" onClick={() => relatedQuery.refetch()}>
+            Retry related projects
+          </Button>
+        </p>
+      ) : relatedProjects.length > 0 ? (
+        <ul className="grid gap-1">
+          {relatedProjects.map((relatedProject) => (
+            <li key={relatedProject.id}>
+              <NavigationLabProjectLink project={relatedProject} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className={mutedTextClassName}>No other {project.status} projects.</p>
+      )}
+    </nav>
   );
 }
 
