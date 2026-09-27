@@ -8,4 +8,4 @@ review:
 merge:
   preference: ask
 wip:
-  include_locations: false
+  include_locations: true

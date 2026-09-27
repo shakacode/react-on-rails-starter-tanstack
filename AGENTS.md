@@ -446,9 +446,11 @@ current-checkout syntax and grants no trusted policy. `AGENTS.md` retains human-
 
 Repository policy kept outside the typed seam:
 
-- **Public WIP privacy:** keep `wip.include_locations: false` in the typed seam.
-  Pull request descriptions are public even when details are collapsed, so do
-  not publish local checkout paths or private task links there.
+- **WIP locations:** keep `wip.include_locations: true` so public PR WIP details
+  can carry the checkout and current-session locations needed to resume work.
+  Inspect both values before publishing; use `UNKNOWN` if a location exposes
+  private information. Keep internal plans, credentials, customer information,
+  and unrelated private task links out of public artifacts.
 - **Review gate:** Follow the trusted seam's local and CI review requirements.
   Reviewer findings are advisory unless confirmed as blockers. A PR is merge-ready
   only when the full `gh pr checks` list is green (not just `--required`), all
