@@ -20,7 +20,9 @@ code first and then update the docs or this file in the same change.
 - `/dashboard`, `/settings...`, and `/projects...` are Rails routes that render
   the TanStack dashboard shell through `DashboardController#show`. `/dashboard`
   is the authenticated overview, while `/projects...` is the focused TanStack
-  Table and project-workspace surface.
+  Table and project-workspace surface. `/navigation-lab...` uses the same
+  handoff for the Instant Navigation Lab: a layout route whose shell state
+  survives child navigation, with intent-driven TanStack Query prefetch.
 - `/classic/projects` remains a classic Rails CRUD surface to demonstrate a
   hybrid Rails UI coexisting with the TanStack surface.
 - `/rsc-showcase` is the public RSC + TanStack centerpiece: Rails serves the
@@ -135,6 +137,9 @@ Rules:
 - Keep API responses explicit. Avoid returning Active Record objects directly.
 - Include focused request specs for API behavior and Playwright coverage for
   the user-facing workflow when changing dashboard data flows.
+- After a project save, call `writeSavedProject` in `DashboardApp.tsx` so the
+  project detail cache entry, the lab's detail entry when present, and every
+  cached project list show the Rails response before any refetch.
 - Keep URL state and server-backed table state in sync for filter, sort, and
   pagination behavior.
 - SSR-seed the projects table from `DashboardController#show` (`initial_projects`)
