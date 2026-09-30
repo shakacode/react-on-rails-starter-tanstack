@@ -4,10 +4,7 @@
 const { merge, config } = require('shakapacker');
 const commonWebpackConfig = require('./commonWebpackConfig');
 
-const bundler = config.assets_bundler === 'rspack'
-  ? require('@rspack/core')
-  : require('webpack');
-const { RSCWebpackPlugin } = require('react-on-rails-rsc/WebpackPlugin');
+const bundler = require('@rspack/core');
 const { RSCRspackPlugin } = require('react-on-rails-rsc/RspackPlugin');
 const rscClientReferences = require('./rscClientReferences');
 
@@ -73,10 +70,7 @@ const configureServer = (rscBundle = false) => {
   // Add RSC plugin for server bundle (handles client component references).
   // Skip for RSC bundle - it doesn't need the client-reference manifest plugin.
   if (!rscBundle) {
-    const RSCClientReferencePlugin =
-      config.assets_bundler === 'rspack' ? RSCRspackPlugin : RSCWebpackPlugin;
-
-    serverWebpackConfig.plugins.push(new RSCClientReferencePlugin({
+    serverWebpackConfig.plugins.push(new RSCRspackPlugin({
       isServer: true,
       clientReferences: rscClientReferences,
     }));

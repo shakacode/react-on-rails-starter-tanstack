@@ -2,7 +2,7 @@
 
 This starter begins from `create-react-on-rails-app --rsc --rspack` and currently targets the React on Rails Pro `17.1.0` stack with React on Rails RSC `19.3.0` and Shakapacker `10.2.0`.
 
-Shakapacker remains on `10.2.0` because the React on Rails 17.1.0 upgrade does not require a coupled Shakapacker bump. Rspack is the checked-in local and deploy default. `react-on-rails-rsc@19.3.0` provides the Rspack RSC manifest support this starter needs, while Webpack remains an opt-in bridge/comparison path.
+Shakapacker remains on `10.2.0` because the React on Rails 17.1.0 upgrade does not require a coupled Shakapacker bump. Rspack is the only checked-in local and deploy bundler. `react-on-rails-rsc@19.3.0` provides the Rspack RSC manifest support this starter needs.
 
 ## Related React On Rails Docs
 
@@ -54,9 +54,6 @@ flowchart TB
 - Rails owns the public routes, auth routes, API routes, and the HTML shells.
 - Shakapacker uses Rspack for the default local client, server, and RSC bundles,
   including RSC client-reference manifest generation.
-- The Webpack bridge uses `SHAKAPACKER_ASSETS_BUNDLER=webpack` and
-  `config/webpack/` as an opt-in comparison path for the same RSC
-  client-reference manifests.
 - React on Rails Pro provides the Node renderer, TanStack SSR integration, and RSC streaming path.
 - SolidQueue is installed by Rails and runs as a separate worker process in development and production.
 
@@ -106,6 +103,6 @@ Rspack is the active bundler in `config/shakapacker.yml`. Development disables c
 The public React Server Components path is green on the local Rspack default
 with `react-on-rails-rsc@19.3.0`. The Rspack client, server, and
 server-only RSC bundles compile and emit the React client/server manifests
-expected by the React on Rails RSC client-reference path. The Webpack bridge
-remains documented in [RSC Webpack Bundler Spike](09-rsc-webpack-bundler-spike.md)
-as an opt-in bridge and historical comparison path.
+expected by the React on Rails RSC client-reference path. The former Webpack
+bridge is removed; its history is in
+[RSC Webpack Bundler Spike](09-rsc-webpack-bundler-spike.md).

@@ -14,9 +14,9 @@ code first and then update the docs or this file in the same change.
   shadcn/ui primitives.
 - Rspack is the active Shakapacker bundler for local development and the
   deployed image. Use `config/shakapacker.yml`, `config/rspack/`, and the
-  `.controlplane/Dockerfile` `SHAKAPACKER_ASSETS_BUNDLER=rspack` build ARG as
-  the source of truth for default bundling behavior. Webpack remains an opt-in
-  bridge/comparison path via `SHAKAPACKER_ASSETS_BUNDLER=webpack`.
+  `.controlplane/Dockerfile` `SHAKAPACKER_ASSETS_BUNDLER=rspack` ENV as
+  the source of truth for bundling behavior. Rspack is the only configured
+  bundler; the former Webpack bridge (`config/webpack/`) was removed.
 - `/dashboard`, `/settings...`, and `/projects...` are Rails routes that render
   the TanStack dashboard shell through `DashboardController#show`. `/dashboard`
   is the authenticated overview, while `/projects...` is the focused TanStack
@@ -267,9 +267,8 @@ Reference marker IDs: `shakapacker-rspack-config`,
 Rules:
 
 - Keep this starter on Rspack unless the task explicitly asks to evaluate
-  Webpack.
-- Keep Rspack as the deploy/RSC default. Switching the deployed build to Webpack
-  for comparison should remain a one-line Docker build ARG change.
+  Webpack. There is no `config/webpack/`; do not reintroduce one without that
+  explicit request.
 - `bin/shakapacker` refreshes React on Rails generated packs before invoking
   Shakapacker so ignored files under `app/javascript/**/generated` do not stay
   stale after branch switches. Only use
@@ -452,9 +451,6 @@ current-checkout syntax and grants no trusted policy. `AGENTS.md` retains human-
 
 Repository policy kept outside the typed seam:
 
-- **Public WIP privacy:** keep `wip.include_locations: false` in the typed seam.
-  Pull request descriptions are public even when details are collapsed, so do
-  not publish local checkout paths or private task links there.
 - **Review gate:** Follow the trusted seam's local and CI review requirements.
   Reviewer findings are advisory unless confirmed as blockers. A PR is merge-ready
   only when the full `gh pr checks` list is green (not just `--required`), all

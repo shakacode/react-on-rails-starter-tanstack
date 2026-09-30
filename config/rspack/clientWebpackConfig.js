@@ -2,8 +2,6 @@
 // https://github.com/shakacode/react-on-rails-demo-ssr-hmr/blob/master/config/webpack/clientWebpackConfig.js
 
 const commonWebpackConfig = require('./commonWebpackConfig');
-const { config } = require('shakapacker');
-const { RSCWebpackPlugin } = require('react-on-rails-rsc/WebpackPlugin');
 const { RSCRspackPlugin } = require('react-on-rails-rsc/RspackPlugin');
 const rscClientReferences = require('./rscClientReferences');
 
@@ -17,10 +15,7 @@ const configureClient = () => {
   // client config is going to try to load chunks.
   delete clientConfig.entry['server-bundle'];
 
-  const RSCClientReferencePlugin =
-    config.assets_bundler === 'rspack' ? RSCRspackPlugin : RSCWebpackPlugin;
-
-  clientConfig.plugins.push(new RSCClientReferencePlugin({
+  clientConfig.plugins.push(new RSCRspackPlugin({
     isServer: false,
     clientReferences: rscClientReferences,
   }));

@@ -31,8 +31,8 @@ hydration/routing, HMR/dev modes, production assets/boot, or RSC behavior.
 
 ## Starter Checklist
 
-- [ ] Kept Rspack as the supported bundler; did not switch this starter to
-      Webpack unless the issue explicitly asks for a bundler evaluation.
+- [ ] Kept Rspack as the only supported bundler; did not reintroduce a
+      Webpack config unless the issue explicitly asks for a bundler evaluation.
 - [ ] Updated `README.md`, `docs/`, or `SPIKE.md` when behavior, supported
       modes, known limitations, or Rspack/RSC status changed.
 - [ ] For dashboard route changes, checked direct full-page loads, client

@@ -1,19 +1,14 @@
 allowBuilds:
   '@parcel/watcher': true
   '@swc/core': true
-  # core-js-pure only ships a postinstall funding/ad message, no real build step.
-  'core-js-pure': false
 
 overrides:
   js-yaml: 4.3.2
-  launch-editor: 2.14.1
   fast-uri: 3.1.6
   find-my-way: 9.7.0
   nanoid: 3.3.18
   postcss: 8.5.28
-  svgo: 4.1.0
   browserslist: 4.28.7
-  qs: 6.16.0
   fastify: 5.12.1
   baseline-browser-mapping: 2.11.0
 
