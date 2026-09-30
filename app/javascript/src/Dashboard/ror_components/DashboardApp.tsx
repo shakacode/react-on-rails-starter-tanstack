@@ -19,7 +19,7 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
-import type { UseMutationResult } from '@tanstack/react-query';
+import type { QueryClient, UseMutationResult } from '@tanstack/react-query';
 import { serverRenderTanStackAppAsync } from 'react-on-rails-pro/tanstack-router';
 import type { TanStackRouterOptions } from 'react-on-rails-pro/tanstack-router';
 import { flexRender, tableFeatures, useTable } from '@tanstack/react-table';
@@ -1052,6 +1052,26 @@ function classicProjectPath(classicProjectsPath: string, projectId: string, suff
   return `${classicProjectsPath}/${projectId}${suffix}`;
 }
 
+// Lab detail entries get their own key so the lab's artificial latency never
+// reaches /projects/$projectId, which reads ['project', id]. writeSavedProject
+// keeps both entries current after a save.
+const labProjectQueryKey = (projectId: string) => ['project', projectId, 'navigation-lab'];
+
+// Every project save writes the Rails response into both detail entries and every
+// cached list, so a view the user returns to shows the saved values before any
+// refetch. Invalidating lists afterwards lets Rails correct sort and status membership.
+function writeSavedProject(queryClient: QueryClient, project: Project) {
+  const projectId = String(project.id);
+  queryClient.setQueryData(['project', projectId], { project });
+  queryClient.setQueryData<ProjectResponse>(labProjectQueryKey(projectId), (cached) => cached && { project });
+  queryClient.setQueriesData<ProjectsResponse>({ queryKey: ['projects'] }, (data) => data && {
+    ...data,
+    projects: data.projects.map((candidate) => (candidate.id === project.id ? project : candidate)),
+  });
+  void queryClient.invalidateQueries({ queryKey: ['projects'] });
+  void queryClient.invalidateQueries({ queryKey: ['metrics'] });
+}
+
 function useProject(projectId: string) {
   const { api } = useDashboardProps();
 
@@ -1162,9 +1182,7 @@ function EditProjectPage() {
         json: { project: values },
       }),
     onSuccess: ({ project }) => {
-      queryClient.setQueryData(['project', String(project.id)], { project });
-      queryClient.invalidateQueries({ queryKey: ['projects'] });
-      queryClient.invalidateQueries({ queryKey: ['metrics'] });
+      writeSavedProject(queryClient, project);
       toast.success('Project saved.');
       navigate({ to: '/projects/$projectId', params: { projectId: String(project.id) } });
     },
@@ -1572,11 +1590,6 @@ const labLatencyOptions = [
   { value: 400, label: '400 ms' },
   { value: 1_500, label: '1500 ms' },
 ] as const;
-
-// Lab detail entries get their own key so the lab's artificial latency never
-// reaches /projects/$projectId, which reads ['project', id]. A prefix
-// invalidation of ['project', id] still refreshes both entries.
-const labProjectQueryKey = (projectId: string) => ['project', projectId, 'navigation-lab'];
 
 const labArrivalLabels = {
   cache: 'Rendered from cached data',

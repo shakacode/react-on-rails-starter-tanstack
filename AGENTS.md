@@ -137,6 +137,9 @@ Rules:
 - Keep API responses explicit. Avoid returning Active Record objects directly.
 - Include focused request specs for API behavior and Playwright coverage for
   the user-facing workflow when changing dashboard data flows.
+- After a project save, call `writeSavedProject` in `DashboardApp.tsx` so the
+  project detail cache entry, the lab's detail entry when present, and every
+  cached project list show the Rails response before any refetch.
 - Keep URL state and server-backed table state in sync for filter, sort, and
   pagination behavior.
 - SSR-seed the projects table from `DashboardController#show` (`initial_projects`)
