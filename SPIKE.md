@@ -33,7 +33,7 @@ The app was bootstrapped with `create-react-on-rails-app --rsc --rspack --packag
 - React, React DOM, and React Server DOM Flight stack: `19.3.0`.
 - Shakapacker launch stack: `10.3.2`.
 - Rspack builds complete successfully and emit the RSC client-reference
-  manifests with `react-on-rails-rsc@19.0.5-rc.2`.
+  manifests with `react-on-rails-rsc@19.3.1-rc.0`.
 - The `/dashboard` TanStack Router, Query, and Table surface prerenders through React on Rails Pro's Node renderer and hydrates under the Rails shell.
 - `bundle exec rails react_on_rails:doctor` reports 50 checks passed, 1 warning, 0 errors.
 - `bin/doctor`, `bin/setup`, RSpec, and Playwright smoke tests pass locally.
