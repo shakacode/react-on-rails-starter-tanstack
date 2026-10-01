@@ -15,7 +15,7 @@ The remaining limitation is separate from the bundler: `/hello_server`'s client
 island still waits on the upstream React on Rails Pro streaming CSP nonce fix in
 strict production CSP mode. See `docs/11-rsc-csp-nonce-spike.md`.
 
-The app was bootstrapped with `create-react-on-rails-app --rsc --rspack --package-manager pnpm` and the current release stack targets React on Rails Pro `17.1.0`, React on Rails RSC `19.3.0`, and Shakapacker `10.2.0`. Shakapacker stays on `10.2.0` because the React on Rails 17.1.0 upgrade does not require a coupled Shakapacker bump. The Rails/Rspack/React on Rails Pro setup passes `react_on_rails:doctor`.
+The app was bootstrapped with `create-react-on-rails-app --rsc --rspack --package-manager pnpm`. The current release stack pins both Ruby gems to `17.2.0.rc.0`, the Pro and Node renderer packages to `17.2.0-rc.0`, RSC to `19.3.1-rc.0`, React/DOM/Flight to `19.3.0`, and Shakapacker to `10.3.2`. The Rails/Rspack/React on Rails Pro setup passes `react_on_rails:doctor`.
 
 ## Validation Goals
 
@@ -27,9 +27,11 @@ The app was bootstrapped with `create-react-on-rails-app --rsc --rspack --packag
 ## What Worked
 
 - Rails 8.1 app scaffolded with PostgreSQL and SolidQueue.
-- React on Rails and React on Rails Pro release stack: `17.1.0` / `17.1.0`.
-- React on Rails RSC stack: `19.3.0`.
-- Shakapacker launch stack: `10.2.0`.
+- React on Rails and React on Rails Pro Ruby gems: `17.2.0.rc.0`.
+- React on Rails Pro and Node renderer packages: `17.2.0-rc.0`.
+- React on Rails RSC stack: `19.3.1-rc.0`.
+- React, React DOM, and React Server DOM Flight stack: `19.3.0`.
+- Shakapacker launch stack: `10.3.2`.
 - Rspack builds complete successfully and emit the RSC client-reference
   manifests with `react-on-rails-rsc@19.0.5-rc.2`.
 - The `/dashboard` TanStack Router, Query, and Table surface prerenders through React on Rails Pro's Node renderer and hydrates under the Rails shell.
@@ -46,7 +48,7 @@ manifests present.
 Current stance:
 
 - Keep Rspack as the bundler.
-- Keep the React on Rails Pro `17.1.0`, React on Rails RSC `19.3.0`, and Shakapacker `10.2.0` release stack.
+- Keep the React on Rails `17.2.0` RC stack, with React/DOM/Flight `19.3.0` and Shakapacker `10.3.2`.
 - Keep the Rspack/RSC client boundary repro in `pnpm run repro:rspack-rsc`.
 - Keep direct Rspack packages aligned with the Shakapacker Rspack 2 adapter: `@rspack/core` / `@rspack/cli` `2.0.4` and `@rspack/dev-server` `2.0.1`.
 - Keep `react-on-rails-rsc` on `19.3.0` or newer when requiring Rspack RSC
