@@ -136,7 +136,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       issues: write
-      pull-requests: write
 
     steps:
       - name: Publish review for this commit
