@@ -136,6 +136,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       issues: write
+      # `gh pr comment` posts through the pull request, which needs this scope.
+      pull-requests: write
 
     steps:
       - name: Publish review for this commit
