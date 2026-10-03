@@ -48,15 +48,14 @@ Each route demonstrates a deliberate rendering choice, not a fallback:
 - **`/rsc-showcase`** is the public RSC + TanStack centerpiece. A bare TanStack
   Router loader fetches a React on Rails Pro RSC payload from Rails, decodes the
   Flight stream, and composes that server-streamed tree beside ordinary client
-  React. It now includes an in-app status panel that separates the working RSC
-  payload route from the lower-level streaming client-island limitation. It runs
-  on the default Rspack bundler with `react-on-rails-rsc@19.3.0` and
+  React. Its in-app status panel shows the RSC
+  payload route and the streaming client island. It runs
+  on the default Rspack bundler with `react-on-rails-rsc@19.3.1-rc.0` and
   exercises the provider-backed RSC prefetch path.
 - **`/hello_server`** demonstrates streaming React Server Components. The demo
-  keeps an interactive `LikeButton` client island inside a server-rendered
-  tree, but labels that island as the separate client-reference edge case. On
-  Rspack the route renders end to end; under the strict production CSP the
-  client island still waits on the upstream streaming nonce fix. See
+  hydrates an interactive `LikeButton` client island inside a server-rendered
+  tree on Rspack under the strict production CSP. The published RC includes
+  the upstream streaming nonce fix. See
   [SPIKE.md](SPIKE.md) and
   [RSC Streaming And CSP Nonces](docs/11-rsc-csp-nonce-spike.md).
 - **`/dashboard`, `/settings...`, and `/projects...`** are Rails full-page
@@ -78,20 +77,20 @@ Rspack is the default Shakapacker bundler for local development and the
 deployed image. Use `config/shakapacker.yml`, `config/rspack/`, and the
 `.controlplane/Dockerfile` `SHAKAPACKER_ASSETS_BUNDLER` ENV as the source of truth for the default
 path. The Rspack RSC plugin in
-`react-on-rails-rsc@19.3.0` emits the client/server manifests the Pro RSC
+`react-on-rails-rsc@19.3.1-rc.0` emits the client/server manifests the Pro RSC
 client-reference path needs. Rspack is the only configured bundler.
 
 | Component | Version |
 | --- | --- |
-| React on Rails / Pro | `17.1.0` / `17.1.0` |
-| React on Rails RSC | `19.3.0` |
-| Shakapacker / Shakapacker Rspack | `10.2.0` |
-| React | `19.2.8` |
+| React on Rails / Pro (Ruby gems) | `17.2.0.rc.0` / `17.2.0.rc.0` |
+| React on Rails / Pro / node renderer (npm) | `17.2.0-rc.0` |
+| React on Rails RSC | `19.3.1-rc.0` |
+| React, React DOM, React server DOM | `19.3.0` |
+| Shakapacker / Shakapacker Rspack | `10.3.2` |
 | Rails | `8.1.x` |
 | Language / tooling | TypeScript, pnpm |
 
-Shakapacker stays on `10.2.0` for this release; the React on Rails 17.1 RC5
-upgrade did not require a coupled Shakapacker bump.
+Shakapacker and Shakapacker Rspack remain independently pinned at `10.3.2`.
 
 ## Setup
 
@@ -172,9 +171,9 @@ See [SPIKE.md](SPIKE.md) and the
 [RSC Webpack Bundler Spike](docs/09-rsc-webpack-bundler-spike.md) for the
 current RSC status. Rspack builds now emit the React Server Components
 client/server manifests expected by the Pro RSC path, and `/rsc-showcase` runs
-on Rspack. The historical Webpack bridge has been removed. The remaining known RSC limitation is the
-strict production CSP nonce issue for React's streaming bootstrap on
-`/hello_server`.
+on Rspack. The historical Webpack bridge has been removed. The published RC fixes the
+streaming bootstrap nonce; `/hello_server` client interactions pass under the
+strict production CSP.
 
 ## Links
 

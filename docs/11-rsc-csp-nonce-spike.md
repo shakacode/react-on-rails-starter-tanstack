@@ -1,5 +1,14 @@
 # RSC Streaming And CSP Nonces
 
+## Published RC verification
+
+The nonce issue is resolved in `17.2.0.rc.0`. On 2026-10-02 HST, the deployed
+review app at `d4e465306353ef5d8ed1294c6d4477aba973b6c9` rendered `/hello_server`
+and its LikeButton incremented to `1 like` with zero browser errors under the
+production CSP. The deployed smoke now requires this interaction and rejects
+manifest fallback on both RSC routes. The investigation below describes the
+earlier failure and the upstream fix; it is historical evidence.
+
 ## Question
 
 Under the strict production CSP, `/hello_server` renders but the `LikeButton`
