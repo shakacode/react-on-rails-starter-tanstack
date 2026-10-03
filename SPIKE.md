@@ -11,9 +11,9 @@ client-reference manifests:
 - `public/packs/react-client-manifest.json`
 - `ssr-generated/react-server-client-manifest.json`
 
-The remaining limitation is separate from the bundler: `/hello_server`'s client
-island still waits on the upstream React on Rails Pro streaming CSP nonce fix in
-strict production CSP mode. See `docs/11-rsc-csp-nonce-spike.md`.
+The published `17.2.0.rc.0` now hydrates `/hello_server`'s client island under
+strict production CSP. The deployed LikeButton click passed on 2026-10-02 HST.
+See `docs/11-rsc-csp-nonce-spike.md` for the historical investigation.
 
 The app was bootstrapped with `create-react-on-rails-app --rsc --rspack --package-manager pnpm`. The current release stack pins both Ruby gems to `17.2.0.rc.0`, the Pro and Node renderer packages to `17.2.0-rc.0`, RSC to `19.3.1-rc.0`, React/DOM/Flight to `19.3.0`, and Shakapacker to `10.3.2`. The Rails/Rspack/React on Rails Pro setup passes `react_on_rails:doctor`.
 

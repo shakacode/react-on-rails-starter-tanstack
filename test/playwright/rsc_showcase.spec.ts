@@ -9,7 +9,7 @@ test('public RSC showcase route loads the TanStack composition surface', async (
   await page.goto('/rsc-showcase');
 
   await expect(
-    page.getByRole('heading', { name: 'Working RSC payloads with the client-reference limit called out' }),
+    page.getByRole('heading', { name: 'Working RSC payloads with hydrated client islands' }),
   ).toBeVisible();
   await expect(page.getByRole('navigation', { name: 'RSC showcase navigation' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/');

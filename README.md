@@ -48,15 +48,14 @@ Each route demonstrates a deliberate rendering choice, not a fallback:
 - **`/rsc-showcase`** is the public RSC + TanStack centerpiece. A bare TanStack
   Router loader fetches a React on Rails Pro RSC payload from Rails, decodes the
   Flight stream, and composes that server-streamed tree beside ordinary client
-  React. It now includes an in-app status panel that separates the working RSC
-  payload route from the lower-level streaming client-island limitation. It runs
+  React. Its in-app status panel shows the RSC
+  payload route and the streaming client island. It runs
   on the default Rspack bundler with `react-on-rails-rsc@19.3.1-rc.0` and
   exercises the provider-backed RSC prefetch path.
 - **`/hello_server`** demonstrates streaming React Server Components. The demo
-  keeps an interactive `LikeButton` client island inside a server-rendered
-  tree, but labels that island as the separate client-reference edge case. On
-  Rspack the route renders end to end; under the strict production CSP the
-  client island still waits on the upstream streaming nonce fix. See
+  hydrates an interactive `LikeButton` client island inside a server-rendered
+  tree on Rspack under the strict production CSP. The published RC includes
+  the upstream streaming nonce fix. See
   [SPIKE.md](SPIKE.md) and
   [RSC Streaming And CSP Nonces](docs/11-rsc-csp-nonce-spike.md).
 - **`/dashboard`, `/settings...`, and `/projects...`** are Rails full-page
@@ -172,9 +171,9 @@ See [SPIKE.md](SPIKE.md) and the
 [RSC Webpack Bundler Spike](docs/09-rsc-webpack-bundler-spike.md) for the
 current RSC status. Rspack builds now emit the React Server Components
 client/server manifests expected by the Pro RSC path, and `/rsc-showcase` runs
-on Rspack. The historical Webpack bridge has been removed. The remaining known RSC limitation is the
-strict production CSP nonce issue for React's streaming bootstrap on
-`/hello_server`.
+on Rspack. The historical Webpack bridge has been removed. The published RC fixes the
+streaming bootstrap nonce; `/hello_server` client interactions pass under the
+strict production CSP.
 
 ## Links
 

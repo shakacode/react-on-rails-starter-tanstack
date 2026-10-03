@@ -49,7 +49,7 @@ async function fetchGreeting(name: string): Promise<GreetingData> {
     facts: [
       'This component rendered entirely on the server — zero JS was sent to the browser for it.',
       'The date formatting above used server-side Intl APIs — no date library shipped to the client.',
-      'The "Like" button below is the separate client-reference edge case; the server stream does not depend on it.',
+      'The "Like" button below hydrates inside the streamed server tree under the production CSP.',
     ],
   };
 }
@@ -94,9 +94,8 @@ const HelloServer = async ({ name = 'World' }: HelloServerProps) => {
           padding: 12,
         }}
       >
-        <strong>Client-reference limit:</strong> this LikeButton is intentionally separate from the
-        working server stream. Treat it as the streaming client-island edge case until the upstream
-        hydration path is complete.
+        <strong>Hydrated client island:</strong> click Like to update client state inside the
+        server-rendered tree. The production CSP stays enabled.
       </div>
       <LikeButton />
     </div>
