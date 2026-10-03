@@ -53,3 +53,29 @@ test('public RSC showcase route loads the TanStack composition surface', async (
   await page.getByRole('button', { name: 'Pulse client state' }).click();
   await expect(page.getByText('1 route pulse')).toBeVisible();
 });
+
+
+test('streamed LikeButton waits for hydration before accepting clicks', async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ baseURL, javaScriptEnabled: false });
+  try {
+    const page = await context.newPage();
+    await page.goto('/hello_server');
+    await expect(page.getByRole('button', { name: '👍 Like', exact: true })).toBeDisabled();
+  } finally {
+    await context.close();
+  }
+});
+
+test('streamed LikeButton hydrates and responds under nonce CSP', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  const response = await page.goto('/hello_server');
+  const csp = response?.headers()['content-security-policy'] ?? '';
+  const scriptPolicy = csp.split(';').find((policy) => policy.trim().startsWith('script-src ')) ?? '';
+  expect(scriptPolicy).toMatch(/'nonce-[^']+'/);
+  expect(scriptPolicy).not.toContain("'unsafe-inline'");
+  const like = page.getByRole('button', { name: '👍 Like', exact: true });
+  await like.click();
+  await expect(page.getByText('1 like', { exact: true })).toBeVisible();
+  expect(errors).toEqual([]);
+});
