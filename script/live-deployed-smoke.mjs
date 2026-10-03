@@ -265,6 +265,11 @@ async function smokeRscShowcase(page) {
 
 async function smokeHelloServer(page) {
   const response = await gotoRoute(page, '/hello_server');
+  const csp = (await response.allHeaders())['content-security-policy'] || '';
+  const scriptPolicy = csp.split(';').find((policy) => policy.trim().startsWith('script-src ')) || '';
+  if (!/'nonce-[^']+'/.test(scriptPolicy) || scriptPolicy.includes("'unsafe-inline'")) {
+    throw new Error('hello_server must hydrate under a nonce-based CSP without unsafe-inline');
+  }
   await waitForVisible(page.getByRole('heading', { name: /React Server Components Demo/i }), 'hello_server heading');
 
   const fallbackVisible = await page.locator('[data-rsc-fallback]').isVisible({ timeout: 1_000 }).catch(() => false) ||
