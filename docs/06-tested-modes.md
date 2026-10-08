@@ -1,8 +1,8 @@
 # Tested Modes
 
 This starter keeps the TanStack dashboard on Rspack and the current stack:
-React on Rails and Pro Ruby gems `17.2.0.rc.0`, Pro and Node renderer packages
-`17.2.0-rc.0`, React on Rails RSC `19.3.1-rc.0`, React/DOM/Flight `19.3.0`,
+React on Rails and Pro Ruby gems `17.2.0.rc.1`, Pro and Node renderer packages
+`17.2.0-rc.1`, React on Rails RSC `19.3.1-rc.1`, React/DOM/Flight `19.3.0`,
 and Shakapacker `10.3.2`.
 Rspack is the only local and deploy bundler in the checked-in matrix.
 
@@ -59,7 +59,7 @@ build, rendering, or routing behavior.
 | Production-assets dev | `bin/test dev-modes` or `node script/dev-mode-smoke.mjs prod` | CI | Runs `bin/dev prod`, precompiles optimized Rspack bundles, starts Rails, SolidQueue, and the Node renderer, then checks the same authenticated TanStack routes. The browser smoke uses the same negative asset assertions as static mode. |
 | HMR dev | `bin/test hmr` or `SHAKAPACKER_DEV_SERVER_HMR=true bin/dev --no-open-browser --route=dashboard` | CI | Boots the same default dev stack with `hmr: true`, `live_reload: false`, and React Fast Refresh enabled by Shakapacker's Rspack integration, then verifies the authenticated TanStack routes hydrate, navigate, and observe a browser-open source edit. This smoke does not assert state-preserving React Fast Refresh updates. |
 | HMR RSC manifests | `bin/test hmr-rsc` or `REQUIRE_RSC_MANIFESTS=true node script/dev-mode-smoke.mjs hmr hello-server` | Release tier | Boots the Rspack HMR stack against `/hello_server`, waits for both RSC client-reference manifests on disk, and fails if the route falls back before rendering the RSC page. React on Rails Pro reads the client manifest from disk, so this catches a dev server that only serves it from memory. |
-| Rspack/RSC client boundary repro | `bin/test rsc-repro` or `pnpm run repro:rspack-rsc` | CI status, upstream repro | Builds Rspack bundles, verifies the generated `HelloServer` RSC example still contains a `'use client'` boundary, and confirms both RSC client-reference manifests are emitted with the pinned `react-on-rails-rsc@19.3.1-rc.0`. Use `REQUIRE_RSC_MANIFESTS=true` when this focused check must fail hard on a manifest regression. |
+| Rspack/RSC client boundary repro | `bin/test rsc-repro` or `pnpm run repro:rspack-rsc` | CI status, upstream repro | Builds Rspack bundles, verifies the generated `HelloServer` RSC example still contains a `'use client'` boundary, and confirms both RSC client-reference manifests are emitted with the pinned `react-on-rails-rsc@19.3.1-rc.1`. Use `REQUIRE_RSC_MANIFESTS=true` when this focused check must fail hard on a manifest regression. |
 | `/hello_server` RSC route smoke | `bin/test hello-server-rsc` or `pnpm run test:hello-server-rsc` | RSC route sentinel | Boots the static-assets dev stack against `/hello_server` and verifies the route renders the demo shell with the RSC manifests available. Use `REQUIRE_RSC_MANIFESTS=true` when intentionally requiring interactive RSC client-reference manifests. |
 | Production precompile | `bin/test production-precompile` or `RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1 REACT_ON_RAILS_STARTER_TANSTACK_DATABASE_PASSWORD=dummy bin/rails assets:precompile` | Release-impacting checks | Confirms production Rspack client, server, and RSC bundles compile. The expected Pro license warning is non-fatal. |
 | Production boot smoke | `bin/test production-boot` or `node script/production-boot-smoke.mjs` | CI, release-impacting checks | Precompiles production assets with dummy secrets, prepares production-mode databases, starts `client/node-renderer.js` from compiled output, boots Rails in `RAILS_ENV=production`, checks `/up`, signs in as `demo@example.com / password`, and checks `/projects?status=active&sort=name&dir=asc` with `X-Forwarded-Proto: https`. |

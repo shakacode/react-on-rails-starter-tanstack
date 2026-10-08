@@ -30,7 +30,7 @@ code first and then update the docs or this file in the same change.
   Rspack default. The route also includes a provider-backed RSC prefetch action
   through `prefetchServerComponent`.
 - `/hello_server` demonstrates streaming RSC. Rspack client-reference manifests
-  are available with `react-on-rails-rsc@19.3.1-rc.0`. The published product RC
+  are available with `react-on-rails-rsc@19.3.1-rc.1`. The published product RC
   hydrates its LikeButton under strict production CSP; the deployed smoke
   requires that click. `docs/11-rsc-csp-nonce-spike.md` records the resolved
   nonce investigation.
