@@ -30,6 +30,7 @@ run_static_checks() {
   run bundle exec rails react_on_rails:doctor
   run pnpm exec tsc --noEmit
   run pnpm run test:router-shim
+  run pnpm run test:project-dates
 }
 
 run_quality_checks() {

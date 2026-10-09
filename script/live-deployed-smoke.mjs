@@ -238,7 +238,7 @@ async function smokeProjects(page) {
 
 async function smokeRscShowcase(page) {
   const response = await gotoRoute(page, '/rsc-showcase');
-  const headingPattern = /Server-streamed RSC composed inside a TanStack route on Rails|Working RSC payloads with the client-reference limit called out/;
+  const headingPattern = /Server-streamed RSC composed inside a TanStack route on Rails|Working RSC payloads with hydrated client islands/;
 
   await waitForVisible(
     page.locator('h1').filter({ hasText: headingPattern }),
@@ -247,35 +247,40 @@ async function smokeRscShowcase(page) {
   await waitForVisible(page.getByRole('navigation', { name: 'RSC showcase navigation' }), 'RSC showcase navigation');
 
   const fallback = page.getByText('RSC manifests are not available for this build.');
-  let outcome = 'rendered';
-
   if (await fallback.isVisible({ timeout: 1_000 }).catch(() => false)) {
-    await waitForVisible(page.getByText('bin/shakapacker'), 'RSC showcase fallback guidance');
-    outcome = 'manifest-fallback';
-  } else {
-    await waitForVisible(page.getByText('RSC streamed by Rails, consumed by a TanStack route'), 'RSC showcase streamed content');
-
-    if (await clickIfVisible(page.getByRole('button', { name: 'Hydrated island' }))) {
-      await waitForVisible(page.getByText('2 client clicks inside the fetched RSC payload'), 'RSC hydrated island click result');
-    }
-
-    if (await clickIfVisible(page.getByRole('button', { name: 'Pulse client state' }))) {
-      await waitForVisible(page.getByText('1 route pulse'), 'RSC route pulse result');
-    }
+    throw new Error('RSC showcase rendered manifest fallback instead of RSC');
   }
+  await waitForVisible(page.getByText('RSC streamed by Rails, consumed by a TanStack route'), 'RSC showcase streamed content');
+  const island = page.getByRole('button', { name: 'Hydrated island' });
+  await waitForVisible(island, 'RSC hydrated island');
+  await island.click();
+  await waitForVisible(page.getByText('2 client clicks inside the fetched RSC payload'), 'RSC hydrated island click result');
+  const pulse = page.getByRole('button', { name: 'Pulse client state' });
+  await waitForVisible(pulse, 'RSC route pulse');
+  await pulse.click();
+  await waitForVisible(page.getByText('1 route pulse'), 'RSC route pulse result');
 
-  await rememberRouteResult(page, '/rsc-showcase', response, { rscShowcaseOutcome: outcome });
+  await rememberRouteResult(page, '/rsc-showcase', response, { rscShowcaseOutcome: 'rendered-and-interactive' });
 }
 
 async function smokeHelloServer(page) {
   const response = await gotoRoute(page, '/hello_server');
+  const csp = (await response.allHeaders())['content-security-policy'] || '';
+  const scriptPolicy = csp.split(';').find((policy) => policy.trim().startsWith('script-src ')) || '';
+  if (!/'nonce-[^']+'/.test(scriptPolicy) || scriptPolicy.includes("'unsafe-inline'")) {
+    throw new Error('hello_server must hydrate under a nonce-based CSP without unsafe-inline');
+  }
   await waitForVisible(page.getByRole('heading', { name: /React Server Components Demo/i }), 'hello_server heading');
 
   const fallbackVisible = await page.locator('[data-rsc-fallback]').isVisible({ timeout: 1_000 }).catch(() => false) ||
     await page.getByText('RSC manifests are not available').isVisible({ timeout: 1_000 }).catch(() => false);
-  const outcome = fallbackVisible ? 'manifest-fallback' : 'rendered';
+  if (fallbackVisible) throw new Error('hello_server rendered manifest fallback instead of RSC');
+  const like = page.getByRole('button', { name: '👍 Like', exact: true });
+  await waitForVisible(like, 'hello_server LikeButton');
+  await like.click();
+  await waitForVisible(page.getByText('1 like', { exact: true }), 'hello_server hydrated like count');
 
-  await rememberRouteResult(page, '/hello_server', response, { helloServerOutcome: outcome });
+  await rememberRouteResult(page, '/hello_server', response, { helloServerOutcome: 'rendered-and-interactive' });
 }
 
 async function main() {

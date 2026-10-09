@@ -54,6 +54,7 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { apiFetch } from '../../../lib/apiFetch';
 import { createQueryClient } from '../../../lib/queryClient';
+import { formatProjectDate } from '../../../lib/formatProjectDate';
 import { installRouterStoreShim } from '../../../lib/tanstackRouterStoreShim';
 
 const ReactQueryDevtools = React.lazy(async () => {
@@ -896,7 +897,7 @@ function ProjectsTable({
       {
         accessorKey: 'last_activity_at',
         header: 'Last activity',
-        cell: ({ row }) => new Date(row.original.last_activity_at).toLocaleDateString(),
+        cell: ({ row }) => formatProjectDate(row.original.last_activity_at),
       },
       {
         id: 'actions',
@@ -1112,7 +1113,7 @@ function ProjectShowPage() {
             <div className="project-meta">
               <ProjectStatusBadge status={projectQuery.data.project.status} />
               <Badge variant="outline">
-                Last activity {new Date(projectQuery.data.project.last_activity_at).toLocaleDateString()}
+                Last activity {formatProjectDate(projectQuery.data.project.last_activity_at)}
               </Badge>
             </div>
             <ExternalDashboardLink href={classicProjectPath(links.classicProjects, projectId)}>

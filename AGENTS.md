@@ -30,9 +30,10 @@ code first and then update the docs or this file in the same change.
   Rspack default. The route also includes a provider-backed RSC prefetch action
   through `prefetchServerComponent`.
 - `/hello_server` demonstrates streaming RSC. Rspack client-reference manifests
-  are available with `react-on-rails-rsc@19.3.0`; the remaining strict
-  production CSP hydration limitation is documented in
-  `docs/11-rsc-csp-nonce-spike.md`.
+  are available with `react-on-rails-rsc@19.3.1`. The published product RC
+  hydrates its LikeButton under strict production CSP; the deployed smoke
+  requires that click. `docs/11-rsc-csp-nonce-spike.md` records the resolved
+  nonce investigation.
 - The root path `/` is a public Rails landing page (`home#index`). It leads with
   the React Server Components + TanStack Router positioning, links the RSC demo,
   dashboard, and source map, and keeps the AI-agent prompt cards. It is not a

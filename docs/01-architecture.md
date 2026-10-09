@@ -1,8 +1,8 @@
 # Architecture
 
-This starter begins from `create-react-on-rails-app --rsc --rspack` and currently targets the React on Rails Pro `17.1.0` stack with React on Rails RSC `19.3.0` and Shakapacker `10.2.0`.
+This starter begins from `create-react-on-rails-app --rsc --rspack` and currently targets React on Rails and Pro `17.2.0` RCs, React on Rails RSC `19.3.1`, React/DOM/Flight `19.3.0`, and Shakapacker `10.3.2`.
 
-Shakapacker remains on `10.2.0` because the React on Rails 17.1.0 upgrade does not require a coupled Shakapacker bump. Rspack is the only checked-in local and deploy bundler. `react-on-rails-rsc@19.3.0` provides the Rspack RSC manifest support this starter needs.
+The Ruby gems are pinned to `17.2.0.rc.2`; the Pro and Node renderer packages are pinned to `17.2.0-rc.2`. Rspack is the only checked-in local and deploy bundler. The pinned `react-on-rails-rsc@19.3.1` provides the Rspack RSC manifest support this starter needs.
 
 ## Related React On Rails Docs
 
@@ -101,7 +101,7 @@ Vite, file-based routing, Hotwire, or Stimulus.
 Rspack is the active bundler in `config/shakapacker.yml`. Development disables client lazy compilation at the config top level and at `experiments.lazyCompilation`, uses live reload by default for this RC stack, and gates TanStack devtools behind `localStorage["tanstack-devtools"] = "1"` to avoid dev-server overlay requests from optional chunks. Explicit HMR mode enables React Fast Refresh through Shakapacker's Rspack wiring, while static and production-assets dev modes remain free of Rspack dev-server clients.
 
 The public React Server Components path is green on the local Rspack default
-with `react-on-rails-rsc@19.3.0`. The Rspack client, server, and
+with `react-on-rails-rsc@19.3.1`. The Rspack client, server, and
 server-only RSC bundles compile and emit the React client/server manifests
 expected by the React on Rails RSC client-reference path. The former Webpack
 bridge is removed; its history is in
