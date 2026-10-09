@@ -50,7 +50,7 @@ Each route demonstrates a deliberate rendering choice, not a fallback:
   Flight stream, and composes that server-streamed tree beside ordinary client
   React. Its in-app status panel shows the RSC
   payload route and the streaming client island. It runs
-  on the default Rspack bundler with `react-on-rails-rsc@19.3.1-rc.1` and
+  on the default Rspack bundler with `react-on-rails-rsc@19.3.1` and
   exercises the provider-backed RSC prefetch path.
 - **`/hello_server`** demonstrates streaming React Server Components. The demo
   hydrates an interactive `LikeButton` client island inside a server-rendered
@@ -77,14 +77,14 @@ Rspack is the default Shakapacker bundler for local development and the
 deployed image. Use `config/shakapacker.yml`, `config/rspack/`, and the
 `.controlplane/Dockerfile` `SHAKAPACKER_ASSETS_BUNDLER` ENV as the source of truth for the default
 path. The Rspack RSC plugin in
-`react-on-rails-rsc@19.3.1-rc.1` emits the client/server manifests the Pro RSC
+`react-on-rails-rsc@19.3.1` emits the client/server manifests the Pro RSC
 client-reference path needs. Rspack is the only configured bundler.
 
 | Component | Version |
 | --- | --- |
-| React on Rails / Pro (Ruby gems) | `17.2.0.rc.1` / `17.2.0.rc.1` |
-| React on Rails / Pro / node renderer (npm) | `17.2.0-rc.1` |
-| React on Rails RSC | `19.3.1-rc.1` |
+| React on Rails / Pro (Ruby gems) | `17.2.0.rc.2` / `17.2.0.rc.2` |
+| React on Rails / Pro / node renderer (npm) | `17.2.0-rc.2` |
+| React on Rails RSC | `19.3.1` |
 | React, React DOM, React server DOM | `19.3.0` |
 | Shakapacker / Shakapacker Rspack | `10.3.2` |
 | Rails | `8.1.x` |
