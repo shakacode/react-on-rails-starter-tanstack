@@ -67,7 +67,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: shakacode/control-plane-flow
-          ref: v6.0.0
+          ref: 6aa575780f2d9175755881b79cbb3253adbc9c1f # v6.0.1
           path: .cpflow
           persist-credentials: false
 
@@ -87,7 +87,7 @@ jobs:
           echo "org=$org" >> "$GITHUB_OUTPUT"
 
       - name: Setup staging environment
-        uses: ./.github/actions/cpflow-setup-environment
+        uses: ./.cpflow/.github/actions/cpflow-setup-environment
         with:
           token: ${{ secrets.CPLN_TOKEN_STAGING }}
           org: ${{ steps.staging-org.outputs.org }}
@@ -95,11 +95,11 @@ jobs:
           cpln_cli_version: ${{ vars.CPLN_CLI_VERSION }}
           cpflow_version: ${{ vars.CPFLOW_VERSION }}
           # The setup action validates CPFLOW_VERSION against this full workflow ref.
-          control_plane_flow_ref: shakacode/control-plane-flow/.github/workflows/cpflow-promote-staging-to-production.yml@v6.0.0
+          control_plane_flow_ref: shakacode/control-plane-flow/.github/workflows/cpflow-promote-staging-to-production.yml@6aa575780f2d9175755881b79cbb3253adbc9c1f # v6.0.1
 
       - name: Preview commits before production approval
         id: preview
-        uses: ./.github/actions/cpflow-preview-promotion
+        uses: ./.cpflow/.github/actions/cpflow-preview-promotion
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
@@ -137,7 +137,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: shakacode/control-plane-flow
-          ref: v6.0.0
+          ref: 6aa575780f2d9175755881b79cbb3253adbc9c1f # v6.0.1
           path: .cpflow
           persist-credentials: false
 
@@ -158,7 +158,7 @@ jobs:
           fi
 
       - name: Validate required secrets and variables
-        uses: ./.github/actions/cpflow-validate-config
+        uses: ./.cpflow/.github/actions/cpflow-validate-config
         # Pass secrets via env so the composite action checks indirect shell
         # variables instead of interpolating secret values into a run script.
         env:
@@ -239,7 +239,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Setup production environment
-        uses: ./.github/actions/cpflow-setup-environment
+        uses: ./.cpflow/.github/actions/cpflow-setup-environment
         with:
           token: ${{ secrets.CPLN_TOKEN_PRODUCTION }}
           org: ${{ steps.cpln-orgs.outputs.production }}
@@ -247,7 +247,7 @@ jobs:
           cpln_cli_version: ${{ vars.CPLN_CLI_VERSION }}
           cpflow_version: ${{ vars.CPFLOW_VERSION }}
           # The setup action validates CPFLOW_VERSION against this full workflow ref.
-          control_plane_flow_ref: shakacode/control-plane-flow/.github/workflows/cpflow-promote-staging-to-production.yml@v6.0.0
+          control_plane_flow_ref: shakacode/control-plane-flow/.github/workflows/cpflow-promote-staging-to-production.yml@6aa575780f2d9175755881b79cbb3253adbc9c1f # v6.0.1
 
       # Runs after Setup production environment so the pinned Ruby (>= 3.1) is on PATH.
       # YAML.load_file(..., aliases: true) is not supported on Ruby 3.0 (system Ruby on ubuntu-22.04).
@@ -305,7 +305,7 @@ jobs:
 
       - name: Detect release phase support
         id: release-phase
-        uses: ./.github/actions/cpflow-detect-release-phase
+        uses: ./.cpflow/.github/actions/cpflow-detect-release-phase
         with:
           app_name: ${{ vars.PRODUCTION_APP_NAME }}
 
@@ -713,7 +713,7 @@ jobs:
 
       - name: Wait for deployment health
         id: health-check
-        uses: ./.github/actions/cpflow-wait-for-health
+        uses: ./.cpflow/.github/actions/cpflow-wait-for-health
         with:
           workload_name: ${{ steps.workloads.outputs.primary }}
           app_name: ${{ vars.PRODUCTION_APP_NAME }}

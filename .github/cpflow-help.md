@@ -15,7 +15,7 @@ A single trailing newline from GitHub's comment editor is accepted.
 | `+review-app-help` | Posts this help message on the PR. |
 
 For complete setup, version-pinning, and troubleshooting guidance, see the upstream
-[CI automation guide](https://github.com/shakacode/control-plane-flow/blob/v6.0.0/docs/ci-automation.md).
+[CI automation guide](https://github.com/shakacode/control-plane-flow/blob/v6.0.1/docs/ci-automation.md).
 
 <details>
 <summary>GitHub Actions setup options</summary>
@@ -133,7 +133,7 @@ production org, using production-only secrets and values.
 ## Version Locking
 
 Freshly generated wrappers start with a Control Plane Flow release tag, for
-example `v6.0.0`. Before review and merge, use the pin
+example `v6.0.1`. Before review and merge, use the pin
 helper below to replace that tag with its immutable commit SHA and retain the
 reviewed tag in a readable comment. Reusable review-app, staging, cleanup, and
 helper workflows then use that SHA. Production promotion uses the same SHA and
@@ -152,8 +152,8 @@ validator, first preserve its downstream checks in executable
 `bin/test-cpflow-github-flow-custom`, then remove or rename the old generated
 validator before retrying the update.
 
-After updating the `cpflow` gem in this repo, refresh the generated local
-actions and validation helpers in the same PR. The default command
+After updating the `cpflow` gem in this repo, refresh the generated
+validation helpers in the same PR. The default command
 preserves every top-level workflow, including its refs, triggers, permissions, and
 downstream customizations:
 

@@ -73,7 +73,7 @@ staging-only flag should not be copied to production.
 ## Current State
 
 - `main` includes the cpflow GitHub Actions wrappers pinned to
-  `shakacode/control-plane-flow@v6.0.0`.
+  `shakacode/control-plane-flow` at the `v6.0.1` commit.
 - PR #11 merged with squash commit
   `85a2bff7cbeb8d89ae39ca1d9f1d4a64ffd49964`.
 - The PR review app deploy passed on commit
@@ -99,8 +99,8 @@ PR #11 did four things:
   `v5.0.2`.
 - Follow-up release maintenance updates the wrappers and current examples to
   `v5.3.0` with `cpflow update-github-actions`.
-- The cpflow 6.0.0 update moves the wrappers to `v6.0.0` and checks in the
-  generated composite actions under `.github/actions/cpflow-*`.
+- The cpflow 6.0.1 update pins the wrappers to the `v6.0.1` commit SHA. cpflow's
+  composite actions load from that upstream commit, so none are checked in.
 - Documented the normal release-tag pinning workflow, plus the stricter
   full-SHA pinning path for organizations that require immutable GitHub Action
   refs.
@@ -240,11 +240,11 @@ production-only secret values.
 ## Version Locking
 
 Generated downstream workflows are locked by GitHub reusable workflow refs, not
-by the local Ruby gem alone. This repo intentionally uses release tags for the
-standard demo path:
+by the local Ruby gem alone. This repo pins each wrapper to the release's full
+commit SHA and keeps the reviewed tag in a comment:
 
 ```yaml
-uses: shakacode/control-plane-flow/.github/workflows/<workflow>.yml@v6.0.0
+uses: shakacode/control-plane-flow/.github/workflows/<workflow>.yml@6aa575780f2d9175755881b79cbb3253adbc9c1f # v6.0.1
 ```
 
 Leave `CPFLOW_VERSION` unset for normal operation. If it is set, it must match
@@ -254,11 +254,10 @@ the workflow tag without the leading `v`, for example:
 CPFLOW_VERSION=5.2.0
 ```
 
-For organizations that require immutable action refs, pin to the commit SHA
-behind the release tag:
+To move the pin, verify the commit SHA behind the release tag and run:
 
 ```sh
-bin/pin-cpflow-github-ref <40-character-control-plane-flow-commit-sha>
+bin/pin-cpflow-github-ref --version <release-tag> <40-character-control-plane-flow-commit-sha>
 ```
 
 Use full commit SHAs for short-lived tests of unreleased upstream changes.
