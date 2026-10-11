@@ -247,12 +247,9 @@ commit SHA and keeps the reviewed tag in a comment:
 uses: shakacode/control-plane-flow/.github/workflows/<workflow>.yml@6aa575780f2d9175755881b79cbb3253adbc9c1f # v6.0.1
 ```
 
-Leave `CPFLOW_VERSION` unset for normal operation. If it is set, it must match
-the workflow tag without the leading `v`, for example:
-
-```text
-CPFLOW_VERSION=5.2.0
-```
+Leave `CPFLOW_VERSION` unset. cpflow accepts that override only when the
+wrappers are pinned to a release tag, and the pinned commit already fixes the
+runtime version.
 
 To move the pin, verify the commit SHA behind the release tag and run:
 

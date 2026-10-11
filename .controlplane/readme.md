@@ -91,7 +91,7 @@ Advanced optional variables:
 | --- | --- |
 | `REVIEW_APP_DEPLOYING_ICON_URL` | Cosmetic custom animated icon for review-app comments. Ignore this for the standard setup. |
 | `CPLN_CLI_VERSION` | Pin only when Control Plane CLI compatibility requires it. |
-| `CPFLOW_VERSION` | Runtime gem override. Normally leave unset. If set, it must match the workflow tag without the leading `v`, such as `6.0.1`. |
+| `CPFLOW_VERSION` | Runtime gem override. Leave unset: the wrappers are pinned to a commit SHA, and cpflow accepts this override only with a release-tag pin. |
 | `PRODUCTION_ENV_PARITY_IGNORED_NAMES` | Space-separated staging-only GVC/workload env names ignored by production promotion parity checks. Defaults to `ALLOW_DEMO_SEED`. |
 
 ## Control Plane Setup
@@ -236,8 +236,9 @@ Downstream wrappers should not pass a duplicate `control_plane_flow_ref` input.
 
 A SHA pin is immutable, so the code that receives the staging token cannot
 change under a moved tag. Verify the SHA against the upstream tag before
-pinning, and keep `CPFLOW_VERSION` unset unless it exactly matches the same
-released gem.
+pinning. Keep `CPFLOW_VERSION` unset: cpflow rejects it unless the wrappers
+are pinned to a release tag, and the pinned commit already fixes the runtime
+version.
 
 To move to a newer stable `cpflow` release when generated templates changed:
 
@@ -247,8 +248,7 @@ To move to a newer stable `cpflow` release when generated templates changed:
    customization in `cpflow-promote-staging-to-production.yml`.
 3. Pin the wrappers to the release's verified commit with
    `bin/pin-cpflow-github-ref --version v6.0.1 <40-character-sha>`.
-4. Leave `CPFLOW_VERSION` unset, or set it to the same RubyGems version without
-   the leading `v`. For prereleases, use dot syntax such as `5.0.0.rc.1`.
+4. Leave `CPFLOW_VERSION` unset.
 5. Run `bin/test-cpflow-github-flow`.
 
 If the generated files are already current and only the upstream ref needs to
