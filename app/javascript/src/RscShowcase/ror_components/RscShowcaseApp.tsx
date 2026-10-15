@@ -10,7 +10,7 @@ import {
   createRouter,
   useRouter,
 } from '@tanstack/react-router';
-import { CheckCircle2, ExternalLink, RefreshCw, Route, Server, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, ExternalLink, RefreshCw, Route, Server, ShieldCheck, TriangleAlert } from 'lucide-react';
 import RSCRoute from 'react-on-rails-pro/RSCRoute';
 import { prefetchServerComponent } from 'react-on-rails-pro/prefetchServerComponent';
 import wrapServerComponentRenderer from 'react-on-rails-pro/wrapServerComponentRenderer/client';
@@ -191,10 +191,16 @@ function RscStatusGrid({ appProps }: { appProps: RscShowcaseAppProps }) {
         </CardHeader>
       </Card>
 
-      <Card className="border-sky-300/70 bg-sky-50/80 shadow-sm dark:border-sky-800 dark:bg-sky-950/30">
+      <Card className={cn('shadow-sm', appProps.rscAvailable
+        ? 'border-sky-300/70 bg-sky-50/80 dark:border-sky-800 dark:bg-sky-950/30'
+        : 'border-amber-300/70 bg-amber-50/80 dark:border-amber-800 dark:bg-amber-950/30')}>
         <CardHeader className="space-y-3">
-          <div className="flex items-center gap-2 text-sky-800 dark:text-sky-200">
-            <CheckCircle2 className="size-4" aria-hidden="true" />
+          <div className={cn('flex items-center gap-2', appProps.rscAvailable
+            ? 'text-sky-800 dark:text-sky-200'
+            : 'text-amber-800 dark:text-amber-200')}>
+            {appProps.rscAvailable
+              ? <CheckCircle2 className="size-4" aria-hidden="true" />
+              : <TriangleAlert className="size-4" aria-hidden="true" />}
             <span className="text-xs font-semibold uppercase">
               {appProps.rscAvailable ? 'Working' : 'Unavailable'}
             </span>

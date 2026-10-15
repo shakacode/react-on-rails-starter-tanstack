@@ -83,6 +83,7 @@ test('client-island status reflects missing RSC manifests', async ({ page }) => 
   const card = page.getByRole('region', { name: 'RSC capability status' })
     .locator('[data-slot="card"]').filter({ hasText: 'Streaming client island' });
   await expect(card.getByText('Unavailable', { exact: true })).toBeVisible();
+  await expect(card.locator('svg.lucide-triangle-alert')).toBeVisible();
   await expect(card).toContainText('RSC client references are missing for this build.');
 });
 
