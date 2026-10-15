@@ -202,11 +202,14 @@ jobs:
           PY
 
           report_path="$RUNNER_TEMP/claude-review.md"
+          comment_payload_path="$RUNNER_TEMP/claude-review-comment.json"
+          jq --null-input --rawfile body "$report_path" '{body: $body}' > "$comment_payload_path"
           existing_comment_id="$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments?per_page=100" \
             --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | contains(\"<!-- shaka-ci-review:$HEAD_SHA -->\"))) | .id" | head -n 1)"
           if [ -n "$existing_comment_id" ]; then
             gh api "repos/$GITHUB_REPOSITORY/issues/comments/$existing_comment_id" \
-              --method PATCH -F "body=@$report_path"
+              --method PATCH --input "$comment_payload_path"
           else
-            gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file "$report_path"
+            gh api "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" \
+              --method POST --input "$comment_payload_path"
           fi
