@@ -126,15 +126,6 @@ async function expectText(locator, pattern, description) {
   return text;
 }
 
-async function clickIfVisible(locator) {
-  if (await locator.isVisible({ timeout: 1_000 }).catch(() => false)) {
-    await locator.click();
-    return true;
-  }
-
-  return false;
-}
-
 async function assertFooterCommit(page, route) {
   const footer = page.locator('footer').filter({ hasText: /Commit/i }).last();
   await waitForVisible(footer, `${route} footer commit`);

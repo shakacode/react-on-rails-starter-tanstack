@@ -54,7 +54,7 @@ Each route demonstrates a deliberate rendering choice, not a fallback:
   exercises the provider-backed RSC prefetch path.
 - **`/hello_server`** demonstrates streaming React Server Components. The demo
   hydrates an interactive `LikeButton` client island inside a server-rendered
-  tree on Rspack under the strict production CSP. The published RC includes
+  tree on Rspack under the strict production CSP. The published 17.2.0 release includes
   the upstream streaming nonce fix. See
   [SPIKE.md](SPIKE.md) and
   [RSC Streaming And CSP Nonces](docs/11-rsc-csp-nonce-spike.md).
@@ -82,8 +82,8 @@ client-reference path needs. Rspack is the only configured bundler.
 
 | Component | Version |
 | --- | --- |
-| React on Rails / Pro (Ruby gems) | `17.2.0.rc.2` / `17.2.0.rc.2` |
-| React on Rails / Pro / node renderer (npm) | `17.2.0-rc.2` |
+| React on Rails / Pro (Ruby gems) | `17.2.0` / `17.2.0` |
+| React on Rails / Pro / node renderer (npm) | `17.2.0` |
 | React on Rails RSC | `19.3.1` |
 | React, React DOM, React server DOM | `19.3.0` |
 | Shakapacker / Shakapacker Rspack | `10.3.2` |
@@ -171,7 +171,7 @@ See [SPIKE.md](SPIKE.md) and the
 [RSC Webpack Bundler Spike](docs/09-rsc-webpack-bundler-spike.md) for the
 current RSC status. Rspack builds now emit the React Server Components
 client/server manifests expected by the Pro RSC path, and `/rsc-showcase` runs
-on Rspack. The historical Webpack bridge has been removed. The published RC fixes the
+on Rspack. The historical Webpack bridge has been removed. The published 17.2.0 release fixes the
 streaming bootstrap nonce; `/hello_server` client interactions pass under the
 strict production CSP.
 

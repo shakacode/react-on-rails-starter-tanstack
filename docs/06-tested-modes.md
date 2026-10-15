@@ -1,8 +1,8 @@
 # Tested Modes
 
 This starter keeps the TanStack dashboard on Rspack and the current stack:
-React on Rails and Pro Ruby gems `17.2.0.rc.2`, Pro and Node renderer packages
-`17.2.0-rc.2`, React on Rails RSC `19.3.1`, React/DOM/Flight `19.3.0`,
+React on Rails and Pro Ruby gems `17.2.0`, Pro and Node renderer packages
+`17.2.0`, React on Rails RSC `19.3.1`, React/DOM/Flight `19.3.0`,
 and Shakapacker `10.3.2`.
 Rspack is the only local and deploy bundler in the checked-in matrix.
 

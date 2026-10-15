@@ -195,12 +195,15 @@ function RscStatusGrid({ appProps }: { appProps: RscShowcaseAppProps }) {
         <CardHeader className="space-y-3">
           <div className="flex items-center gap-2 text-sky-800 dark:text-sky-200">
             <CheckCircle2 className="size-4" aria-hidden="true" />
-            <span className="text-xs font-semibold uppercase">Working</span>
+            <span className="text-xs font-semibold uppercase">
+              {appProps.rscAvailable ? 'Working' : 'Unavailable'}
+            </span>
           </div>
           <CardTitle className="text-lg tracking-normal">Streaming client island</CardTitle>
           <CardDescription>
-            The LikeButton on <code>/hello_server</code> hydrates inside the streamed server tree
-            under the production Content Security Policy.
+            {appProps.rscAvailable
+              ? 'The LikeButton on /hello_server hydrates inside the streamed server tree under the production Content Security Policy.'
+              : 'The LikeButton on /hello_server is unavailable because RSC client references are missing for this build.'}
           </CardDescription>
         </CardHeader>
       </Card>

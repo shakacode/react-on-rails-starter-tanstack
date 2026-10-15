@@ -28,6 +28,7 @@ test('public RSC showcase route loads the TanStack composition surface', async (
 
   if (await rspackFallback.isVisible().catch(() => false)) {
     await expect(page.getByText('bin/shakapacker')).toBeVisible();
+    await expect(page.getByText('The LikeButton on /hello_server is unavailable', { exact: false })).toBeVisible();
     return;
   }
 
@@ -52,6 +53,37 @@ test('public RSC showcase route loads the TanStack composition surface', async (
 
   await page.getByRole('button', { name: 'Pulse client state' }).click();
   await expect(page.getByText('1 route pulse')).toBeVisible();
+
+  const refetchResponsePromise = page.waitForResponse((response) =>
+    new URL(response.url()).pathname.endsWith('/rsc_payload/RscShowcaseServerPanel'),
+  );
+  await page.getByRole('button', { name: 'Refetch payload', exact: true }).click();
+  const refetchResponse = await refetchResponsePromise;
+  expect(refetchResponse.ok()).toBeTruthy();
+  expect(refetchResponse.url()).not.toBe(prefetchResponse.url());
+  await expect(page.getByText('1 route pulse')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Hydrated island' })).toBeVisible();
+
+  await page.getByRole('link', { name: '/hello_server', exact: true }).click();
+  await expect(page.getByRole('button', { name: '👍 Like', exact: true })).toBeEnabled();
+  await page.goBack();
+  await expect(page.getByRole('button', { name: 'Refetch payload', exact: true })).toBeEnabled();
+  await expect(page.getByRole('button', { name: 'Hydrated island' })).toBeEnabled();
+});
+
+test('client-island status reflects missing RSC manifests', async ({ page }) => {
+  await page.route('**/rsc-showcase', async (route) => {
+    const response = await route.fetch();
+    const body = await response.text();
+    expect(body).toContain('"rscAvailable":true');
+    await route.fulfill({ response, body: body.replace('"rscAvailable":true', '"rscAvailable":false') });
+  });
+
+  await page.goto('/rsc-showcase');
+  const card = page.getByRole('region', { name: 'RSC capability status' })
+    .locator('[data-slot="card"]').filter({ hasText: 'Streaming client island' });
+  await expect(card.getByText('Unavailable', { exact: true })).toBeVisible();
+  await expect(card).toContainText('RSC client references are missing for this build.');
 });
 
 
