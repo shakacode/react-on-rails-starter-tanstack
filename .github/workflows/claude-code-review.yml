@@ -136,6 +136,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       issues: write
+      # Commenting on a pull request, even through the issue-comment API, needs this scope.
+      pull-requests: write
 
     steps:
       - name: Publish review for this commit
