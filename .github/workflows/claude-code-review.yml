@@ -136,7 +136,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       issues: write
-      # `gh pr comment` posts through the pull request, which needs this scope.
+      # Commenting on a pull request, even through the issue-comment API, needs this scope.
       pull-requests: write
 
     steps:
