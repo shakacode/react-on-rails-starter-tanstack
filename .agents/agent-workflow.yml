@@ -3,6 +3,12 @@
 version: 1
 review:
   required: meaningful_changes
+  local_review_count: 2
+  local_review_agents:
+  - provider: anthropic
+    model_family: claude
+  - provider: openai
+    model_family: codex
   ci_review_jobs:
   - claude-review
 merge:
