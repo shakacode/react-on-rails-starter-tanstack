@@ -191,16 +191,25 @@ function RscStatusGrid({ appProps }: { appProps: RscShowcaseAppProps }) {
         </CardHeader>
       </Card>
 
-      <Card className="border-amber-300/70 bg-amber-50/80 shadow-sm dark:border-amber-800 dark:bg-amber-950/30">
+      <Card className={cn('shadow-sm', appProps.rscAvailable
+        ? 'border-sky-300/70 bg-sky-50/80 dark:border-sky-800 dark:bg-sky-950/30'
+        : 'border-amber-300/70 bg-amber-50/80 dark:border-amber-800 dark:bg-amber-950/30')}>
         <CardHeader className="space-y-3">
-          <div className="flex items-center gap-2 text-amber-800 dark:text-amber-200">
-            <TriangleAlert className="size-4" aria-hidden="true" />
-            <span className="text-xs font-semibold uppercase">Limited</span>
+          <div className={cn('flex items-center gap-2', appProps.rscAvailable
+            ? 'text-sky-800 dark:text-sky-200'
+            : 'text-amber-800 dark:text-amber-200')}>
+            {appProps.rscAvailable
+              ? <CheckCircle2 className="size-4" aria-hidden="true" />
+              : <TriangleAlert className="size-4" aria-hidden="true" />}
+            <span className="text-xs font-semibold uppercase">
+              {appProps.rscAvailable ? 'Working' : 'Unavailable'}
+            </span>
           </div>
           <CardTitle className="text-lg tracking-normal">Streaming client island</CardTitle>
           <CardDescription>
-            The LikeButton on <code>/hello_server</code> is intentionally called out as a separate
-            client-reference edge case while the upstream streaming hydration path settles.
+            {appProps.rscAvailable
+              ? 'The LikeButton on /hello_server hydrates inside the streamed server tree under the production Content Security Policy.'
+              : 'The LikeButton on /hello_server is unavailable because RSC client references are missing for this build.'}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -294,13 +303,12 @@ function ShowcasePage({ appProps, routeData }: { appProps: RscShowcaseAppProps; 
             </Badge>
           </div>
           <h1 className="mt-5 max-w-4xl text-4xl font-semibold tracking-normal text-balance sm:text-5xl">
-            Working RSC payloads with the client-reference limit called out
+            Working RSC payloads with hydrated client islands
           </h1>
           <p className="mt-4 max-w-3xl text-lg text-muted-foreground">
             The route loader chooses the server component and props, then React on Rails Pro&apos;s
             RSCRoute helper fetches and renders the payload beside normal client React. The lower-level
-            streaming demo stays separate so its client island does not get confused with the working
-            RSC payload path.
+            streaming demo shows client islands hydrated inside server-rendered HTML.
           </p>
         </div>
 

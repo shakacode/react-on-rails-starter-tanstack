@@ -15,12 +15,10 @@ overrides:
   seroval: 1.6.7
   source-map-js: 1.2.2
 
-# Fresh RC/stable packages are intentional for this starter.
+# These newly published React on Rails releases are intentional for this starter.
 minimumReleaseAgeExclude:
-  - react-on-rails-rsc
-  - react-on-rails-pro-node-renderer@17.1.0
-  - react-on-rails-pro@17.1.0
-  - react-on-rails@17.1.0
+  - react-on-rails-rsc@19.3.1
+  - react-on-rails-pro-node-renderer@17.2.0
+  - react-on-rails-pro@17.2.0
+  - react-on-rails@17.2.0
   - js-yaml@4.3.2
-  - shakapacker-rspack@10.2.0
-  - shakapacker@10.2.0

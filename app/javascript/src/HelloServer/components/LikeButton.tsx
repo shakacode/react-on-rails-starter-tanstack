@@ -9,10 +9,13 @@
 // - The parent HelloServer component sends ZERO JS to the browser
 // - React hydrates just this interactive island within the server-rendered HTML
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const LikeButton: React.FC = () => {
   const [likes, setLikes] = useState(0);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => setHydrated(true), []);
 
   return (
     <div
@@ -29,6 +32,7 @@ const LikeButton: React.FC = () => {
     >
       <button
         type="button"
+        disabled={!hydrated}
         onClick={() => setLikes((prev) => prev + 1)}
         style={{
           padding: '8px 16px',
