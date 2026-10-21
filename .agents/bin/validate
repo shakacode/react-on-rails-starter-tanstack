@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-# Pre-push gate: the repository's CI-core test tier.
-set -euo pipefail
-root=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
-cd "$root"
-exec bin/test ci "$@"

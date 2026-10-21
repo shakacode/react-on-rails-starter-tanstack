@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-# Run the repository test entry point, including test database preparation.
-set -euo pipefail
-root=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
-cd "$root"
-exec bin/test "$@"
