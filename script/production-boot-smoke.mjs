@@ -340,6 +340,21 @@ async function smokeAuthenticatedDashboard(baseURL) {
   assertBodyIncludes(projectsBody, 'Demo User', projectsPath);
   assertBodyIncludes(projectsBody, 'Project list', projectsPath);
   assertBodyIncludes(projectsBody, 'Commit', projectsPath);
+
+  const labPath = '/navigation-lab';
+  const labResponse = await fetchSmokePath(baseURL, labPath, {
+    cookieHeader: jar.header(),
+  });
+
+  if (labResponse.status !== 200) {
+    const body = await labResponse.text();
+    throw new Error(`${labPath} returned ${labResponse.status}: ${body.slice(0, 500)}`);
+  }
+
+  const labBody = await labResponse.text();
+  assertBodyIncludes(labBody, 'TANSTACK_SSR_SHELL', labPath);
+  assertBodyIncludes(labBody, 'Instant Navigation Lab', labPath);
+  assertBodyIncludes(labBody, 'Focus timer', labPath);
 }
 
 function stopServices() {
