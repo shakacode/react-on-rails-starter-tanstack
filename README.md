@@ -90,6 +90,8 @@ client-reference path needs. Rspack is the only configured bundler.
 | Rails | `8.1.x` |
 | Language / tooling | TypeScript, pnpm |
 
+This revision validates React on Rails `17.2.1.rc.0`. Stable deployments can use `17.2.0` until final promotion.
+
 Shakapacker and Shakapacker Rspack remain independently pinned at `10.3.2`.
 
 ## Setup
