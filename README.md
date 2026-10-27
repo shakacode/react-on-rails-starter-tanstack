@@ -82,8 +82,8 @@ client-reference path needs. Rspack is the only configured bundler.
 
 | Component | Version |
 | --- | --- |
-| React on Rails / Pro (Ruby gems) | `17.2.0` / `17.2.0` |
-| React on Rails / Pro / node renderer (npm) | `17.2.0` |
+| React on Rails / Pro (Ruby gems) | `17.2.1.rc.0` / `17.2.1.rc.0` |
+| React on Rails / Pro / node renderer (npm) | `17.2.1-rc.0` |
 | React on Rails RSC | `19.3.1` |
 | React, React DOM, React server DOM | `19.3.0` |
 | Shakapacker / Shakapacker Rspack | `10.3.2` |

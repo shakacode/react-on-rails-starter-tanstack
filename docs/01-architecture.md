@@ -1,8 +1,8 @@
 # Architecture
 
-This starter begins from `create-react-on-rails-app --rsc --rspack` and currently targets React on Rails and Pro `17.2.0` final, React on Rails RSC `19.3.1`, React/DOM/Flight `19.3.0`, and Shakapacker `10.3.2`.
+This starter begins from `create-react-on-rails-app --rsc --rspack` and currently targets React on Rails and Pro `17.2.1.rc.0` release candidate, React on Rails RSC `19.3.1`, React/DOM/Flight `19.3.0`, and Shakapacker `10.3.2`.
 
-The Ruby gems are pinned to `17.2.0`; the Pro and Node renderer packages are pinned to `17.2.0`. Rspack is the only checked-in local and deploy bundler. The pinned `react-on-rails-rsc@19.3.1` provides the Rspack RSC manifest support this starter needs.
+The Ruby gems are pinned to `17.2.1.rc.0`; the Pro and Node renderer packages are pinned to `17.2.1-rc.0`. Rspack is the only checked-in local and deploy bundler. The pinned `react-on-rails-rsc@19.3.1` provides the Rspack RSC manifest support this starter needs.
 
 ## Related React On Rails Docs
 
