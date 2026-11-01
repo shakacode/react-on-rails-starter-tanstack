@@ -12,7 +12,7 @@ overrides:
   fastify: 5.12.5
   baseline-browser-mapping: 2.11.0
   '@fastify/busboy': 3.2.2
-  seroval: 1.6.7
+  seroval: 1.6.12
   source-map-js: 1.2.2
 
 # These newly published React on Rails releases are intentional for this starter.
