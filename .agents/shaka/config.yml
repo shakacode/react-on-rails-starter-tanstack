@@ -14,4 +14,4 @@ review:
 merge:
   preference: ask
 wip:
-  include_locations: true
+  include_checkout_path: true
