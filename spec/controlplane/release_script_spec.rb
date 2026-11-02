@@ -18,6 +18,7 @@ RSpec.describe "Control Plane release script" do
       bin_path.join("rails").write(<<~SH)
         #!/bin/sh
         echo "$*" >> "$RAILS_CALL_LOG"
+        [ "$1" != "db:prepare" ] || [ -z "${DB_PREPARE_OUTPUT:-}" ] || echo "$DB_PREPARE_OUTPUT"
         if [ "$1" = "db:prepare" ] && [ -n "${DB_PREPARE_ERROR:-}" ]; then
           calls=$(grep -c "db:prepare" "$RAILS_CALL_LOG")
           if [ "$calls" -le "${DB_PREPARE_FAILURES:-0}" ]; then
@@ -40,9 +41,10 @@ RSpec.describe "Control Plane release script" do
   end
 
   it "runs migrations without seeding by default" do
-    status, _stdout, stderr, calls = run_release_script
+    status, stdout, stderr, calls = run_release_script("DB_PREPARE_OUTPUT" => "== CreateUsers: migrated")
 
     expect(status).to be_success, stderr
+    expect(stdout).to include("== CreateUsers: migrated")
     expect(calls).to eq([ "db:prepare" ])
   end
 
@@ -76,13 +78,26 @@ RSpec.describe "Control Plane release script" do
   end
 
   it "does not retry a migration failure" do
-    status, _stdout, stderr, calls = run_release_script(
+    status, stdout, stderr, calls = run_release_script(
       "DB_PREPARE_ERROR" => "StandardError: migration failed",
       "DB_PREPARE_FAILURES" => "99"
     )
 
     expect(status).not_to be_success
-    expect(stderr).to include("migration failed", "Failed to run DB migrations")
+    expect(stdout).to include("migration failed")
+    expect(stderr).to include("Failed to run DB migrations")
+    expect(calls).to eq([ "db:prepare" ])
+  end
+
+  it "does not retry a connection lost during a migration" do
+    status, _stdout, stderr, calls = run_release_script(
+      "DB_PREPARE_OUTPUT" => "== AddIndex: migrating",
+      "DB_PREPARE_ERROR" => "PG::ConnectionBad: server closed the connection unexpectedly",
+      "DB_PREPARE_FAILURES" => "99"
+    )
+
+    expect(status).not_to be_success
+    expect(stderr).to include("Failed to run DB migrations")
     expect(calls).to eq([ "db:prepare" ])
   end
 end

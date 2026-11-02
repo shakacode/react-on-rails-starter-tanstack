@@ -15,23 +15,25 @@ log "Running release_script.sh per controlplane.yml"
 if [ -x ./bin/rails ]; then
   log "Run DB migrations"
   # A new workload's first database connection can be closed while its network
-  # path comes up. Retry only connection failures, so a failing migration stops
-  # the release on its first error.
+  # path comes up. Retry only that failure, and only before a migration starts,
+  # so a failing migration stops the release on its first error.
   attempt=1
   max_attempts=5
   retry_delay="${DB_PREPARE_RETRY_DELAY_SECONDS:-10}"
+  output_file=$(mktemp)
+  status_file=$(mktemp)
   while :; do
-    if output=$(SECRET_KEY_BASE="${SECRET_KEY_BASE:-precompile_placeholder}" ./bin/rails db:prepare 2>&1); then
-      printf '%s\n' "$output"
-      break
+    {
+      SECRET_KEY_BASE="${SECRET_KEY_BASE:-precompile_placeholder}" ./bin/rails db:prepare 2>&1
+      echo "$?" > "$status_file"
+    } | tee "$output_file"
+    [ "$(cat "$status_file")" = "0" ] && break
+    if ! grep -q "server closed the connection unexpectedly" "$output_file" ||
+      grep -q "migrating" "$output_file" ||
+      [ "$attempt" -ge "$max_attempts" ]; then
+      error_exit "Failed to run DB migrations"
     fi
-    printf '%s\n' "$output" 1>&2
-    case "$output" in
-      *PG::ConnectionBad*|*ActiveRecord::ConnectionNotEstablished*) ;;
-      *) error_exit "Failed to run DB migrations" ;;
-    esac
-    [ "$attempt" -lt "$max_attempts" ] || error_exit "Failed to run DB migrations"
-    log "DB connection failed on attempt $attempt of $max_attempts; retrying in $retry_delay seconds"
+    log "DB connection closed on attempt $attempt of $max_attempts; retrying in $retry_delay seconds"
     attempt=$((attempt + 1))
     sleep "$retry_delay"
   done
