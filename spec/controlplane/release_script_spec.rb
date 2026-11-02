@@ -18,11 +18,18 @@ RSpec.describe "Control Plane release script" do
       bin_path.join("rails").write(<<~SH)
         #!/bin/sh
         echo "$*" >> "$RAILS_CALL_LOG"
+        if [ "$1" = "db:prepare" ] && [ -n "${DB_PREPARE_ERROR:-}" ]; then
+          calls=$(grep -c "db:prepare" "$RAILS_CALL_LOG")
+          if [ "$calls" -le "${DB_PREPARE_FAILURES:-0}" ]; then
+            echo "$DB_PREPARE_ERROR" >&2
+            exit 1
+          fi
+        fi
       SH
       FileUtils.chmod("+x", bin_path.join("rails"))
 
       stdout, stderr, status = Open3.capture3(
-        { "ALLOW_DEMO_SEED" => nil, "RAILS_CALL_LOG" => calls_path.to_s }.merge(env),
+        { "ALLOW_DEMO_SEED" => nil, "DB_PREPARE_RETRY_DELAY_SECONDS" => "0", "RAILS_CALL_LOG" => calls_path.to_s }.merge(env),
         RELEASE_SCRIPT.to_s,
         chdir: tmp_path.to_s
       )
@@ -44,5 +51,38 @@ RSpec.describe "Control Plane release script" do
 
     expect(status).to be_success, stderr
     expect(calls).to eq([ "db:prepare", "db:seed" ])
+  end
+
+  it "retries db:prepare after a closed database connection" do
+    status, _stdout, stderr, calls = run_release_script(
+      "DB_PREPARE_ERROR" => "PG::ConnectionBad: server closed the connection unexpectedly",
+      "DB_PREPARE_FAILURES" => "2"
+    )
+
+    expect(status).to be_success, stderr
+    expect(calls).to eq([ "db:prepare", "db:prepare", "db:prepare" ])
+  end
+
+  it "fails without seeding after five closed connections" do
+    status, _stdout, stderr, calls = run_release_script(
+      "ALLOW_DEMO_SEED" => "true",
+      "DB_PREPARE_ERROR" => "ActiveRecord::ConnectionNotEstablished: server closed the connection unexpectedly",
+      "DB_PREPARE_FAILURES" => "99"
+    )
+
+    expect(status).not_to be_success
+    expect(stderr).to include("Failed to run DB migrations")
+    expect(calls).to eq([ "db:prepare" ] * 5)
+  end
+
+  it "does not retry a migration failure" do
+    status, _stdout, stderr, calls = run_release_script(
+      "DB_PREPARE_ERROR" => "StandardError: migration failed",
+      "DB_PREPARE_FAILURES" => "99"
+    )
+
+    expect(status).not_to be_success
+    expect(stderr).to include("migration failed", "Failed to run DB migrations")
+    expect(calls).to eq([ "db:prepare" ])
   end
 end
