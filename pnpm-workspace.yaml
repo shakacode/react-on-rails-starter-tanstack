@@ -22,3 +22,6 @@ minimumReleaseAgeExclude:
   - react-on-rails-pro@17.2.1-rc.0
   - react-on-rails@17.2.1-rc.0
   - js-yaml@4.3.2
+  - react-on-rails-pro-node-renderer@17.2.1-rc.1
+  - react-on-rails-pro@17.2.1-rc.1
+  - react-on-rails@17.2.1-rc.1
