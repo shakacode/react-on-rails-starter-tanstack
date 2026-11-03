@@ -14,11 +14,14 @@ overrides:
   '@fastify/busboy': 3.2.2
   seroval: 1.6.12
   source-map-js: 1.2.2
+  # Keeps react-on-rails-rsc's ~19.3.0 Flight dependency on the patched direct
+  # version. Remove once react-on-rails-rsc itself requires a patched release.
+  react-server-dom-webpack: $react-server-dom-webpack
 
 # These newly published React on Rails releases are intentional for this starter.
 minimumReleaseAgeExclude:
   - react-on-rails-rsc@19.3.1
-  - react-on-rails-pro-node-renderer@17.2.1-rc.0
-  - react-on-rails-pro@17.2.1-rc.0
-  - react-on-rails@17.2.1-rc.0
+  - react-on-rails-pro-node-renderer@17.2.1-rc.3
+  - react-on-rails-pro@17.2.1-rc.3
+  - react-on-rails@17.2.1-rc.3
   - js-yaml@4.3.2
