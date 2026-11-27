@@ -1,4 +1,4 @@
-ARG RUBY_VERSION=3.4.9
+ARG RUBY_VERSION=3.4.13
 
 # Node and Ruby base images share the same Debian release so that glibc, libssl, and
 # other system libraries line up between stages.
