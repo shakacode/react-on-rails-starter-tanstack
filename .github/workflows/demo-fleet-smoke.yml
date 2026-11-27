@@ -19,6 +19,9 @@ jobs:
   smoke:
     uses: shakacode/react_on_rails/.github/workflows/demo-fleet-smoke.yml@613c6c2a251a782328b26d68e7f23daa9b677497
     with:
+      # Stays on 3.4.9 while .ruby-version is 3.4.13: the reusable workflow above pins
+      # ruby/setup-ruby@9eb537ca036ebaed86729dcb9309076e4c5c3b74, which cannot install 3.4.13.
+      # Move this to 3.4.13 once shakacode/react_on_rails bumps that setup-ruby pin.
       ruby-version: "3.4.9"
       node-version: "24"
       install-command: >-
